@@ -98,7 +98,7 @@ class TblMember extends Model
         return Utility::format_phone($primary_phone);
     }
 
-	public static function get_member_details($member_id) {
+	public static function get_member_details($member_id = 0) {
 		$this_member = self::firstOrNew([ 'MemberID' => $member_id]);
 		$prefix = TblTitle::lists('Title', 'TitleID')->prepend('');
 		$suffix = TblSuffix::lists('Suffix', 'SuffixID')->prepend('');

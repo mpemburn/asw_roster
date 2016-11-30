@@ -16,7 +16,7 @@
                        aria-expanded="false">Members <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="/public/member">Members List</a></li>
-                        <li><a href="#">Add Member</a></li>
+                        <li><a href="/public/member/details">Add Member</a></li>
                         <li><a href="#">My Profile</a></li>
                     </ul>
                 </li>

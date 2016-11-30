@@ -2,9 +2,11 @@
 body {
   font-family: 'Arial';
 }
+
 table {
   border-collapse: collapse;
 }
+
 thead td {
   padding: 4px;
   text-align: left;
@@ -12,18 +14,26 @@ thead td {
   background-color: #999999;
   color: #fff;
 }
+
 tbody tr {
   border-bottom: 1px solid #999;
 }
+
 tbody tr:hover {
   background-color: #999999;
   color: #fff;
+
+  a {
+    color: #fff;
+  }
 }
+
 tbody td {
   padding: 4px;
   text-align: left;
   font-size: 9pt;
 }
+
 .container {
   //text-align: center;
   //display: table-cell;

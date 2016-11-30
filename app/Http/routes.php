@@ -16,11 +16,12 @@ Route::get('/', function () {
 });
 
 Route::get('member', 'Member@index');
-Route::post('member/{id}/update',['as' => 'member.update', 'uses' => 'Member@update']);
 
 //Route::get('/','Front@index');
 //Route::get('/member','Member@member');
+Route::get('/member/details','Member@member_details');
 Route::get('/member/details/{id}','Member@member_details');
+Route::post('member/{id}/update',['as' => 'member.update', 'uses' => 'Member@update']);
 //Route::get('/member/categories','Member@product_categories');
 //Route::get('/member/brands','Member@product_brands');
 //Route::get('/blog','Front@blog');

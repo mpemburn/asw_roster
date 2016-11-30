@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Models\TblMember;
-use App\Models\TblTitle;
-use App\Models\TblSuffix;
 
 class Member extends Controller
 {
@@ -26,7 +24,7 @@ class Member extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function member_details($member_id)
+    public function member_details($member_id = 0)
     {
         $this_member = TblMember::get_member_details($member_id);
         return view('member_edit', $this_member);

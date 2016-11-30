@@ -5750,6 +5750,8 @@ tbody tr {
 tbody tr:hover {
   background-color: #999999;
   color: #fff; }
+  tbody tr:hover a {
+    color: #fff; }
 
 tbody td {
   padding: 4px;
