@@ -72,31 +72,12 @@ class TblMember extends Model
 
     protected $guarded = [];
 
-    public static function get_primary_phone($member_id, $primary_id)
-    {
-        $primary_phone = null;
-        $phones = self::where('MemberID', $member_id)
-                         ->select(
-                             'Home_Phone',
-                             'Work_Phone',
-                             'Cell_Phone')
-                         ->get();
-        foreach ($phones as $phone) {
-            switch ($primary_id) {
-                case 1 :
-                    $primary_phone = $phone->Home_Phone;
-                    break;
-                case 2 :
-                    $primary_phone = $phone->Work_Phone;
-                    break;
-                case 3 :
-                    $primary_phone = $phone->Cell_Phone;
-                    break;
-            }
-        }
-
-        return Utility::format_phone($primary_phone);
-    }
+	public static function get_active_members($status = 1) {
+		$active_members = self::where('Active', $status)
+		                      ->orderBy('Last_Name', 'asc')
+		                      ->get();
+		return array('members' => $active_members);
+	}
 
 	public static function get_member_details($member_id = 0) {
 		$this_member = self::firstOrNew([ 'MemberID' => $member_id]);
@@ -110,11 +91,17 @@ class TblMember extends Model
 		);
 	}
 
-	public static function get_active_members($status = 1) {
-		$active_members = self::where('Active', $status)
-	         ->orderBy('Last_Name', 'asc')
-	         ->get();
-		return array('members' => $active_members);
-	}
+	public static function get_primary_phone($member_id, $primary_id)
+    {
+	    $phone_types = array('Home_Phone', 'Work_Phone', 'Cell_Phone');
+	    $chosen = $phone_types[$primary_id - 1];
+        $phones = self::where('MemberID', $member_id)
+                         ->select($phone_types)
+                         ->get();
+	    $phone = $phones->first();
+	    $primary_phone = (isset($phone[$chosen])) ? $phone[$chosen] : '';
+
+        return Utility::format_phone($primary_phone);
+    }
 
 }
