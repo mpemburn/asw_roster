@@ -16,6 +16,7 @@ Route::get('/', function () {
 });
 
 Route::get('member', 'Member@index');
+Route::post('member/{id}/update',['as' => 'member.update', 'uses' => 'Member@update']);
 
 //Route::get('/','Front@index');
 //Route::get('/member','Member@member');

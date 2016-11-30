@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Models\TblMember;
+use App\Models\TblTitle;
+use App\Models\TblSuffix;
 
 class Member extends Controller
 {
@@ -15,11 +17,8 @@ class Member extends Controller
      */
     public function index()
     {
-        $Member = new TblMember();
-        $active_members = $Member::where('Active', 1)
-        ->orderBy('Last_Name', 'asc')
-        ->get();
-        return view('member', array('members' => $active_members));
+        $active = TblMember::get_active_members();
+        return view('member_list', $active);
     }
 
     /**
@@ -29,7 +28,8 @@ class Member extends Controller
      */
     public function member_details($member_id)
     {
-        return 'member detail';//view('member');
+        $this_member = TblMember::get_member_details($member_id);
+        return view('member_edit', $this_member);
     }
 
     /**
@@ -84,7 +84,7 @@ class Member extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        var_dump($request);
     }
 
     /**
@@ -97,4 +97,5 @@ class Member extends Controller
     {
         //
     }
+
 }

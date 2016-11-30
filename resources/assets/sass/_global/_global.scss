@@ -1,0 +1,40 @@
+/* Sass file containing all global styles */
+body {
+  font-family: 'Arial';
+}
+table {
+  border-collapse: collapse;
+}
+thead td {
+  padding: 4px;
+  text-align: left;
+  font-size: 10pt;
+  background-color: #999999;
+  color: #fff;
+}
+tbody tr {
+  border-bottom: 1px solid #999;
+}
+tbody tr:hover {
+  background-color: #999999;
+  color: #fff;
+}
+tbody td {
+  padding: 4px;
+  text-align: left;
+  font-size: 9pt;
+}
+.container {
+  //text-align: center;
+  //display: table-cell;
+  //vertical-align: middle;
+}
+
+.content {
+  text-align: center;
+  display: inline-block;
+}
+
+.title {
+  font-size: 12px;
+}

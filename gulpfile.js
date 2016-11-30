@@ -1,5 +1,4 @@
 var elixir = require('laravel-elixir');
-
 /*
  |--------------------------------------------------------------------------
  | Elixir Asset Management
@@ -12,5 +11,16 @@ var elixir = require('laravel-elixir');
  */
 
 elixir(function(mix) {
-    mix.sass('app.scss');
+    mix.copy(
+        'node_modules/bootstrap-sass/assets/javascripts/**/*.js',
+        'resources/assets/js/bootstrap'
+    );
+    mix.sass('app.scss', 'public/css/all.css');
+    mix.scripts([
+        'resources/assets/js/bootstrap/bootstrap.min.js',
+        'resources/assets/js/bootstrap/bootstrap-sprockets.js',
+        'resources/assets/js/lib/**/*.js',
+        'resources/assets/js/page/**/*.js',
+        'app.js'
+    ]);
 });
