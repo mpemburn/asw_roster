@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('home');
 });
 
 Route::get('member', 'Member@index');
@@ -21,6 +21,7 @@ Route::get('member', 'Member@index');
 //Route::get('/member','Member@member');
 Route::get('/member/details','Member@member_details');
 Route::get('/member/details/{id}','Member@member_details');
+Route::get('/member/migrate','Member@migrate');
 Route::post('member/{id}/update',['as' => 'member.update', 'uses' => 'Member@update']);
 //Route::get('/member/categories','Member@product_categories');
 //Route::get('/member/brands','Member@product_brands');
@@ -32,3 +33,10 @@ Route::post('member/{id}/update',['as' => 'member.update', 'uses' => 'Member@upd
 //Route::get('/cart','Front@cart');
 //Route::get('/checkout','Front@checkout');
 //Route::get('/search/{query}','Front@search');
+Route::auth();
+
+Route::get('/home', 'HomeController@index');
+Route::get('/got', [
+    'middleware' => ['auth'],
+    'uses' => 'Member@index'
+]);

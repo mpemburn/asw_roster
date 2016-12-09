@@ -1,4 +1,4 @@
-@extends('layouts.master')
+@extends('layouts.app')
 @section('content')
 <div class="content">
     <table class="member-list">
@@ -10,12 +10,12 @@
                 <td>State</td>
                 <td>Zip</td>
                 <td>Primary Phone</td>
-                <td>Email</td>
+                <td class="show-sm-up">Email</td>
                 <td>Coven</td>
-                <td>Degree</td>
-                <td>Bonded</td>
-                <td>Role</td>
-                <td>Board</td>
+                <td class="show-lg-up">Degree</td>
+                <td class="show-lg-up">Bonded</td>
+                <td class="show-lg-up">Role</td>
+                <td class="show-lg-up">Board</td>
             </tr>
         </thead>
         <tbody>
@@ -27,12 +27,12 @@
                 <td>{{ $member->State }}</td>
                 <td>{{ $member->Zip }}</td>
                 <td>{{ App\Models\TblMember::get_primary_phone($member->MemberID, $member->Primary_Phone) }}</td>
-                <td>{!! App\Helpers\Utility::mailto($member->Email_Address) !!}</td>
+                <td class="show-sm-up">{!! App\Helpers\Utility::mailto($member->Email_Address) !!}</td>
                 <td>{{ $member->Coven }}</td>
-                <td>{{ App\Helpers\Utility::ordinal($member->Degree) }}</td>
-                <td>{{ App\Helpers\Utility::yesno($member->Bonded) }}</td>
-                <td>{{ $member->LeadershipRole }}</td>
-                <td>{{ $member->BoardRole }}</td>
+                <td class="show-lg-up">{{ App\Helpers\Utility::ordinal($member->Degree) }}</td>
+                <td class="show-lg-up">{{ App\Helpers\Utility::yesno($member->Bonded) }}</td>
+                <td class="show-lg-up">{{ $member->LeadershipRole }}</td>
+                <td class="show-lg-up">{{ $member->BoardRole }}</td>
             </tr>
     @endforeach
         </tbody>

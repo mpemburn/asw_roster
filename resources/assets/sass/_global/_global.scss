@@ -22,7 +22,7 @@ tbody tr {
 tbody tr:hover {
   background-color: #999999;
   color: #fff;
-
+  cursor: pointer !important;
   a {
     color: #fff;
   }
@@ -34,12 +34,6 @@ tbody td {
   font-size: 9pt;
 }
 
-.container {
-  //text-align: center;
-  //display: table-cell;
-  //vertical-align: middle;
-}
-
 .content {
   text-align: center;
   display: inline-block;
@@ -47,4 +41,20 @@ tbody td {
 
 .title {
   font-size: 12px;
+}
+
+.main-nav {
+  padding: 0;
+  margin-bottom: 32px;
+}
+
+.show-sm-up {
+  @extend .hidden-xs;
+  @extend .hidden-sm;
+}
+
+.show-lg-up {
+  @extend .hidden-xs;
+  @extend .hidden-sm;
+  @extend .hidden-md;
 }

@@ -2,55 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Http\Requests;
-use App\Models\TblMember;
-use Illuminate\Support\Facades\Hash;
 use App\Models\User;
-use App\Http\Controllers\UserController;
+use Illuminate\Http\Request;
 
-class Member extends Controller
+use App\Http\Requests;
+
+class UserController extends Controller
 {
     /**
-     * Display a listing of Members.
+     * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        $active = TblMember::get_active_members();
-        return view('member_list', $active);
+        //
     }
-
-    /**
-     * Display individual Member.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function member_details($member_id = 0)
-    {
-        $this_member = TblMember::get_member_details($member_id);
-        return view('member_edit', $this_member);
-    }
-
-    public function migrate()
-    {
-        $active = TblMember::get_active_members();
-        $user = new UserController;
-        foreach ( $active['members'] as $member ) {
-            if (!empty($member->LeadershipRole) && !empty($member->UserPassword)) {
-                $hash = Hash::make($member->UserPassword);
-                $data = array(
-                    'member_id' => $member->MemberID,
-                    'name' => $member->First_Name . ' ' . $member->Last_Name,
-                    'email' => $member->Email_Address,
-                    'password' => $hash
-                );
-                $user->insert((object) $data);
-            }
-        }
-    }
-
 
     /**
      * Show the form for creating a new resource.
@@ -60,6 +27,22 @@ class Member extends Controller
     public function create()
     {
         //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function insert($data)
+    {
+        $user = new User();
+        $user->member_id = $data->member_id;
+        $user->name = $data->name;
+        $user->email = $data->email;
+        $user->password = $data->password;
+        $user->save();
     }
 
     /**
@@ -104,7 +87,7 @@ class Member extends Controller
      */
     public function update(Request $request, $id)
     {
-        var_dump($request);
+        //
     }
 
     /**
@@ -117,5 +100,4 @@ class Member extends Controller
     {
         //
     }
-
 }

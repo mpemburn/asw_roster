@@ -161,6 +161,8 @@ return [
          * Collection Service Providers...
          */
         Collective\Html\HtmlServiceProvider::class,
+        /* Laravel IDE helper */
+        'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider',
     ],
 
     /*
