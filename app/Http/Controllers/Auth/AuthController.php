@@ -49,13 +49,13 @@ class AuthController extends Controller
      */
     protected function validator(array $data)
     {
-        /* NOTE: member_email rule is specified in /app/Providers/AppServiceProvider.php
-            Custom error message is found in /resource/lang/en/validation.php
+        /* NOTE: member_email and password_mask rules are specified in /app/Providers/AppServiceProvider.php
+            Custom error messages found in /resource/lang/en/validation.php
         */
         return Validator::make($data, [
             'name' => 'required|max:255',
             'email' => 'required|member_email|email|max:255|unique:users',
-            'password' => 'required|min:6|confirmed',
+            'password' => 'required|min:6|password_mask|confirmed',
         ]);
     }
 

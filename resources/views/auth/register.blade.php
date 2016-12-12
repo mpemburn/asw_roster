@@ -63,6 +63,7 @@
                                         <strong>{{ $errors->first('password_confirmation') }}</strong>
                                     </span>
                                 @endif
+                                Passwords must contain both upper and lower case and at least one number or special character.
                             </div>
                         </div>
 

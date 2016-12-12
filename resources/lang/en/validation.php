@@ -98,6 +98,9 @@ return [
         'email' => [
             'member_email' => 'Your email address is not in our database',
         ],
+        'password' => [
+            'password_mask' => 'The password does not use the required pattern',
+        ],
     ],
 
     /*
