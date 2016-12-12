@@ -15,28 +15,25 @@ Route::get('/', function () {
     return view('home');
 });
 
-Route::get('member', 'Member@index');
-
-//Route::get('/','Front@index');
-//Route::get('/member','Member@member');
-Route::get('/member/details','Member@member_details');
-Route::get('/member/details/{id}','Member@member_details');
-Route::get('/member/migrate','Member@migrate');
-Route::post('member/{id}/update',['as' => 'member.update', 'uses' => 'Member@update']);
-//Route::get('/member/categories','Member@product_categories');
-//Route::get('/member/brands','Member@product_brands');
-//Route::get('/blog','Front@blog');
-//Route::get('/blog/post/{id}','Front@blog_post');
-//Route::get('/contact-us','Front@contact_us');
-//Route::get('/login','Front@login');
-//Route::get('/logout','Front@logout');
-//Route::get('/cart','Front@cart');
-//Route::get('/checkout','Front@checkout');
-//Route::get('/search/{query}','Front@search');
+Route::get('/home', 'HomeController@index');
 Route::auth();
 
-Route::get('/home', 'HomeController@index');
-Route::get('/got', [
+Route::get('member', [
     'middleware' => ['auth'],
     'uses' => 'Member@index'
 ]);
+Route::get('/member/details',[
+    'middleware' => ['auth'],
+    'uses' => 'Member@member_details'
+]);
+Route::get('/member/details/{id}',[
+    'middleware' => ['auth'],
+    'uses' => 'Member@member_details'
+]);
+Route::get('/member/migrate','Member@migrate');
+Route::post('member/{id}/update',[
+    'middleware' => ['auth'],
+    'as' => 'member.update',
+    'uses' => 'Member@update'
+]);
+

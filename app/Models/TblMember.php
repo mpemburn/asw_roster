@@ -104,5 +104,20 @@ class TblMember extends Model
         return Utility::format_phone($primary_phone);
     }
 
+	public static function get_member_id_from_email($test_email) {
+		$member_id = 0;
+		$found = self::whereRaw('LOWER(`Email_Address`) LIKE ?', array('%' . strtolower($test_email) . '%'))
+		              ->select('MemberID')
+		              ->get();
+		if (!$found->isEmpty()) {
+			$member_id = $found->first()->MemberID;
+		}
+		return ($member_id);
+	}
 
+	public static function is_valid_email($test_email) {
+		$member_id = self::get_member_id_from_email($test_email);
+
+		return ($member_id != 0);
+	}
 }

@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Validator;
+use App\Models\TblMember;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -13,7 +15,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        /* Used for registration form.  Must already be a member with an email address that matches $value */
+        Validator::extend('member_email', function ($attribute, $value, $parameters) {
+            $is_accepted = TblMember::is_valid_email($value);
+            return $is_accepted;
+        });
     }
 
     /**

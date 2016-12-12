@@ -95,6 +95,9 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'email' => [
+            'member_email' => 'Your email address is not in our database',
+        ],
     ],
 
     /*

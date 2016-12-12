@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Models\TblMember;
 use App\User;
 use Validator;
 use App\Http\Controllers\Controller;
@@ -48,9 +49,12 @@ class AuthController extends Controller
      */
     protected function validator(array $data)
     {
+        /* NOTE: member_email rule is specified in /app/Providers/AppServiceProvider.php
+            Custom error message is found in /resource/lang/en/validation.php
+        */
         return Validator::make($data, [
             'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users',
+            'email' => 'required|member_email|email|max:255|unique:users',
             'password' => 'required|min:6|confirmed',
         ]);
     }
@@ -63,7 +67,9 @@ class AuthController extends Controller
      */
     protected function create(array $data)
     {
+        $member_id = TblMember::get_member_id_from_email($data['email']);
         return User::create([
+            'member_id' => $member_id,
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
