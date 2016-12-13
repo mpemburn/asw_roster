@@ -63,7 +63,9 @@
                                         <strong>{{ $errors->first('password_confirmation') }}</strong>
                                     </span>
                                 @endif
-                                Passwords must contain both upper and lower case and at least one number or special character.
+                                <span class="<?php echo ($errors->has('password')) ? 'emphasize' : ''?>">
+                                    {{ trans('validation.password_mask') }}
+                                </span>
                             </div>
                         </div>
 

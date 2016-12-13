@@ -18,7 +18,7 @@ class Member extends Controller
      */
     public function index()
     {
-        $active = TblMember::get_active_members();
+        $active = TblMember::getActiveMembers();
         return view('member_list', $active);
     }
 
@@ -29,13 +29,13 @@ class Member extends Controller
      */
     public function member_details($member_id = 0)
     {
-        $this_member = TblMember::get_member_details($member_id);
+        $this_member = TblMember::getMemberDetails($member_id);
         return view('member_edit', $this_member);
     }
 
     public function migrate()
     {
-        $active = TblMember::get_active_members();
+        $active = TblMember::getActiveMembers();
         $user = new UserController;
         foreach ( $active['members'] as $member ) {
             if (!empty($member->LeadershipRole) && !empty($member->UserPassword)) {

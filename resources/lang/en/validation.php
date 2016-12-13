@@ -60,6 +60,7 @@ return [
     'not_in'               => 'The selected :attribute is invalid.',
     'numeric'              => 'The :attribute must be a number.',
     'present'              => 'The :attribute field must be present.',
+    'password_mask'        => 'Passwords must contain both upper and lower case and at least one number or special character.',
     'regex'                => 'The :attribute format is invalid.',
     'required'             => 'The :attribute field is required.',
     'required_if'          => 'The :attribute field is required when :other is :value.',
@@ -99,7 +100,7 @@ return [
             'member_email' => 'Your email address is not in our database',
         ],
         'password' => [
-            'password_mask' => 'The password does not use the required pattern',
+            'bad_pattern' => 'The password does not use the required pattern',
         ],
     ],
 

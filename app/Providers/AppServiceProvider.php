@@ -17,9 +17,9 @@ class AppServiceProvider extends ServiceProvider
     {
         /* Used for registration form.  Must already be a member with an email address that matches $value */
         Validator::extend('member_email', function ($attribute, $value, $parameters) {
-            return TblMember::is_valid_email($value);
+            return TblMember::isValidEmail($value);
         });
-        /* Used for registration form.  Password  */
+        /* Used for registration form.  Password mask validation  */
         Validator::extend('password_mask', function ($attribute, $value, $parameters) {
             $has_spaces = (!preg_match('/\s/',$value));
             $has_lowercase = ($value != strtoupper($value));

@@ -55,7 +55,7 @@ class AuthController extends Controller
         return Validator::make($data, [
             'name' => 'required|max:255',
             'email' => 'required|member_email|email|max:255|unique:users',
-            'password' => 'required|min:6|password_mask|confirmed',
+            'password' => 'required|min:6|bad_pattern|confirmed',
         ]);
     }
 
@@ -67,7 +67,7 @@ class AuthController extends Controller
      */
     protected function create(array $data)
     {
-        $member_id = TblMember::get_member_id_from_email($data['email']);
+        $member_id = TblMember::getMemberIdFromEmail($data['email']);
         return User::create([
             'member_id' => $member_id,
             'name' => $data['name'],

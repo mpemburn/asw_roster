@@ -5763,6 +5763,10 @@ tbody td {
   text-align: center;
   display: inline-block; }
 
+.emphasize {
+  font-weight: bold;
+  color: #a94442 !important; }
+
 .title {
   font-size: 12px; }
 

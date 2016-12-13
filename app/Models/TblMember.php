@@ -72,14 +72,14 @@ class TblMember extends Model
 
     protected $guarded = [];
 
-	public static function get_active_members($status = 1) {
+	public static function getActiveMembers($status = 1) {
 		$active_members = self::where('Active', $status)
 		                      ->orderBy('Last_Name', 'asc')
 		                      ->get();
 		return array('members' => $active_members);
 	}
 
-	public static function get_member_details($member_id = 0) {
+	public static function getMemberDetails($member_id = 0) {
 		$this_member = self::firstOrNew([ 'MemberID' => $member_id]);
 		$prefix = TblTitle::lists('Title', 'TitleID')->prepend('');
 		$suffix = TblSuffix::lists('Suffix', 'SuffixID')->prepend('');
@@ -91,7 +91,7 @@ class TblMember extends Model
 		);
 	}
 
-	public static function get_primary_phone($member_id, $primary_id)
+	public static function getPrimaryPhone($member_id, $primary_id)
     {
 	    $phone_types = array('Home_Phone', 'Work_Phone', 'Cell_Phone');
 	    $chosen = $phone_types[$primary_id - 1];
@@ -104,7 +104,7 @@ class TblMember extends Model
         return Utility::format_phone($primary_phone);
     }
 
-	public static function get_member_id_from_email($test_email) {
+	public static function getMemberIdFromEmail($test_email) {
 		$member_id = 0;
 		$found = self::whereRaw('LOWER(`Email_Address`) LIKE ?', array('%' . strtolower($test_email) . '%'))
 		              ->select('MemberID')
@@ -115,8 +115,8 @@ class TblMember extends Model
 		return ($member_id);
 	}
 
-	public static function is_valid_email($test_email) {
-		$member_id = self::get_member_id_from_email($test_email);
+	public static function isValidEmail($test_email) {
+		$member_id = self::getMemberIdFromEmail($test_email);
 
 		return ($member_id != 0);
 	}
