@@ -5,7 +5,10 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
-                <div class="panel-heading">Register</div>
+                <div class="panel-heading">
+                    <h4>New User Registration</h4>
+                    <div><strong>Please Note:</strong> You must have an existing member record containing the email address you enter here.<br/>To verify this, contact your HPS/HP or Scribe.</div>
+                </div>
                 <div class="panel-body">
                     <form class="form-horizontal" role="form" method="POST" action="{{ url('/register') }}">
                         {{ csrf_field() }}

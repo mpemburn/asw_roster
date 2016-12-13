@@ -3,7 +3,7 @@
 namespace App\Helpers;
 
 class Utility {
-	public static function format_phone($phone_number) {
+	public static function formatPhone($phone_number) {
 		$phone = preg_replace('/[^0-9]/', '', $phone_number);
 		if(strlen($phone) == 7) {
 			return preg_replace( "/(\d{3})(\d{4})/", "$1-$2", $phone );

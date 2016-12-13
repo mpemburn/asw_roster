@@ -6,18 +6,19 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Collective\Html\Eloquent\FormAccessible;
 use App\Helpers\Utility;
+use DB;
 /**
  * Class TblMember
  */
 class TblMember extends Model
 {
-	use FormAccessible;
+    use FormAccessible;
 
     protected $table = 'tblMembers';
 
     protected $primaryKey = 'MemberID';
 
-	public $timestamps = false;
+    public $timestamps = false;
 
     protected $fillable = [
         'Active',
@@ -72,52 +73,73 @@ class TblMember extends Model
 
     protected $guarded = [];
 
-	public static function getActiveMembers($status = 1) {
-		$active_members = self::where('Active', $status)
-		                      ->orderBy('Last_Name', 'asc')
-		                      ->get();
-		return array('members' => $active_members);
-	}
-
-	public static function getMemberDetails($member_id = 0) {
-		$this_member = self::firstOrNew([ 'MemberID' => $member_id]);
-		$prefix = TblTitle::lists('Title', 'TitleID')->prepend('');
-		$suffix = TblSuffix::lists('Suffix', 'SuffixID')->prepend('');
-
-		return array(
-			'member' => $this_member,
-			'prefix' => $prefix,
-			'suffix' => $suffix
-		);
-	}
-
-	public static function getPrimaryPhone($member_id, $primary_id)
+    public static function getActiveMembers($status = 1)
     {
-	    $phone_types = array('Home_Phone', 'Work_Phone', 'Cell_Phone');
-	    $chosen = $phone_types[$primary_id - 1];
-        $phones = self::where('MemberID', $member_id)
-                         ->select($phone_types)
-                         ->get();
-	    $phone = $phones->first();
-	    $primary_phone = (isset($phone[$chosen])) ? $phone[$chosen] : '';
-
-        return Utility::format_phone($primary_phone);
+        $active_members = self::where('Active', $status)
+            ->orderBy('Last_Name', 'asc')
+            ->get();
+        return array('members' => $active_members);
     }
 
-	public static function getMemberIdFromEmail($test_email) {
-		$member_id = 0;
-		$found = self::whereRaw('LOWER(`Email_Address`) LIKE ?', array('%' . strtolower($test_email) . '%'))
-		              ->select('MemberID')
-		              ->get();
-		if (!$found->isEmpty()) {
-			$member_id = $found->first()->MemberID;
-		}
-		return ($member_id);
-	}
+    public static function getMemberDetails($member_id = 0)
+    {
+        $this_member = self::firstOrNew(['MemberID' => $member_id]);
+        $prefix = TblTitle::lists('Title', 'TitleID')->prepend('');
+        $suffix = TblSuffix::lists('Suffix', 'SuffixID')->prepend('');
 
-	public static function isValidEmail($test_email) {
-		$member_id = self::getMemberIdFromEmail($test_email);
+        return array(
+            'member' => $this_member,
+            'prefix' => $prefix,
+            'suffix' => $suffix
+        );
+    }
 
-		return ($member_id != 0);
-	}
+    public static function getPrimaryPhone($member_id, $primary_id)
+    {
+        $phone_types = array('Home_Phone', 'Work_Phone', 'Cell_Phone');
+        $chosen = $phone_types[$primary_id - 1];
+        $phones = self::where('MemberID', $member_id)
+            ->select($phone_types)
+            ->get();
+        $phone = $phones->first();
+        $primary_phone = (isset($phone[$chosen])) ? $phone[$chosen] : '';
+
+        return Utility::formatPhone($primary_phone);
+    }
+
+    public static function getMemberIdFromEmail($test_email)
+    {
+        $member_id = 0;
+        $found = self::whereRaw('LOWER(`Email_Address`) LIKE ?', array('%' . strtolower($test_email) . '%'))
+            ->select('MemberID')
+            ->get();
+        if (!$found->isEmpty()) {
+            $member_id = $found->first()->MemberID;
+        }
+        return ($member_id);
+    }
+
+    public static function isValidEmail($test_email)
+    {
+        $member_id = self::getMemberIdFromEmail($test_email);
+
+        return ($member_id != 0);
+    }
+
+    public static function saveMember($data)
+    {
+        $member_id = $data['MemberID'];
+
+        if ($member_id == 0) {
+            $member = new TblMember();
+        } else {
+            $member = self::find($member_id);
+        }
+
+        $result = $member->fill($data)->save();
+        $member_id = $member->MemberID;
+
+        return ['success' => $result, 'member_id' => $member_id];
+    }
+
 }

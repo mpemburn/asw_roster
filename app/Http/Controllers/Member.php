@@ -100,11 +100,13 @@ class Member extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return Success status
      */
     public function update(Request $request, $id)
     {
-        var_dump($request);
+        $success = TblMember::saveMember($request->all());
+
+        return response()->json(['success' => $success]);
     }
 
     /**

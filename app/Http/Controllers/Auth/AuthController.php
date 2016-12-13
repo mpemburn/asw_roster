@@ -44,7 +44,7 @@ class AuthController extends Controller
     /**
      * Get a validator for an incoming registration request.
      *
-     * @param  array  $data
+     * @param  array $data
      * @return \Illuminate\Contracts\Validation\Validator
      */
     protected function validator(array $data)
@@ -62,12 +62,13 @@ class AuthController extends Controller
     /**
      * Create a new user instance after a valid registration.
      *
-     * @param  array  $data
+     * @param  array $data
      * @return User
      */
     protected function create(array $data)
     {
         $member_id = TblMember::getMemberIdFromEmail($data['email']);
+        $member_details = TblMember::getMemberDetails($member_id);
         return User::create([
             'member_id' => $member_id,
             'name' => $data['name'],
