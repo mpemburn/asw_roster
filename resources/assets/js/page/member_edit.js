@@ -1,7 +1,26 @@
-// JS code for Member List page
+// JS code for Member Edit page
 
 $(document).ready(function ($) {
-    $('#member_update').on('submit', function (e) {
+    $('.date-pick').datepicker({
+        format: 'M d, yyyy',
+        orientation: 'bottom',
+    });
+
+    $('#member_degree').on('change', function () {
+        $('.degree-date').each(function () {
+            var thisDate = $(this);
+            var thisDegree = thisDate.attr('data-degree-date');
+            var degree = $('#member_degree').val();
+            thisDate.removeClass('show hide');
+            if (degree >= thisDegree) {
+                thisDate.addClass('show');
+            } else {
+                thisDate.addClass('hide');
+            }
+        });
+    })
+
+    $('#member_updatex').on('submit', function (e) {
         var formAction = this.action;
         $.ajaxSetup({
             header: $('meta[name="_token"]').attr('content')
@@ -22,5 +41,3 @@ $(document).ready(function ($) {
         })
     });
 });
-
-

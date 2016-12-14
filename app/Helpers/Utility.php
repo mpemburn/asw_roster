@@ -3,6 +3,11 @@
 namespace App\Helpers;
 
 class Utility {
+
+	public static function formatDate($mask, $date) {
+		return (empty($date)) ? $date : date($mask, strtotime($date));
+	}
+
 	public static function formatPhone($phone_number) {
 		$phone = preg_replace('/[^0-9]/', '', $phone_number);
 		if(strlen($phone) == 7) {
@@ -41,6 +46,18 @@ class Utility {
 		}
 	}
 
+
+	public static function reformatDates($data, $field_names, $mask) {
+		$up_data = [];
+		foreach ($data as $field => $value) {
+			if (in_array($field, $field_names)) {
+				$up_data[$field] = (!is_null($value) && !empty($value)) ? date($mask, strtotime($value)) : null;
+			} else {
+				$up_data[$field] = $value;
+			}
+		}
+		return $up_data;
+	}
 	public static function yesno($int_or_bool) {
 		return ($int_or_bool) ? 'Yes' : 'No';
 	}

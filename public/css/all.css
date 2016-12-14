@@ -5767,6 +5767,13 @@ tbody td {
   font-weight: bold;
   color: #a94442 !important; }
 
+.form-group input,
+.form-group select {
+  margin: 2px; }
+
+.form-group select {
+  height: 27px; }
+
 .title {
   font-size: 12px; }
 
@@ -5845,5 +5852,9 @@ tbody td {
 .member-list {
   width: 100%;
   margin: 0 auto; }
+
+.sidebar-column .form-group label {
+  margin: 0;
+  padding: 0; }
 
 /*# sourceMappingURL=all.css.map */

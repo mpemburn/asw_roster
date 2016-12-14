@@ -84,13 +84,18 @@ class TblMember extends Model
     public static function getMemberDetails($member_id = 0)
     {
         $this_member = self::firstOrNew(['MemberID' => $member_id]);
-        $prefix = TblTitle::lists('Title', 'TitleID')->prepend('');
-        $suffix = TblSuffix::lists('Suffix', 'SuffixID')->prepend('');
-
+        $prefix = TblTitle::lists('Title', 'Title')->prepend('');
+        $suffix = TblSuffix::lists('Suffix', 'Suffix')->prepend('');
+        $state = TblState::lists('State', 'Abbrev')->prepend('');
+        $coven = TblCoven::lists('CovenFullName', 'Coven')->prepend('');
+        $degree = TblDegree::lists('Degree_Name', 'Degree');
         return array(
             'member' => $this_member,
             'prefix' => $prefix,
-            'suffix' => $suffix
+            'suffix' => $suffix,
+            'state' => $state,
+            'coven' => $coven,
+            'degree' => $degree,
         );
     }
 
@@ -136,10 +141,24 @@ class TblMember extends Model
             $member = self::find($member_id);
         }
 
+        $data = Utility::reformatDates($data, [
+            'Member_Since_Date',
+            'Member_End_Date',
+            'Birth_Date',
+            'First_Degree_Date',
+            'Second_Degree_Date',
+            'Third_Degree_Date',
+            'Fourth_Degree_Date',
+            'Fifth_Degree_Date',
+            'Bonded_Date',
+            'Solitary_Date',
+            'Leadership_Date',
+            'BoardRole_Expiry_Date',
+        ], 'Y-m-d');
+
         $result = $member->fill($data)->save();
         $member_id = $member->MemberID;
 
         return ['success' => $result, 'member_id' => $member_id];
     }
-
 }

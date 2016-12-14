@@ -44,6 +44,16 @@ tbody td {
   color: #a94442 !important;
 }
 
+.form-group {
+  input,
+  select {
+    margin: 2px;
+  }
+  select {
+    height: 27px;
+  }
+}
+
 .title {
   font-size: 12px;
 }
