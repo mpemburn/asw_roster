@@ -46,18 +46,24 @@ class Utility {
 		}
 	}
 
+	public static function reformatCheckboxes($data, $field_names) {
+		$up_data = $data;
+		foreach ($field_names as $field_name) {
+			$up_data[$field_name] = (isset($data[$field_name])) ? 1 : 0;
+		}
+		return $up_data;
+	}
 
 	public static function reformatDates($data, $field_names, $mask) {
-		$up_data = [];
+		$up_data = $data;
 		foreach ($data as $field => $value) {
 			if (in_array($field, $field_names)) {
 				$up_data[$field] = (!is_null($value) && !empty($value)) ? date($mask, strtotime($value)) : null;
-			} else {
-				$up_data[$field] = $value;
 			}
 		}
 		return $up_data;
 	}
+
 	public static function yesno($int_or_bool) {
 		return ($int_or_bool) ? 'Yes' : 'No';
 	}

@@ -7,42 +7,80 @@ $member_id = (!empty($member->MemberID)) ? $member->MemberID : 0;
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
+                    {{ Form::model($member, array('route' => array('member.update', $member_id), 'id' => 'member_update')) }}
+                    {{ Form::hidden('MemberID', $member_id)}}
+                    {{ Form::hidden('Primary_Phone', $member->Primary_Phone )}}
                     <div class="panel-heading">
                         <h4>{{ $member->First_Name }} {{ $member->Last_Name }}</h4>
                         Member ID: {{ $member->MemberID }}
+                        <div>
+                            <label for="active" class="control-label">{{ Form::checkbox('Active', $member->Active) }} Active</label>
+                        </div>
                     </div>
                     <div class="panel-body">
-                        {{ Form::model($member, array('route' => array('member.update', $member_id), 'id' => 'member_update')) }}
-                        {{ Form::hidden('MemberID', $member_id)}}
                         <main class="main-column col-md-9">
                             <div class="form-group">
                                 <label for="name" class="col-md-1 control-label">Name</label>
                                 <div class="col-md-11">
                                     {{ Form::select('Title', $prefix, null, ['class' => 'col-md-1'])}}
-                                    {{ Form::text('First_Name', $member->First_Name, ['class' => 'col-md-3']) }}
-                                    {{ Form::text('Middle_Name', $member->Middle_Name, ['class' => 'col-md-2']) }}
-                                    {{ Form::text('Last_Name', $member->Last_Name, ['class' => 'col-md-3']) }}
+                                    {{ Form::text('First_Name', $member->First_Name, ['class' => 'col-md-3', 'placeholder' => 'First Name']) }}
+                                    {{ Form::text('Middle_Name', $member->Middle_Name, ['class' => 'col-md-2', 'placeholder' => 'Middle Name']) }}
+                                    {{ Form::text('Last_Name', $member->Last_Name, ['class' => 'col-md-3', 'placeholder' => 'Last Name']) }}
                                     {{ Form::select('Suffix', $suffix, null, ['class' => 'col-md-2']) }}
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="address" class="col-md-1 control-label">Address</label>
                                 <div class="col-md-11">
-                                    {{ Form::text('Address1', $member->Address1, ['class' => 'col-md-10']) }}
+                                    {{ Form::text('Address1', $member->Address1, ['class' => 'col-md-10', 'placeholder' => 'Address 1']) }}
                                 </div>
                                 <div class="col-md-11 col-md-offset-1">
-                                    {{ Form::text('Address2', $member->Address2, ['class' => 'col-md-10']) }}
+                                    {{ Form::text('Address2', $member->Address2, ['class' => 'col-md-10', 'placeholder' => 'Address 2']) }}
                                 </div>
                                 <div class="col-md-11 col-md-offset-1">
-                                    {{ Form::text('City', $member->City, ['class' => 'col-md-4']) }}
+                                    {{ Form::text('City', $member->City, ['class' => 'col-md-4', 'placeholder' => 'City']) }}
                                     {{ Form::select('State', $state, null, ['class' => 'col-md-3']) }}
-                                    {{ Form::text('Zip', $member->Zip, ['class' => 'col-md-2']) }}
+                                    {{ Form::text('Zip', $member->Zip, ['class' => 'col-md-2', 'placeholder' => 'State']) }}
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="email" class="col-md-1 control-label">Email</label>
                                 <div class="col-md-11">
-                                    {{ Form::text('Email_Address', $member->Email_Address, ['class' => 'col-md-10']) }}
+                                    {{ Form::text('Email_Address', $member->Email_Address, ['class' => 'col-md-10', 'placeholder' => 'Email']) }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="magickal_name" class="control-label col-md-1">Magickal</label>
+                                <div class="col-md-11">
+                                    {{ Form::text('Magickal_Name', $member->Magickal_Name, ['class' => 'col-md-4', 'placeholder' => 'Magickal name']) }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="birth_time" class="control-label col-md-1">Birth Info</label>
+                                <div class="col-md-11">
+                                    {{ Form::text('Birth_Date', \App\Helpers\Utility::formatDate('M j, Y', $member->Birth_Date), ['class' => 'col-md-2 date-pick', 'placeholder' => 'Date']) }}
+                                    {{ Form::text('Birth_Time', $member->Birth_Time, ['class' => 'col-md-2', 'placeholder' => 'Time']) }}
+                                    {{ Form::text('Birth_Place', $member->Birth_Place, ['class' => 'col-md-2', 'placeholder' => 'Place']) }}
+                                </div>
+                            </div>
+                            <div class="form-group primary-phone">
+                                <label for="birth_time" class="control-label col-md-1">Primary Phone</label>
+                                <div class="col-md-4 outlined">
+                                    <label class="" for="home_phone">
+                                        {{ Form::radio('Primary_Phone', 1, $member->Primary_Phone == 1, ['id' => 'home_phone']) }}
+                                        <div class="phone-label"> Home:</div>
+                                        {{ Form::text('Home_Phone', $member->Home_Phone, ['placeholder' => 'Home Phone']) }}
+                                    </label>
+                                    <label class="" for="work_phone">
+                                        {{ Form::radio('Primary_Phone', 2, $member->Primary_Phone == 2, ['id' => 'work_phone']) }}
+                                        <div class="phone-label"> Work:</div>
+                                        {{ Form::text('Work_Phone', $member->Work_Phone, ['placeholder' => 'Work Phone']) }}
+                                    </label>
+                                    <label class="" for="cell_phone">
+                                        {{ Form::radio('Primary_Phone', 3, $member->Primary_Phone == 3, ['id' => 'cell_phone']) }}
+                                        <div class="phone-label"> Cell:</div>
+                                        {{ Form::text('Cell_Phone', $member->Cell_Phone, ['placeholder' => 'Cell Phone']) }}
+                                    </label>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -53,25 +91,12 @@ $member_id = (!empty($member->MemberID)) ? $member->MemberID : 0;
                         </main>
                         <aside class="sidebar-column col-md-3">
                             <div class="form-group">
-                                <label for="magickal_name" class="control-label col-md-12">Magickal Name</label>
-                                {{ Form::text('Magickal_Name', $member->Magickal_Name, ['class' => 'col-md-11']) }}
-                            </div>
-                            <div class="form-group">
-                                <label for="birth_time" class="control-label col-md-12">Birth Date/Time</label>
-                                {{ Form::text('Birth_Date', \App\Helpers\Utility::formatDate('M j, Y', $member->Birth_Date), ['class' => 'col-md-6 date-pick']) }}
-                                {{ Form::text('Birth_Time', $member->Birth_Time, ['class' => 'col-md-5']) }}
-                            </div>
-                            <div class="form-group">
-                                <label for="birth_place" class="control-label col-md-12">Birth Place</label>
-                                {{ Form::text('Birth_Place', $member->Birth_Place, ['class' => 'col-md-6']) }}
+                                <label for="coven" class="control-label col-md-12">Coven or Order</label>
+                                {{ Form::select('Coven', $coven, null, ['class' => 'col-md-11']) }}
                             </div>
                             <div class="form-group">
                                 <label for="member_since" class="control-label col-md-12">Member Since</label>
                                 {{ Form::text('Member_Since_Date', \App\Helpers\Utility::formatDate('M j, Y', $member->Member_Since_Date), ['class' => 'col-md-6 date-pick']) }}
-                            </div>
-                            <div class="form-group">
-                                <label for="coven" class="control-label col-md-12">Coven or Order</label>
-                                {{ Form::select('Coven', $coven, null, ['class' => 'col-md-11']) }}
                             </div>
                             <div class="form-group">
                                 <label for="degree" class="control-label col-md-12">Degree</label>
@@ -98,11 +123,34 @@ $member_id = (!empty($member->MemberID)) ? $member->MemberID : 0;
                                 {{ Form::text('Fifth_Degree_Date', \App\Helpers\Utility::formatDate('M j, Y', $member->Fifth_Degree_Date), ['class' => 'col-md-6 date-pick']) }}
                             </div>
                             <div class="form-group">
-                                <label for="bonded" class="control-label col-md-12">{{ Form::checkbox('Bonded', $member->Bonded) }} Bonded</label>
+                                <label for="bonded" class="control-label col-md-12">{{ Form::checkbox('Bonded', $member->Bonded, null, ['id' => 'bonded_check']) }} Bonded</label>
                             </div>
-                            <div class="form-group bonded-date {{ ($member->Bonded) ? 'show' : 'hide' }}" data-degree-date="5">
+                            <div class="form-group bonded-date {{ ($member->Bonded) ? 'show' : 'hide' }}">
                                 <label for="bonded-date" class="control-label col-md-12">Bonded Date</label>
                                 {{ Form::text('Bonded_Date', \App\Helpers\Utility::formatDate('M j, Y', $member->Bonded_Date), ['class' => 'col-md-6 date-pick']) }}
+                            </div>
+                            <div class="form-group">
+                                <label for="solitary" class="control-label col-md-12">{{ Form::checkbox('Solitary', $member->Solitary, null, ['id' => 'solitary_check']) }} Solitary</label>
+                            </div>
+                            <div class="form-group solitary-date {{ ($member->Solitary) ? 'show' : 'hide' }}">
+                                <label for="solitary-date" class="control-label col-md-12">Solitary Date</label>
+                                {{ Form::text('Solitary_Date', \App\Helpers\Utility::formatDate('M j, Y', $member->Solitary_Date), ['class' => 'col-md-6 date-pick']) }}
+                            </div>
+                            <div class="form-group">
+                                <label for="leadership" class="control-label col-md-12">Leadership Role</label>
+                                {{ Form::select('LeadershipRole', $leadership, null, ['class' => 'col-md-11', 'id' => 'leadership-role']) }}
+                            </div>
+                            <div class="form-group leadership-date {{ (!empty($member->LeadershipRole)) ? 'show' : 'hide' }}">
+                                <label for="leadership-date" class="control-label col-md-12">Leadership Date</label>
+                                {{ Form::text('Leadership_Date', \App\Helpers\Utility::formatDate('M j, Y', $member->Leadership_Date), ['class' => 'col-md-6 date-pick']) }}
+                            </div>
+                            <div class="form-group">
+                                <label for="board" class="control-label col-md-12">Board Role</label>
+                                {{ Form::select('BoardRole', $board, null, ['class' => 'col-md-11', 'id' => 'board-role']) }}
+                            </div>
+                            <div class="form-group expiry-date {{ (!empty($member->BoardRole)) ? 'show' : 'hide' }}">
+                                <label for="board-date" class="control-label col-md-12">Expiry Date</label>
+                                {{ Form::text('BoardRole_Expiry_Date', \App\Helpers\Utility::formatDate('M j, Y', $member->BoardRole_Expiry_Date), ['class' => 'col-md-6 date-pick']) }}
                             </div>
                         </aside>
                         {{ Form::close()}}

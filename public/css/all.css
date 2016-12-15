@@ -5853,8 +5853,25 @@ tbody td {
   width: 100%;
   margin: 0 auto; }
 
-.sidebar-column .form-group label {
-  margin: 0;
+.main-column {
   padding: 0; }
+  .main-column .form-group {
+    overflow: auto;
+    margin-bottom: 5px; }
+    .main-column .form-group label {
+      margin: 0;
+      padding: 0; }
+    .main-column .form-group.primary-phone .outlined {
+      margin: 0 16px;
+      border: 1px solid #111; }
+      .main-column .form-group.primary-phone .outlined .phone-label {
+        display: inline-block;
+        width: 45px !important; }
+
+.sidebar-column {
+  padding: 0; }
+  .sidebar-column .form-group label {
+    margin: 0;
+    padding: 0; }
 
 /*# sourceMappingURL=all.css.map */

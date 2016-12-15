@@ -1,25 +1,104 @@
 // This is a theoretical utility Javascript file.
 // JS code for Member Edit page
 
+var FieldToggle = {
+    toggleType: null,
+    actorSelector: null,
+    actionSelector: null,
+    emptyValue: null,
+    multiAttribute: null,
+    doToggle: function(options) {
+        $.extend(this, options);
+        switch (this.toggleType) {
+            case 'checkbox':
+                this._doCheckbox();
+                break;
+            case 'select':
+                this._doSelect();
+                break;
+            case 'select_multi':
+                this._doSelectMulti();
+                break;
+        }
+
+    },
+    _doCheckbox: function() {
+        var $thisActor = $(this.actorSelector);
+        var $thisAction = $(this.actionSelector);
+        var toggle = ($thisActor.is(':checked')) ? 'show' : 'hide';
+        $thisAction.removeClass('show hide');
+        $thisAction.addClass(toggle);
+    },
+    _doSelect: function() {
+        var $thisActor = $(this.actorSelector);
+        var $thisAction = $(this.actionSelector);
+        var toggle = ($thisActor.val() != this.emptyValue) ? 'show' : 'hide';
+        $thisAction.removeClass('show hide');
+        $thisAction.addClass(toggle);
+    },
+    _doSelectMulti: function() {
+        var self = this;
+        $(this.actionSelector).each(function () {
+            var $this = $(this);
+            var thisValue = $this.attr(self.multiAttribute);
+            var currentVal = $(self.actorSelector).val();
+            var toggle = (currentVal >= thisValue) ? 'show' : 'hide';
+            $this.removeClass('show hide');
+            $this.addClass(toggle);
+        });
+    }
+}
+
 $(document).ready(function ($) {
     $('.date-pick').datepicker({
         format: 'M d, yyyy',
-        orientation: 'bottom',
+        orientation: 'bottom'
     });
 
+    /* FieldToggle provides support for toggling visibility of one to several date fields */
+    var toggler = Object.create(FieldToggle);
     $('#member_degree').on('change', function () {
-        $('.degree-date').each(function () {
-            var thisDate = $(this);
-            var thisDegree = thisDate.attr('data-degree-date');
-            var degree = $('#member_degree').val();
-            thisDate.removeClass('show hide');
-            if (degree >= thisDegree) {
-                thisDate.addClass('show');
-            } else {
-                thisDate.addClass('hide');
-            }
+        toggler.doToggle({
+            toggleType: 'select_multi',
+            actorSelector: '#member_degree',
+            actionSelector: '.degree-date',
+            multiAttribute: 'data-degree-date'
         });
     })
+
+    $('#bonded_check').on('click', function () {
+        toggler.doToggle({
+            toggleType: 'checkbox',
+            actorSelector: '#' + $(this).attr('id'),
+            actionSelector: '.form-group.bonded-date'
+        });
+    });
+
+    $('#solitary_check').on('click', function () {
+        toggler.doToggle({
+            toggleType: 'checkbox',
+            actorSelector: '#' + $(this).attr('id'),
+            actionSelector: '.form-group.solitary-date'
+        });
+    });
+
+    $('#leadership-role').on('change', function () {
+        toggler.doToggle({
+            toggleType: 'select',
+            actorSelector: '#' + $(this).attr('id'),
+            actionSelector: '.form-group.leadership-date',
+            emptyValue: '0'
+        });
+    });
+
+    $('#board-role').on('change', function () {
+        toggler.doToggle({
+            toggleType: 'select',
+            actorSelector: '#' + $(this).attr('id'),
+            actionSelector: '.form-group.expiry-date',
+            emptyValue: '0'
+        });
+    });
 
     $('#member_updatex').on('submit', function (e) {
         var formAction = this.action;

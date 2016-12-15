@@ -89,6 +89,9 @@ class TblMember extends Model
         $state = TblState::lists('State', 'Abbrev')->prepend('');
         $coven = TblCoven::lists('CovenFullName', 'Coven')->prepend('');
         $degree = TblDegree::lists('Degree_Name', 'Degree');
+        $leadership = TblLeadershipRole::lists('Description', 'Role')->prepend('None');
+        $board = TblBoardRole::lists('BoardRole', 'RoleID')->prepend('None');
+
         return array(
             'member' => $this_member,
             'prefix' => $prefix,
@@ -96,6 +99,8 @@ class TblMember extends Model
             'state' => $state,
             'coven' => $coven,
             'degree' => $degree,
+            'leadership' => $leadership,
+            'board' => $board,
         );
     }
 
@@ -155,6 +160,12 @@ class TblMember extends Model
             'Leadership_Date',
             'BoardRole_Expiry_Date',
         ], 'Y-m-d');
+
+        $data = Utility::reformatCheckboxes($data, [
+            'Active',
+            'Bonded',
+            'Solitary',
+        ]);
 
         $result = $member->fill($data)->save();
         $member_id = $member->MemberID;
