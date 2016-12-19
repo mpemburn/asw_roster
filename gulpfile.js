@@ -17,8 +17,6 @@ elixir(function(mix) {
     );
     mix.sass('app.scss', 'public/css/all.css');
     mix.scripts([
-        //'resources/assets/js/bootstrap/bootstrap.min.js',
-        //'resources/assets/js/bootstrap/bootstrap-sprockets.js',
         'resources/assets/js/lib/**/*.js',
         'resources/assets/js/page/**/*.js',
         'app.js'

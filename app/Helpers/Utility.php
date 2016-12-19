@@ -14,6 +14,9 @@ class Utility {
 			return preg_replace( "/(\d{3})(\d{4})/", "$1-$2", $phone );
 		} elseif(strlen($phone) == 10) {
 			return preg_replace( "/(\d{3})(\d{3})(\d{4})/", "($1) $2-$3", $phone );
+		} elseif(strlen($phone) > 10) {
+			$ext_test = '(\d{' . (strlen($phone) - 10) . '})';
+			return preg_replace( "/(\d{3})(\d{3})(\d{4})$ext_test/", "($1) $2-$3 ext $4", $phone );
 		} else {
 			return $phone;
 		}

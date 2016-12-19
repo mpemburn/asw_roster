@@ -1,60 +1,17 @@
 // JS code for Member Edit page
 
-var FieldToggle = {
-    toggleType: null,
-    actorSelector: null,
-    actionSelector: null,
-    emptyValue: null,
-    multiAttribute: null,
-    doToggle: function(options) {
-        $.extend(this, options);
-        switch (this.toggleType) {
-            case 'checkbox':
-                this._doCheckbox();
-                break;
-            case 'select':
-                this._doSelect();
-                break;
-            case 'select_multi':
-                this._doSelectMulti();
-                break;
-        }
-
-    },
-    _doCheckbox: function() {
-        var $thisActor = $(this.actorSelector);
-        var $thisAction = $(this.actionSelector);
-        var toggle = ($thisActor.is(':checked')) ? 'show' : 'hide';
-        $thisAction.removeClass('show hide');
-        $thisAction.addClass(toggle);
-    },
-    _doSelect: function() {
-        var $thisActor = $(this.actorSelector);
-        var $thisAction = $(this.actionSelector);
-        var toggle = ($thisActor.val() != this.emptyValue) ? 'show' : 'hide';
-        $thisAction.removeClass('show hide');
-        $thisAction.addClass(toggle);
-    },
-    _doSelectMulti: function() {
-        var self = this;
-        $(this.actionSelector).each(function () {
-            var $this = $(this);
-            var thisValue = $this.attr(self.multiAttribute);
-            var currentVal = $(self.actorSelector).val();
-            var toggle = (currentVal >= thisValue) ? 'show' : 'hide';
-            $this.removeClass('show hide');
-            $this.addClass(toggle);
-        });
-    }
-}
-
 $(document).ready(function ($) {
     $('.date-pick').datepicker({
         format: 'M d, yyyy',
         orientation: 'bottom'
     });
 
-    /* FieldToggle provides support for toggling visibility of one to several date fields */
+    $('[name=phone_button]').on('click', function() {
+        var value = $(this).val();
+        $('[name=Primary_Phone]').val(value);
+    });
+
+    /* Use FieldToggle to toggle visibility of date fields */
     var toggler = Object.create(FieldToggle);
     $('#member_degree').on('change', function () {
         toggler.doToggle({
@@ -99,7 +56,8 @@ $(document).ready(function ($) {
         });
     });
 
-    $('#member_updatex').on('submit', function (e) {
+    /* Submit form via AJAX */
+    $('#member_update').on('submit', function (e) {
         var formAction = this.action;
         $.ajaxSetup({
             header: $('meta[name="_token"]').attr('content')

@@ -1,6 +1,16 @@
-// This is a theoretical utility Javascript file.
-// JS code for Member Edit page
-
+/* FieldToggle provides support for toggling visibility of one to several fields
+ * Usage: Place in listener for the 'actor' field
+ *
+ var fieldToggle = Object.create(FieldToggle);
+ fieldToggle.doToggle({
+     toggleType: 'select',
+     actorSelector: '#' + $(this).attr('id'),
+     actionSelector: '.form-group.leadership-date',
+     emptyValue: '0'
+ });
+ *
+ *
+ * */
 var FieldToggle = {
     toggleType: null,
     actorSelector: null,
@@ -49,13 +59,21 @@ var FieldToggle = {
     }
 }
 
+
+// JS code for Member Edit page
+
 $(document).ready(function ($) {
     $('.date-pick').datepicker({
         format: 'M d, yyyy',
         orientation: 'bottom'
     });
 
-    /* FieldToggle provides support for toggling visibility of one to several date fields */
+    $('[name=phone_button]').on('click', function() {
+        var value = $(this).val();
+        $('[name=Primary_Phone]').val(value);
+    });
+
+    /* Use FieldToggle to toggle visibility of date fields */
     var toggler = Object.create(FieldToggle);
     $('#member_degree').on('change', function () {
         toggler.doToggle({
@@ -100,7 +118,8 @@ $(document).ready(function ($) {
         });
     });
 
-    $('#member_updatex').on('submit', function (e) {
+    /* Submit form via AJAX */
+    $('#member_update').on('submit', function (e) {
         var formAction = this.action;
         $.ajaxSetup({
             header: $('meta[name="_token"]').attr('content')

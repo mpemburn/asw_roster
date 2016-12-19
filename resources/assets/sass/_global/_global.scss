@@ -3,6 +3,17 @@ body {
   font-family: 'Arial';
 }
 
+input {
+  &:read-only {
+    border: none;
+  }
+}
+select {
+  &:disabled {
+    border: none;
+  }
+}
+
 table {
   border-collapse: collapse;
 }

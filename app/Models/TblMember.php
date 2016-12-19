@@ -84,15 +84,18 @@ class TblMember extends Model
     public static function getMemberDetails($member_id = 0)
     {
         $this_member = self::firstOrNew(['MemberID' => $member_id]);
-        $prefix = TblTitle::lists('Title', 'Title')->prepend('');
-        $suffix = TblSuffix::lists('Suffix', 'Suffix')->prepend('');
-        $state = TblState::lists('State', 'Abbrev')->prepend('');
-        $coven = TblCoven::lists('CovenFullName', 'Coven')->prepend('');
+        $this_member_id = (!empty($this_member->MemberID)) ? $this_member->MemberID : 0;
+        $prefix = TblTitle::lists('Title', 'Title')->prepend('', '');
+        $suffix = TblSuffix::lists('Suffix', 'Suffix')->prepend('', '');
+        $state = TblState::lists('State', 'Abbrev')->prepend('', '');
+        $coven = TblCoven::lists('CovenFullName', 'Coven')->prepend('', '');
         $degree = TblDegree::lists('Degree_Name', 'Degree');
         $leadership = TblLeadershipRole::lists('Description', 'Role')->prepend('None');
         $board = TblBoardRole::lists('BoardRole', 'RoleID')->prepend('None');
 
         return array(
+            'can_edit' => false,
+            'member_id' => $this_member_id,
             'member' => $this_member,
             'prefix' => $prefix,
             'suffix' => $suffix,
@@ -101,6 +104,7 @@ class TblMember extends Model
             'degree' => $degree,
             'leadership' => $leadership,
             'board' => $board,
+            'static' => (object) self::getStaticMemberData($this_member)
         );
     }
 
@@ -127,6 +131,25 @@ class TblMember extends Model
             $member_id = $found->first()->MemberID;
         }
         return ($member_id);
+    }
+
+    public static function getStaticMemberData($member) {
+        $middle = (!empty($member->Middle_Name)) ? $member->Middle_Name . ' ' : '';
+        $name = $member->Title . ' ' . $member->First_Name . ' ' . $middle . $member->Last_Name . ' ' . $member->Suffix;
+        $coven = TblCoven::find($member->Coven);
+        $leadership = TblLeadershipRole::where('Role', $member->LeadershipRole)->first();
+
+        return [
+            'name' => trim($name),
+            'address1' => $member->Address1,
+            'address2' => $member->Address2,
+            'csz' => $member->City . ', ' . $member->State . ' ' . $member->Zip,
+            'home_phone' => Utility::formatPhone($member->Home_Phone),
+            'cell_phone' => Utility::formatPhone($member->Cell_Phone),
+            'work_phone' => Utility::formatPhone($member->Work_Phone),
+            'coven' => $coven->CovenFullName,
+            'leadership' => $leadership->Description
+        ];
     }
 
     public static function isValidEmail($test_email)

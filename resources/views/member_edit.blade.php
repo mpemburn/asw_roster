@@ -1,24 +1,24 @@
-<?php
-$member_id = (!empty($member->MemberID)) ? $member->MemberID : 0;
-?>
 @extends('layouts.app')
 @section('content')
     <div class="container">
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
+                    @if ($can_edit)
                     {{ Form::model($member, array('route' => array('member.update', $member_id), 'id' => 'member_update')) }}
                     {{ Form::hidden('MemberID', $member_id)}}
                     {{ Form::hidden('Primary_Phone', $member->Primary_Phone )}}
+                    @endif
                     <div class="panel-heading">
                         <h4>{{ $member->First_Name }} {{ $member->Last_Name }}</h4>
                         Member ID: {{ $member->MemberID }}
-                        <div>
-                            <label for="active" class="control-label">{{ Form::checkbox('Active', $member->Active) }} Active</label>
-                        </div>
                     </div>
-                    <div class="panel-body">
+                        <div class="panel-body">
                         <main class="main-column col-md-9">
+                            @if ($can_edit)
+                            <div class="form-group">
+                                <label for="active" class="control-label">{{ Form::checkbox('Active', $member->Active) }} Active</label>
+                            </div>
                             <div class="form-group">
                                 <label for="name" class="col-md-1 control-label">Name</label>
                                 <div class="col-md-11">
@@ -60,27 +60,33 @@ $member_id = (!empty($member->MemberID)) ? $member->MemberID : 0;
                                 <div class="col-md-11">
                                     {{ Form::text('Birth_Date', \App\Helpers\Utility::formatDate('M j, Y', $member->Birth_Date), ['class' => 'col-md-2 date-pick', 'placeholder' => 'Date']) }}
                                     {{ Form::text('Birth_Time', $member->Birth_Time, ['class' => 'col-md-2', 'placeholder' => 'Time']) }}
-                                    {{ Form::text('Birth_Place', $member->Birth_Place, ['class' => 'col-md-2', 'placeholder' => 'Place']) }}
+                                    {{ Form::text('Birth_Place', $member->Birth_Place, ['class' => 'col-md-3', 'placeholder' => 'Place']) }}
                                 </div>
                             </div>
                             <div class="form-group primary-phone">
                                 <label for="birth_time" class="control-label col-md-1">Primary Phone</label>
                                 <div class="col-md-4 outlined">
                                     <label class="" for="home_phone">
-                                        {{ Form::radio('Primary_Phone', 1, $member->Primary_Phone == 1, ['id' => 'home_phone']) }}
+                                        {{ Form::radio('phone_button', 1, $member->Primary_Phone == 1, ['id' => 'home_phone']) }}
                                         <div class="phone-label"> Home:</div>
-                                        {{ Form::text('Home_Phone', $member->Home_Phone, ['placeholder' => 'Home Phone']) }}
-                                    </label>
-                                    <label class="" for="work_phone">
-                                        {{ Form::radio('Primary_Phone', 2, $member->Primary_Phone == 2, ['id' => 'work_phone']) }}
-                                        <div class="phone-label"> Work:</div>
-                                        {{ Form::text('Work_Phone', $member->Work_Phone, ['placeholder' => 'Work Phone']) }}
+                                        {{ Form::text('Home_Phone', \App\Helpers\Utility::formatPhone($member->Home_Phone), ['placeholder' => 'Home Phone']) }}
                                     </label>
                                     <label class="" for="cell_phone">
-                                        {{ Form::radio('Primary_Phone', 3, $member->Primary_Phone == 3, ['id' => 'cell_phone']) }}
+                                        {{ Form::radio('phone_button', 3, $member->Primary_Phone == 3, ['id' => 'cell_phone']) }}
                                         <div class="phone-label"> Cell:</div>
-                                        {{ Form::text('Cell_Phone', $member->Cell_Phone, ['placeholder' => 'Cell Phone']) }}
+                                        {{ Form::text('Cell_Phone', \App\Helpers\Utility::formatPhone($member->Cell_Phone), ['placeholder' => 'Cell Phone']) }}
                                     </label>
+                                    <label class="" for="work_phone">
+                                        {{ Form::radio('phone_button', 2, $member->Primary_Phone == 2, ['id' => 'work_phone']) }}
+                                        <div class="phone-label"> Work:</div>
+                                        {{ Form::text('Work_Phone', \App\Helpers\Utility::formatPhone($member->Work_Phone), ['placeholder' => 'Work Phone']) }}
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="comments" class="control-label col-md-1">Comments</label>
+                                <div class="col-md-11">
+                                    {{ Form::textarea('Comments', $member->Comments, ['class' => 'col-md-8']) }}
                                 </div>
                             </div>
                             <div class="form-group">
@@ -88,8 +94,32 @@ $member_id = (!empty($member->MemberID)) ? $member->MemberID : 0;
                                     {{ Form::submit(($member->MemberID == 0) ? 'Submit' : 'Update') }}
                                 </div>
                             </div>
+                            @else
+                                <div class="col-md-12">
+                                    {{ $static->name }}
+                                </div>
+                                <div class="col-md-12">
+                                    {{ $static->address1 }}
+                                </div>
+                                <div class="col-md-12">
+                                    {{ $static->address2 }}
+                                </div>
+                                <div class="col-md-12">
+                                    {{ $static->csz }}
+                                </div>
+                                <div class="col-md-12 {{ (!empty($static->home_phone)) ? 'show' : 'hide' }}">
+                                    <strong>Home:</strong> {{ $static->home_phone }}
+                                </div>
+                                <div class="col-md-12 {{ (!empty($static->cell_phone)) ? 'show' : 'hide' }}">
+                                    <strong>Cell:</strong> {{ $static->cell_phone }}
+                                </div>
+                                <div class="col-md-12 {{ (!empty($static->work_phone)) ? 'show' : 'hide' }}">
+                                    <strong>Work:</strong> {{ $static->work_phone }}
+                                </div>
+                            @endif
                         </main>
                         <aside class="sidebar-column col-md-3">
+                            @if ($can_edit)
                             <div class="form-group">
                                 <label for="coven" class="control-label col-md-12">Coven or Order</label>
                                 {{ Form::select('Coven', $coven, null, ['class' => 'col-md-11']) }}
@@ -100,7 +130,7 @@ $member_id = (!empty($member->MemberID)) ? $member->MemberID : 0;
                             </div>
                             <div class="form-group">
                                 <label for="degree" class="control-label col-md-12">Degree</label>
-                                {{ Form::select('Degree', $degree, null, ['id' => 'member_degree', 'class' => 'col-md-11']) }}
+                                {{ Form::select('Degree', $degree, null, ['id' => 'member_degree', 'class' => 'col-md-6']) }}
                             </div>
                             <div class="form-group degree-date {{ ($member->Degree >= 1) ? 'show' : 'hide' }}" data-degree-date="1">
                                 <label for="first_degree" class="control-label col-md-12">1st Degree Date</label>
@@ -152,6 +182,14 @@ $member_id = (!empty($member->MemberID)) ? $member->MemberID : 0;
                                 <label for="board-date" class="control-label col-md-12">Expiry Date</label>
                                 {{ Form::text('BoardRole_Expiry_Date', \App\Helpers\Utility::formatDate('M j, Y', $member->BoardRole_Expiry_Date), ['class' => 'col-md-6 date-pick']) }}
                             </div>
+                            @else
+                                <div class="col-md-12">
+                                    <strong>Coven: </strong>{{ $static->coven }}
+                                </div>
+                                <div class="col-md-12">
+                                    <strong>Role: </strong>{{ $static->leadership }}
+                                </div>
+                            @endif
                         </aside>
                         {{ Form::close()}}
                     </div>
