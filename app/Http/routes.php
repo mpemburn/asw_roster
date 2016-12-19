@@ -30,6 +30,10 @@ Route::get('/member/details/{id}',[
     'middleware' => ['auth'],
     'uses' => 'Member@member_details'
 ]);
+Route::get('/member/missing',[
+    'middleware' => ['auth'],
+    'uses' => 'Member@missing_details'
+]);
 Route::get('/member/migrate','Member@migrate');
 Route::post('member/{id}/update',[
     'middleware' => ['auth'],

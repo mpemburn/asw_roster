@@ -94,7 +94,7 @@ class TblMember extends Model
         $board = TblBoardRole::lists('BoardRole', 'RoleID')->prepend('None');
 
         return array(
-            'can_edit' => false,
+            'can_edit' => true,
             'member_id' => $this_member_id,
             'member' => $this_member,
             'prefix' => $prefix,
@@ -194,5 +194,17 @@ class TblMember extends Model
         $member_id = $member->MemberID;
 
         return ['success' => $result, 'member_id' => $member_id];
+    }
+
+    public static function hasAll($member_fields) {
+        $hasAll = true;
+        foreach ($member_fields as $field) {
+            $hasAll = ($hasAll && !empty($field));
+        }
+        return (!$hasAll) ? 'X' : '';
+    }
+
+    public static function hasNo($member_field) {
+        return (empty($member_field)) ? 'X' : '';
     }
 }

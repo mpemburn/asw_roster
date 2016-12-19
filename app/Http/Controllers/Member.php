@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TblCoven;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Models\TblMember;
@@ -31,6 +32,29 @@ class Member extends Controller
     {
         $this_member = TblMember::getMemberDetails($member_id);
         return view('member_edit', $this_member);
+    }
+
+   public function missing_details($member_id = 0)
+    {
+        $covens = TblCoven::all();
+        $members = [];
+        foreach ($covens as $coven) {
+            $coveners = TblMember::where('Coven', $coven->Coven)
+                ->where('Active', 1)
+                ->orderBy('Last_Name', 'asc')
+                ->get();
+            if (!$coveners->isEmpty()) {
+                $members[$coven->Coven] = $coveners;
+            }
+        }
+//        foreach ($members['KHC'] as $keeper) {
+//            echo $keeper->First_Name;
+//        }
+        $missing_data = [
+            'covens' => $covens,
+            'members' => $members
+        ];
+        return view('missing_details', $missing_data);
     }
 
     public function migrate()

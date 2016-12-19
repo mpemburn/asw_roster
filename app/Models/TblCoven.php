@@ -15,6 +15,8 @@ class TblCoven extends Model
 
 	public $timestamps = false;
 
+    public $incrementing = false;
+
     protected $fillable = [
         'CovenFullName',
         'Wheel',
