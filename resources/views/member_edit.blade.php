@@ -183,10 +183,10 @@
                                 {{ Form::text('BoardRole_Expiry_Date', \App\Helpers\Utility::formatDate('M j, Y', $member->BoardRole_Expiry_Date), ['class' => 'col-md-6 date-pick']) }}
                             </div>
                             @else
-                                <div class="col-md-12">
+                                <div class="col-md-12{{ (empty($static->coven)) ? 'hide' : 'show' }}">
                                     <strong>Coven: </strong>{{ $static->coven }}
                                 </div>
-                                <div class="col-md-12">
+                                <div class="col-md-12 {{ (empty($static->leadership)) ? 'hide' : 'show' }}">
                                     <strong>Role: </strong>{{ $static->leadership }}
                                 </div>
                             @endif

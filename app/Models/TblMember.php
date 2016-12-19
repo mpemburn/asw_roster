@@ -147,8 +147,8 @@ class TblMember extends Model
             'home_phone' => Utility::formatPhone($member->Home_Phone),
             'cell_phone' => Utility::formatPhone($member->Cell_Phone),
             'work_phone' => Utility::formatPhone($member->Work_Phone),
-            'coven' => $coven->CovenFullName,
-            'leadership' => $leadership->Description
+            'coven' => (!is_null($coven)) ? $coven->CovenFullName : '',
+            'leadership' => (!is_null($leadership)) ? $leadership->Description : ''
         ];
     }
 
