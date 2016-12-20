@@ -5765,6 +5765,9 @@ tbody td {
   text-align: left;
   font-size: 9pt; }
 
+.container {
+  padding-bottom: 64px; }
+
 .content {
   text-align: center;
   display: inline-block; }
@@ -5812,14 +5815,9 @@ table.dataTable tbody tr:hover {
   table.dataTable tbody tr:hover a {
     color: #fff; }
 
-.dataTables_wrapper .dataTables_paginate .paginate_button {
-  padding: 0px;
-  margin-left: 0px;
-  display: inline;
-  border: 0px; }
-
-.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-  border: 0px; }
+.dataTables_filter input {
+  padding: 0 5px;
+  border: 1pt solid #111; }
 
 /* Override Bootstrap navbar defaults */
 /* navbar */

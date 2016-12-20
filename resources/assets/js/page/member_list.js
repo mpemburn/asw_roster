@@ -28,11 +28,10 @@ $(document).ready(function ($) {
                         });
 
                     column.data().unique().sort().each(function (d, j) {
-                        select.append('<option value="' + d + '">' + d + '</option>')
+                        var label = (d == '') ? 'All' : d;
+                        select.append('<option value="' + d + '">' + label + '</option>')
                     });
                 });
-                var $filter = $('#DataTables_Table_0_filter');
-                $filter.parent().removeClass('col-sm-6').addClass('col-sm-2 col-md-4 col-lg-6');
             }
         });
     }

@@ -45,6 +45,10 @@ tbody td {
   font-size: 9pt;
 }
 
+.container {
+  padding-bottom: 64px;
+}
+
 .content {
   text-align: center;
   display: inline-block;
@@ -125,12 +129,9 @@ table.dataTable {
   }
 }
 
-.dataTables_wrapper .dataTables_paginate .paginate_button {
-  padding : 0px;
-  margin-left: 0px;
-  display: inline;
-  border: 0px;
-}
-.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-  border: 0px;
+.dataTables_filter {
+  input {
+    padding: 0 5px;
+    border: 1pt solid #111;
+  }
 }

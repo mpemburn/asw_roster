@@ -89,7 +89,7 @@
                                 {{ \App\Models\TblMember::hasNo($member->State) }}
                             </td>
                             <td class="center">
-                                {{ \App\Models\TblMember::hasNo($member->Zip) }}
+                                {{ \App\Models\TblMember::nonAlphaOrMissing($member->Zip) }}
                             </td>
                             <td class="center shade">
                                 {{ \App\Models\TblMember::hasNo($member->Home_Phone) }}
