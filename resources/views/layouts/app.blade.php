@@ -47,6 +47,7 @@
                             <ul class="dropdown-menu">
                                 <li class="dropdown-item"><a href="{{ url('/member') }}"><i class="fa fa-btn fa-users"></i> Members List</a></li>
                                 <li class="dropdown-item"><a href="{{ url('/member/details') }}"><i class="fa fa-btn fa-user-plus"></i> Add Member</a></li>
+                                <li class="dropdown-item"><a href="{{ url('/member/missing') }}"><i class="fa fa-btn fa-bars"></i> Missing Data</a></li>
                             </ul>
                         </li>
                         <li><a href="{{ url('/home') }}">FAQ</a></li>

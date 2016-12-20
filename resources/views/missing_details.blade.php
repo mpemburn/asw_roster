@@ -44,7 +44,7 @@
                 <li>Columns containing an "X" indicate that data is missing for that field.</li>
                 <li>The "Role" field refers to [Acting]High Priestess, [Acting]High Priest, Scribe, and Pursewarden.</li>
                 <li>Make sure all of your degreed members have the date of each degree and a Magickal Name.</li>
-                <li>Make sure all of your bonded members have the date of each bonding.</li>
+                <li>Make sure all of your bonded members have the date of bonding.</li>
                 <li>Complete birth info requires Date, Time, and Place.</li>
             </ol>
         </div>
