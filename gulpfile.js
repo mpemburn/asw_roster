@@ -1,4 +1,7 @@
 var elixir = require('laravel-elixir');
+
+//elixir.config.sourcemaps = false;
+
 /*
  |--------------------------------------------------------------------------
  | Elixir Asset Management

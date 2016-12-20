@@ -5787,6 +5787,40 @@ tbody td {
   padding: 0;
   margin-bottom: 32px; }
 
+/* jQuery DataTable overrides */
+table.dataTable thead td {
+  padding-left: 8px;
+  padding-right: 14px; }
+
+table.dataTable td.filterable {
+  padding-left: 0;
+  padding-right: 14px; }
+  table.dataTable td.filterable select {
+    color: #111 !important; }
+
+table.dataTable tbody td {
+  padding: 4px;
+  vertical-align: top;
+  border-bottom: 1px solid #999 !important; }
+  table.dataTable tbody td.nobr {
+    white-space: nowrap; }
+
+table.dataTable tbody tr:hover {
+  background-color: #999999;
+  color: #fff;
+  cursor: pointer !important; }
+  table.dataTable tbody tr:hover a {
+    color: #fff; }
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  padding: 0px;
+  margin-left: 0px;
+  display: inline;
+  border: 0px; }
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+  border: 0px; }
+
 /* Override Bootstrap navbar defaults */
 /* navbar */
 .navbar-default {

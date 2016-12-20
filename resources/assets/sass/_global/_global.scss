@@ -84,3 +84,53 @@ tbody td {
   @extend .hidden-sm;
   @extend .hidden-md;
 }
+
+/* jQuery DataTable overrides */
+
+table.dataTable {
+  thead td {
+    padding-left: 8px;
+    padding-right: 14px;
+  }
+
+  td.filterable {
+    padding-left: 0;
+    padding-right: 14px;
+
+    select {
+      color: #111 !important;
+    }
+  }
+  tbody {
+    td{
+      padding: 4px;
+      vertical-align: top;
+      border-bottom: 1px solid #999 !important;
+
+      &.nobr {
+        white-space: nowrap;
+      }
+    }
+    tr {
+
+      &:hover {
+        background-color: #999999;
+        color: #fff;
+        cursor: pointer !important;
+        a {
+          color: #fff;
+        }
+      }
+    }
+  }
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  padding : 0px;
+  margin-left: 0px;
+  display: inline;
+  border: 0px;
+}
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+  border: 0px;
+}

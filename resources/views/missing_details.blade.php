@@ -38,8 +38,8 @@
 @section('content')
     <div class="content">
         <div class="page-header">
-            <h3>Missing or Incorrect Data:</h3>
-            NOTES:
+            <h3>Missing or Incorrect Data</h3>
+            <strong>NOTES:</strong>
             <ol>
                 <li>Columns containing an "X" indicate that data is missing for that field.</li>
                 <li>The "Role" field refers to [Acting]High Priestess, [Acting]High Priest, Scribe, and Pursewarden.</li>

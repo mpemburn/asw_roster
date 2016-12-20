@@ -22,20 +22,20 @@ Route::get('member', [
     'middleware' => ['auth'],
     'uses' => 'Member@index'
 ]);
-Route::get('/member/details',[
-    'middleware' => ['auth'],
-    'uses' => 'Member@member_details'
-]);
-Route::get('/member/details/{id}',[
-    'middleware' => ['auth'],
-    'uses' => 'Member@member_details'
-]);
-Route::get('/member/missing',[
+Route::get('/member/missing', [
     'middleware' => ['auth'],
     'uses' => 'Member@missing_details'
 ]);
-Route::get('/member/migrate','Member@migrate');
-Route::post('member/{id}/update',[
+Route::get('/member/details', [
+    'middleware' => ['auth'],
+    'uses' => 'Member@member_details'
+]);
+Route::get('/member/details/{id}', [
+    'middleware' => ['auth'],
+    'uses' => 'Member@member_details'
+]);
+Route::get('/member/migrate', 'Member@migrate');
+Route::post('member/{id}/update', [
     'middleware' => ['auth'],
     'as' => 'member.update',
     'uses' => 'Member@update'
