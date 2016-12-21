@@ -2,12 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * Class User -- for Laravel Auth.
  */
-class User extends Model
+class User extends Authenticatable
 {
     protected $table = 'users';
 
@@ -25,5 +25,13 @@ class User extends Model
     ];
 
     protected $guarded = [];
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'password', 'remember_token',
+    ];
 
 }

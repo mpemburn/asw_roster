@@ -161,8 +161,12 @@ return [
          * Collection Service Providers...
          */
         Collective\Html\HtmlServiceProvider::class,
+
         /* Laravel IDE helper */
         'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider',
+
+        /* Entrust ACL Service Provider */
+        Zizaco\Entrust\EntrustServiceProvider::class,
     ],
 
     /*
@@ -210,6 +214,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
+        'Entrust'   => Zizaco\Entrust\EntrustFacade::class,
 
     ],
 
