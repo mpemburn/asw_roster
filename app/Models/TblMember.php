@@ -4,9 +4,11 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Collective\Html\Eloquent\FormAccessible;
 use App\Helpers\Utility;
 use DB;
+
 /**
  * Class TblMember
  */
@@ -93,8 +95,15 @@ class TblMember extends Model
         $leadership = TblLeadershipRole::lists('Description', 'Role')->prepend('None');
         $board = TblBoardRole::lists('BoardRole', 'RoleID')->prepend('None');
 
+        // Get the logged in user
+        $current_user = Auth::user();
+        // See if user is an Admin
+        $is_admin = $current_user->hasRole('admin');
+        // See if this is the current member (user may edit their own profile.
+        $is_this_user = ($current_user->member_id == $member_id);
+
         return array(
-            'can_edit' => true,
+            'can_edit' => ($is_this_user || $is_admin),
             'member_id' => $this_member_id,
             'member' => $this_member,
             'prefix' => $prefix,

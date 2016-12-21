@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Http\Controllers\UserController;
 
-class Member extends Controller
+class MembersController extends Controller
 {
     /**
      * Display a listing of Members.
@@ -20,7 +20,7 @@ class Member extends Controller
     public function index()
     {
         $active = TblMember::getActiveMembers();
-        return view('member_list', $active);
+        return view('members_list', $active);
     }
 
     /**
@@ -54,7 +54,7 @@ class Member extends Controller
             'covens' => $covens,
             'members' => $members
         ];
-        return view('missing_details', $missing_data);
+        return view('members_missing_details', $missing_data);
     }
 
     public function migrate()
