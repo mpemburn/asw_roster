@@ -23,41 +23,52 @@ class MemberRepository implements MemberInterface
         $this->memberModel = $member;
     }
 
+    /**
+     * Returns the member object associated with the passed id
+     *
+     * @param mixed $memberId
+     * @return Model
+     */
     public function getMemberById($member_id)
     {
-        return $this->convertFormat($this->pokemonModel->find($pokemonId));
+        return $this->convertFormat($this->memberModel->find($member_id));
     }
 
+    /**
+     * Returns the member object associated with the memberName
+     *
+     * @param string $memberName
+     */
     public function getMemberByName($member_name)
     {
         // Search by name
-        $pokemon = $this->pokemonModel->where('name', strtolower($pokemonName));
+        $member = $this->memberModel->where('name', strtolower($member_name));
 
-        if ($pokemon)
+        if ($member)
         {
             // Return first found row
-            return $this->convertFormat($pokemon->first());
+            return $this->convertFormat($member->first());
         }
 
         return null;
     }
-    
+
     /**
      * Converting the Eloquent object to a standard format
      *
-     * @param mixed $pokemon
+     * @param mixed $member
      * @return stdClass
      */
-    protected function convertFormat($pokemon)
+    protected function convertFormat($member)
     {
-        if ($pokemon == null)
+        if ($member == null)
         {
             return null;
         }
 
         $object = new stdClass();
-        $object->id = $pokemon->id;
-        $object->name = $pokemon->name;
+        $object->id = $member->id;
+        $object->name = $member->name;
 
         return $object;
     }
