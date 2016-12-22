@@ -3,7 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Auth\Authenticatable;
+//use Illuminate\Auth\Authenticatable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
@@ -33,6 +34,14 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     ];
 
     protected $guarded = [];
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'password', 'remember_token',
+    ];
 
     /**
      * Get the name of the unique identifier for the user.

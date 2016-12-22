@@ -60,7 +60,7 @@ class MembersController extends Controller
     public function migrate()
     {
         $active = TblMember::getActiveMembers();
-        $user = new UserController;
+        $user = new UsersController;
         foreach ( $active['members'] as $member ) {
             if (!empty($member->LeadershipRole) && !empty($member->UserPassword)) {
                 $hash = Hash::make($member->UserPassword);

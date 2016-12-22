@@ -161,12 +161,11 @@ return [
          * Collection Service Providers...
          */
         Collective\Html\HtmlServiceProvider::class,
+
         /* Laravel IDE helper */
         'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider',
 
-        /*
-         * Entrust Service Providers...
-         */
+        /* Entrust ACL Service Provider */
         Zizaco\Entrust\EntrustServiceProvider::class,
     ],
 
