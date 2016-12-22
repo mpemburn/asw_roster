@@ -20,24 +20,24 @@ Route::auth();
 
 Route::get('member', [
     'middleware' => ['auth'],
-    'uses' => 'Member@index'
+    'uses' => 'MembersController@index'
 ]);
 Route::get('/member/missing', [
     'middleware' => ['auth'],
-    'uses' => 'Member@missing_details'
+    'uses' => 'MembersController@missing_details'
 ]);
 Route::get('/member/details', [
     'middleware' => ['auth'],
-    'uses' => 'Member@member_details'
+    'uses' => 'MembersController@member_details'
 ]);
 Route::get('/member/details/{id}', [
     'middleware' => ['auth'],
-    'uses' => 'Member@member_details'
+    'uses' => 'MembersController@member_details'
 ]);
-Route::get('/member/migrate', 'Member@migrate');
+Route::get('/member/migrate', 'MembersController@migrate');
 Route::post('member/{id}/update', [
     'middleware' => ['auth'],
     'as' => 'member.update',
-    'uses' => 'Member@update'
+    'uses' => 'MembersController@update'
 ]);
 

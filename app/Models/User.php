@@ -3,12 +3,15 @@
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Zizaco\Entrust\Traits\EntrustUserTrait;
 
 /**
  * Class User -- for Laravel Auth.
  */
 class User extends Authenticatable
 {
+    use EntrustUserTrait;
+
     protected $table = 'users';
 
     protected $primaryKey = 'id';

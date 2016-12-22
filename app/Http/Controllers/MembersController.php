@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Http\Controllers\UserController;
 
-class Member extends Controller
+class MembersController extends Controller
 {
     /**
      * Display a listing of Members.
@@ -60,7 +60,7 @@ class Member extends Controller
     public function migrate()
     {
         $active = TblMember::getActiveMembers();
-        $user = new UserController;
+        $user = new UsersController;
         foreach ( $active['members'] as $member ) {
             if (!empty($member->LeadershipRole) && !empty($member->UserPassword)) {
                 $hash = Hash::make($member->UserPassword);
