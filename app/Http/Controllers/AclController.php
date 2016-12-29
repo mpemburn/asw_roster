@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TblMember;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Models\Role;
 use App\Models\Permission;
 use App\Models\User;
+use App\Facades\Member;
+use App\Facades\LeadershipRole;
 
 class AclController extends Controller
 {
@@ -44,6 +47,62 @@ class AclController extends Controller
 // role attach alias
         //$user->attachRole($admin); // parameter can be an Role object, array, or id
 
+    }
+
+    public function set_leaders()
+    {
+        $admin = Role::getRoleByName('admin');
+        $coven_leader = Role::getRoleByName('coven-leader');
+        $coven_scribe = Role::getRoleByName('coven-scribe');
+
+        // Get an array of the leadership types that can be assigned these roles
+        $valid_roles = LeadershipRole::getLeadershipRoleArray();
+
+        // Get list of all users
+        $all_users = User::all();
+        foreach ($all_users as $user) {
+            // Get the Member record associated with this user
+            $member = Member::getMemberById($user->member_id);
+            // ...and the leadership role associated with that member, if any
+            $role = $member->LeadershipRole;
+            // Detach all roles first; they will be recreated in the next steps
+            if ($user->hasRole('coven-leader')) {
+                $user->detachRole($coven_leader);
+            }
+            if ($user->hasRole('coven-scribe')) {
+                $user->detachRole($coven_scribe);
+            }
+            // Attach coven leader roles (also applies to Elders)
+            if (in_array($role, $valid_roles)) {
+                if (!is_null($coven_leader)) {
+                    $user->attachRole($coven_leader);
+                }
+            }
+            // Attach Scribe role
+            if ($role == 'SCR') {
+                if (!is_null($coven_scribe)) {
+                    $user->attachRole($coven_scribe);
+                }
+            }
+            // Attach admin role
+            if (in_array($role, ['ELDER', 'CRF', 'CRM'])) {
+                if (!is_null($admin) && !$user->hasRole('admin')) {
+                    $user->attachRole($admin);
+                }
+            }
+        }
+    }
+
+    public function set_role_permissions() {
+        $create_user = Permission::getPermissionByName('create-user');
+        $edit_user = Permission::getPermissionByName('edit-user');
+        $coven_leader = Role::getRoleByName('coven-leader');
+        $coven_scribe = Role::getRoleByName('coven-scribe');
+
+        $coven_leader->attachPermission($create_user);
+        $coven_leader->attachPermission($edit_user);
+        $coven_scribe->attachPermission($create_user);
+        $coven_scribe->attachPermission($edit_user);
     }
 
     /**

@@ -24,6 +24,19 @@ class MembersController extends Controller
     }
 
     /**
+     * List of covens
+     *
+     * @return JSON
+     */
+    public function list_covens()
+    {
+        $covens = TblCoven::lists('CovenFullName', 'Coven');
+        $covens_array = $covens->toArray();
+        ksort($covens_array);
+        return $covens_array;
+    }
+
+    /**
      * Display individual Member.
      *
      * @return \Illuminate\Http\Response
@@ -34,7 +47,7 @@ class MembersController extends Controller
         return view('member_edit', $this_member);
     }
 
-   public function missing_details($member_id = 0)
+    public function missing_details($member_id = 0)
     {
         $covens = TblCoven::all();
         $members = [];
@@ -61,7 +74,7 @@ class MembersController extends Controller
     {
         $active = TblMember::getActiveMembers();
         $user = new UsersController;
-        foreach ( $active['members'] as $member ) {
+        foreach ($active['members'] as $member) {
             if (!empty($member->LeadershipRole) && !empty($member->UserPassword)) {
                 $hash = Hash::make($member->UserPassword);
                 $data = array(
@@ -70,7 +83,7 @@ class MembersController extends Controller
                     'email' => $member->Email_Address,
                     'password' => $hash
                 );
-                $user->insert((object) $data);
+                $user->insert((object)$data);
             }
         }
     }
@@ -89,7 +102,7 @@ class MembersController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -100,7 +113,7 @@ class MembersController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -111,7 +124,7 @@ class MembersController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -122,8 +135,8 @@ class MembersController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
      * @return Success status
      */
     public function update(Request $request, $id)
@@ -136,7 +149,7 @@ class MembersController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

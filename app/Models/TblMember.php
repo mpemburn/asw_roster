@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Collective\Html\Eloquent\FormAccessible;
 use App\Helpers\Utility;
+use App\Facades\Member;
+use App\Facades\RosterAuth;
 use DB;
 
 /**
@@ -85,8 +87,9 @@ class TblMember extends Model
 
     public static function getMemberDetails($member_id = 0)
     {
-        $this_member = self::firstOrNew(['MemberID' => $member_id]);
+        $this_member = Member::getMemberById($member_id);
         $this_member_id = (!empty($this_member->MemberID)) ? $this_member->MemberID : 0;
+        // Define dropdowns
         $prefix = TblTitle::lists('Title', 'Title')->prepend('', '');
         $suffix = TblSuffix::lists('Suffix', 'Suffix')->prepend('', '');
         $state = TblState::lists('State', 'Abbrev')->prepend('', '');
@@ -95,77 +98,35 @@ class TblMember extends Model
         $leadership = TblLeadershipRole::lists('Description', 'Role')->prepend('None');
         $board = TblBoardRole::lists('BoardRole', 'RoleID')->prepend('None');
 
-        // Get the logged in user
-        $current_user = Auth::user();
+
+        echo Member::getMemberIdFromEmail('mark@pemburn.com');
+
         // See if user is an Admin
-        $is_admin = $current_user->hasRole('admin');
-        // See if this is the current member (user may edit their own profile.
-        $is_this_user = ($current_user->member_id == $member_id);
+        $is_admin =  RosterAuth::isMemberOf('admin');
+        // See if this is the current member (user may edit their own profile).
+        $is_this_user = RosterAuth::isThisMember($member_id);
+        // See if this user is a leader of this member's coven
+        $is_coven_leader = RosterAuth::isCovenLeader($this_member->Coven);
+        // See if this user is a scribe of this member's coven
+        $is_coven_scribe = RosterAuth::isCovenScribe($this_member->Coven);
+        // Pre-select coven if this is a leader or scribe (but not an Elder) and it's a new record
+        $selected_coven = ($member_id == 0 && RosterAuth::userIsLeaderOrScribe() && !RosterAuth::isElder()) ? RosterAuth::getUserCoven() : null;
 
         return array(
-            'can_edit' => ($is_this_user || $is_admin),
+            'can_edit' => ($is_this_user || $is_admin || $is_coven_leader || $is_coven_scribe),
+            'is_active' => ($member_id == 0) ? 1 : null, // Default to checked if this is a new record
             'member_id' => $this_member_id,
             'member' => $this_member,
             'prefix' => $prefix,
             'suffix' => $suffix,
             'state' => $state,
             'coven' => $coven,
+            'selected_coven' => $selected_coven,
             'degree' => $degree,
             'leadership' => $leadership,
             'board' => $board,
-            'static' => (object) self::getStaticMemberData($this_member)
+            'static' => (object) Member::getStaticMemberData($member_id)
         );
-    }
-
-    public static function getPrimaryPhone($member_id, $primary_id)
-    {
-        $phone_types = array('Home_Phone', 'Work_Phone', 'Cell_Phone');
-        $chosen = $phone_types[$primary_id - 1];
-        $phones = self::where('MemberID', $member_id)
-            ->select($phone_types)
-            ->get();
-        $phone = $phones->first();
-        $primary_phone = (isset($phone[$chosen])) ? $phone[$chosen] : '';
-
-        return Utility::formatPhone($primary_phone);
-    }
-
-    public static function getMemberIdFromEmail($test_email)
-    {
-        $member_id = 0;
-        $found = self::whereRaw('LOWER(`Email_Address`) LIKE ?', array('%' . strtolower($test_email) . '%'))
-            ->select('MemberID')
-            ->get();
-        if (!$found->isEmpty()) {
-            $member_id = $found->first()->MemberID;
-        }
-        return ($member_id);
-    }
-
-    public static function getStaticMemberData($member) {
-        $middle = (!empty($member->Middle_Name)) ? $member->Middle_Name . ' ' : '';
-        $name = $member->Title . ' ' . $member->First_Name . ' ' . $middle . $member->Last_Name . ' ' . $member->Suffix;
-        $coven = TblCoven::find($member->Coven);
-        $leadership = TblLeadershipRole::where('Role', $member->LeadershipRole)->first();
-
-        return [
-            'name' => trim($name),
-            'address1' => $member->Address1,
-            'address2' => $member->Address2,
-            'csz' => $member->City . ', ' . $member->State . ' ' . $member->Zip,
-            'home_phone' => Utility::formatPhone($member->Home_Phone),
-            'cell_phone' => Utility::formatPhone($member->Cell_Phone),
-            'work_phone' => Utility::formatPhone($member->Work_Phone),
-            'coven' => (!is_null($coven)) ? $coven->CovenFullName : '',
-            'leadership' => (!is_null($leadership)) ? $leadership->Description : ''
-        ];
-    }
-
-    public static function isValidEmail($test_email)
-    {
-        $member_id = self::getMemberIdFromEmail($test_email);
-
-        return ($member_id != 0);
     }
 
     public static function saveMember($data)
@@ -204,6 +165,8 @@ class TblMember extends Model
 
         return ['success' => $result, 'member_id' => $member_id];
     }
+
+    /* Methods used in "Missing Data" page only */
 
     public static function hasAll($member_fields) {
         $hasAll = true;

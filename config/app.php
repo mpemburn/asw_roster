@@ -163,10 +163,13 @@ return [
         Collective\Html\HtmlServiceProvider::class,
 
         /* Laravel IDE helper */
-        'Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider',
+        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 
         /* Entrust ACL Service Provider */
         Zizaco\Entrust\EntrustServiceProvider::class,
+
+        /* Home-grown Service Providers */
+        App\Providers\ServicesServiceProvider::class,
     ],
 
     /*

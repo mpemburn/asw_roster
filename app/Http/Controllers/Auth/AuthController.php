@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Models\TblMember;
-use App\User;
+use App\Models\User;
+use App\Facades\Member;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -53,7 +54,6 @@ class AuthController extends Controller
             Custom error messages found in /resource/lang/en/validation.php
         */
         return Validator::make($data, [
-            'name' => 'required|max:255',
             'email' => 'required|member_email|email|max:255|unique:users',
             'password' => 'required|min:6|bad_pattern|confirmed',
         ]);
@@ -67,11 +67,13 @@ class AuthController extends Controller
      */
     protected function create(array $data)
     {
-        $member_id = TblMember::getMemberIdFromEmail($data['email']);
-        $member_details = TblMember::getMemberDetails($member_id);
+        $member = Member::getMemberFromEmail($data['email']);
+        $member_id = (!is_null($member)) ? $member->MemberID : null;
+        $name = (!is_null($member)) ? $member->First_Name . ' ' . $member->Last_Name : '';
+
         return User::create([
             'member_id' => $member_id,
-            'name' => $data['name'],
+            'name' => $name,
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);

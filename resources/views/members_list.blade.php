@@ -26,7 +26,7 @@
                     <td>{{ $member->City }}</td>
                     <td>{{ $member->State }}</td>
                     <td class="show-sm-up">{{ $member->Zip }}</td>
-                    <td class="nobr">{{ App\Models\TblMember::getPrimaryPhone($member->MemberID, $member->Primary_Phone) }}</td>
+                    <td class="nobr">{{ \App\Facades\Member::getPrimaryPhone($member->MemberID) }}</td>
                     <td class="show-sm-up">{!! App\Helpers\Utility::mailto($member->Email_Address) !!}</td>
                     <td>{{ $member->Coven }}</td>
                     <td class="show-lg-up">{{ App\Helpers\Utility::ordinal($member->Degree) }}</td>

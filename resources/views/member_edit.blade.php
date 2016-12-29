@@ -17,7 +17,7 @@
                         <main class="main-column col-md-9">
                             @if ($can_edit)
                             <div class="form-group">
-                                <label for="active" class="control-label">{{ Form::checkbox('Active', $member->Active) }} Active</label>
+                                <label for="active" class="control-label">{{ Form::checkbox('Active', $member->Active, $is_active) }} Active</label>
                             </div>
                             <div class="form-group">
                                 <label for="name" class="col-md-1 control-label">Name</label>
@@ -122,7 +122,7 @@
                             @if ($can_edit)
                             <div class="form-group">
                                 <label for="coven" class="control-label col-md-12">Coven or Order</label>
-                                {{ Form::select('Coven', $coven, null, ['class' => 'col-md-11']) }}
+                                {{ Form::select('Coven', $coven, $selected_coven, ['class' => 'col-md-11']) }}
                             </div>
                             <div class="form-group">
                                 <label for="member_since" class="control-label col-md-12">Member Since</label>

@@ -10,4 +10,10 @@ class Permission extends EntrustPermission
         'name',
         'display_name','description'
     ];
+
+    public static function getPermissionByName($name)
+    {
+        $permission = self::where('name', $name);
+        return ($permission->exists()) ? $permission->first() : null;
+    }
 }

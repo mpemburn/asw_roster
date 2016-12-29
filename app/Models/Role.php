@@ -11,4 +11,10 @@ class Role extends EntrustRole
         'display_name',
         'description'
     ];
+
+    public static function getRoleByName($name)
+    {
+        $role = self::where('name', $name);
+        return ($role->exists()) ? $role->get()->first() : null;
+    }
 }
