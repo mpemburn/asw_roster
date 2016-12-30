@@ -52,7 +52,7 @@ $(document).ready(function ($) {
             toggleType: 'select',
             actorSelector: '#' + $(this).attr('id'),
             actionSelector: '.form-group.expiry-date',
-            emptyValue: '0'
+            emptyValue: ''
         });
     });
 

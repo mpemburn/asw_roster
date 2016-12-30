@@ -2,12 +2,14 @@
 namespace App\Services;
 
 use App\Facades\Member;
+use App\Facades\Rbac;
 use App\Models\TblMember;
 use App\Models\TblLeadershipRole;
 use App\Models\TblCoven;
 use App\Helpers\Utility;
 
-class MemberService {
+class MemberService
+{
     protected $member;
 
     public function init()
@@ -102,6 +104,15 @@ class MemberService {
         $member_id = $this->getMemberIdFromEmail($test_email);
 
         return ($member_id != 0);
+    }
+
+    public function postSaveMemberActions($changes, $member_id)
+    {
+        // If leadership role has been added or changed, we need to rewrite role permissions
+        if (array_key_exists('LeadershipRole', $changes)) {
+            return Rbac::setLeadershipRoles();
+        }
+
     }
 
     /* Methods used in "Missing Data" page only */

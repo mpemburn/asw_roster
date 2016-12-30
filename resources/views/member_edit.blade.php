@@ -6,6 +6,7 @@
                 <div class="panel panel-default">
                     @if ($can_edit)
                     {{ Form::model($member, array('route' => array('member.update', $member_id), 'id' => 'member_update')) }}
+                    {{ Form::hidden('user_id', $user_id)}}
                     {{ Form::hidden('MemberID', $member_id)}}
                     {{ Form::hidden('Primary_Phone', $member->Primary_Phone )}}
                     @endif

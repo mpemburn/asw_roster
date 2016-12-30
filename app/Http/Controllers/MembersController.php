@@ -35,7 +35,7 @@ class MembersController extends Controller
      *
      * @return JSON
      */
-    public function list_covens()
+    public function listCovens()
     {
         $covens = TblCoven::lists('CovenFullName', 'Coven');
         $covens_array = $covens->toArray();
@@ -48,14 +48,14 @@ class MembersController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function member_details($member_id = 0)
+    public function memberDetails($member_id = 0)
     {
         $this_member = $this->member->getDetails($member_id);
         //$this_member = TblMember::getMemberDetails($member_id);
         return view('member_edit', $this_member);
     }
 
-    public function missing_details($member_id = 0)
+    public function missingDetails($member_id = 0)
     {
         $covens = TblCoven::all();
         $members = [];

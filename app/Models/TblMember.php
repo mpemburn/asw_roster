@@ -94,6 +94,7 @@ class TblMember extends Model
             'is_my_profile' => $this->isCurrentUsersProfile(),
             'is_active' => ($member_id == 0) ? 1 : null, // Default to checked if this is a new record
             'member_id' => $this->member_id,
+            'user_id' => Auth::user()->id,
             'member' => $this->member,
             'selected_coven' => $this->getSelectedCoven($can_create),
             'static' => (object) Member::getStaticMemberData($member_id),
@@ -118,12 +119,16 @@ class TblMember extends Model
     public function saveMember($data)
     {
         $member_id = $data['MemberID'];
+        $user_id = $data['user_id'];
+        $is_new = false;
 
         if ($member_id == 0) {
             $member = new TblMember();
+            $is_new = true;
         } else {
-            $member = self::find($member_id);
+            $member = $this->find($member_id);
         }
+
 
         $data = Utility::reformatDates($data, [
             'Member_Since_Date',
@@ -145,11 +150,22 @@ class TblMember extends Model
             'Bonded',
             'Solitary',
         ]);
+        $old_data = $member->toArray();
+
+        if (!$is_new) {
+            // Find fields changed from current record
+            $changed = $this->findChanges($member, $data);
+            // Log changes
+            $changed = $this->writeAuditLog($changed, $member_id, $user_id);
+        }
+
 
         $result = $member->fill($data)->save();
         $member_id = $member->MemberID;
 
-        return ['success' => $result, 'member_id' => $member_id];
+        // Make any changes necessary after Member record has been saved
+        $count = Member::postSaveMemberActions($changed, $member_id);
+        return ['success' => $result, 'member_id' => $member_id, 'changed' => $changed, 'count' => $count, 'data' => $old_data];
     }
 
     /* Private Methods */
@@ -204,6 +220,17 @@ class TblMember extends Model
         return ($is_this_user && !($is_admin || $is_leader_or_scribe));
     }
 
+    public function findChanges(TblMember $member, $new_data)
+    {
+        $changes = [];
+        foreach ($member->getAttributes() as $field => $value) {
+            $new_value = (isset($new_data[$field])) ? $new_data[$field] : null;
+            if ($new_value != $value && !is_null($new_value) && !is_null($value)) {
+                $changes[$field] = $new_value;
+            }
+        }
+        return $changes;
+    }
     /**
      * Use RosterAuth (facade to Services\RosterAuthService) to get coven abbreviation for new record
      *
@@ -228,8 +255,8 @@ class TblMember extends Model
         $state = TblState::lists('State', 'Abbrev')->prepend('', '');
         $coven = TblCoven::lists('CovenFullName', 'Coven')->prepend('', '');
         $degree = TblDegree::lists('Degree_Name', 'Degree');
-        $leadership = TblLeadershipRole::lists('Description', 'Role')->prepend('None');
-        $board = TblBoardRole::lists('BoardRole', 'RoleID')->prepend('None');
+        $leadership = TblLeadershipRole::lists('Description', 'Role')->prepend('None', '');
+        $board = TblBoardRole::lists('BoardRole', 'BoardRole')->prepend('None', '');
 
         return [
             'prefix' => $prefix,
@@ -240,5 +267,20 @@ class TblMember extends Model
             'leadership' => $leadership,
             'board' => $board,
         ];
+    }
+
+    /**
+     * Write changes to the audit log
+     *
+     * @param $changes
+     * @param $member_id
+     *
+     * @return void
+     */
+    private function writeAuditLog(&$changes, $member_id, $user_id)
+    {
+        #TODO: Create audit log code
+
+        return $changes;
     }
 }

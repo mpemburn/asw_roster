@@ -22,13 +22,13 @@ Route::get('acl', [
     'middleware' => ['auth'],
     'uses' => 'AclController@index'
 ]);
-Route::get('acl/set_leaders', [
+Route::get('rbac/set_leaders', [
     'middleware' => ['auth'],
-    'uses' => 'AclController@set_leaders'
+    'uses' => 'RbacController@setLeadershipRoles'
 ]);
-Route::get('acl/set_perms', [
+Route::get('rbac/set_perms', [
     'middleware' => ['auth'],
-    'uses' => 'AclController@set_role_permissions'
+    'uses' => 'RbacController@setRolePermissions'
 ]);
 Route::get('member', [
     'middleware' => ['auth'],
@@ -36,19 +36,19 @@ Route::get('member', [
 ]);
 Route::get('/member/covens', [
     'middleware' => ['auth'],
-    'uses' => 'MembersController@list_covens'
+    'uses' => 'MembersController@listCovens'
 ]);
 Route::get('/member/details', [
     'middleware' => ['auth'],
-    'uses' => 'MembersController@member_details'
+    'uses' => 'MembersController@memberDetails'
 ]);
 Route::get('/member/details/{id}', [
     'middleware' => ['auth'],
-    'uses' => 'MembersController@member_details'
+    'uses' => 'MembersController@memberDetails'
 ]);
 Route::get('/member/missing', [
     'middleware' => ['auth'],
-    'uses' => 'MembersController@missing_details'
+    'uses' => 'MembersController@missingDetails'
 ]);
 Route::get('/member/migrate', 'MembersController@migrate');
 Route::post('member/{id}/update', [

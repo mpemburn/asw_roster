@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use App\Services\LeadershipRoleService;
 use App\Services\MemberService;
 use App\Services\RosterAuthService;
+use App\Services\RbacService;
 
 /**
  * Register our Repository with Laravel
@@ -31,6 +32,11 @@ class ServicesServiceProvider extends ServiceProvider
         App::bind('RosterAuthService', function()
         {
             return new RosterAuthService();
+        });
+
+        App::bind('RbacService', function()
+        {
+            return new RbacService();
         });
 
     }
