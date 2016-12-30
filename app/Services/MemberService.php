@@ -106,7 +106,16 @@ class MemberService {
 
     /* Methods used in "Missing Data" page only */
 
-    public function hasAll($member_fields) {
+    public function boardExpired($member_id)
+    {
+        $member = $this->getMemberById($member_id);
+        $active = (empty($member->BoardRole)) ? '' : 'Expired';
+
+        return ($this->isCurrentBoardMember($member_id)) ? 'Yes' : $active;
+    }
+
+    public function hasAll($member_fields)
+    {
         $hasAll = true;
         foreach ($member_fields as $field) {
             $hasAll = ($hasAll && !empty($field));
@@ -114,11 +123,13 @@ class MemberService {
         return (!$hasAll) ? 'X' : '';
     }
 
-    public function hasNo($member_field) {
+    public function hasNo($member_field)
+    {
         return (empty($member_field)) ? 'X' : '';
     }
 
-    public function nonAlphaOrMissing($member_field) {
+    public function nonAlphaOrMissing($member_field)
+    {
         if (empty($member_field)) {
             return 'X';
         } else {

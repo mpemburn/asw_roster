@@ -119,7 +119,7 @@
                                 {{ $member->LeadershipRole }}
                             </td>
                             <td class="center">
-                                {{ (!empty($member->BoardRole)) ? 'Yes' : '' }}
+                                {{ \App\Facades\Member::boardExpired($member->MemberID) }}
                             </td>
                         </tr>
                     @endforeach
