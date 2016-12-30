@@ -14,7 +14,7 @@
                         Member ID: {{ $member->MemberID }}
                     </div>
                         <div class="panel-body">
-                        <main class="main-column col-md-9">
+                        <main class="main-column col-md-{{ $main_col }}">
                             @if ($can_edit)
                             <div class="form-group">
                                 <label for="active" class="control-label">{{ Form::checkbox('Active', $member->Active, $is_active) }} Active</label>
@@ -95,30 +95,10 @@
                                 </div>
                             </div>
                             @else
-                                <div class="col-md-12">
-                                    {{ $static->name }}
-                                </div>
-                                <div class="col-md-12">
-                                    {{ $static->address1 }}
-                                </div>
-                                <div class="col-md-12">
-                                    {{ $static->address2 }}
-                                </div>
-                                <div class="col-md-12">
-                                    {{ $static->csz }}
-                                </div>
-                                <div class="col-md-12 {{ (!empty($static->home_phone)) ? 'show' : 'hide' }}">
-                                    <strong>Home:</strong> {{ $static->home_phone }}
-                                </div>
-                                <div class="col-md-12 {{ (!empty($static->cell_phone)) ? 'show' : 'hide' }}">
-                                    <strong>Cell:</strong> {{ $static->cell_phone }}
-                                </div>
-                                <div class="col-md-12 {{ (!empty($static->work_phone)) ? 'show' : 'hide' }}">
-                                    <strong>Work:</strong> {{ $static->work_phone }}
-                                </div>
+                                @include('partials.member_static_main')
                             @endif
                         </main>
-                        <aside class="sidebar-column col-md-3">
+                        <aside class="sidebar-column col-md-{{ $sidebar_col }}">
                             @if ($can_edit && !$is_my_profile)
                             <div class="form-group">
                                 <label for="coven" class="control-label col-md-12">Coven or Order</label>
@@ -127,6 +107,14 @@
                             <div class="form-group">
                                 <label for="member_since" class="control-label col-md-12">Member Since</label>
                                 {{ Form::text('Member_Since_Date', \App\Helpers\Utility::formatDate('M j, Y', $member->Member_Since_Date), ['class' => 'col-md-6 date-pick']) }}
+                            </div>
+                            <div class="form-group">
+                                <label for="leadership" class="control-label col-md-12">Leadership Role</label>
+                                {{ Form::select('LeadershipRole', $leadership, null, ['class' => 'col-md-11', 'id' => 'leadership-role']) }}
+                            </div>
+                            <div class="form-group leadership-date {{ (!empty($member->LeadershipRole)) ? 'show' : 'hide' }}">
+                                <label for="leadership-date" class="control-label col-md-12">Leadership Date</label>
+                                {{ Form::text('Leadership_Date', \App\Helpers\Utility::formatDate('M j, Y', $member->Leadership_Date), ['class' => 'col-md-6 date-pick']) }}
                             </div>
                             <div class="form-group">
                                 <label for="degree" class="control-label col-md-12">Degree</label>
@@ -167,28 +155,15 @@
                                 {{ Form::text('Solitary_Date', \App\Helpers\Utility::formatDate('M j, Y', $member->Solitary_Date), ['class' => 'col-md-6 date-pick']) }}
                             </div>
                             <div class="form-group">
-                                <label for="leadership" class="control-label col-md-12">Leadership Role</label>
-                                {{ Form::select('LeadershipRole', $leadership, null, ['class' => 'col-md-11', 'id' => 'leadership-role']) }}
-                            </div>
-                            <div class="form-group leadership-date {{ (!empty($member->LeadershipRole)) ? 'show' : 'hide' }}">
-                                <label for="leadership-date" class="control-label col-md-12">Leadership Date</label>
-                                {{ Form::text('Leadership_Date', \App\Helpers\Utility::formatDate('M j, Y', $member->Leadership_Date), ['class' => 'col-md-6 date-pick']) }}
-                            </div>
-                            <div class="form-group">
                                 <label for="board" class="control-label col-md-12">Board Role</label>
                                 {{ Form::select('BoardRole', $board, null, ['class' => 'col-md-11', 'id' => 'board-role']) }}
                             </div>
-                            <div class="form-group expiry-date {{ (!empty($member->BoardRole)) ? 'show' : 'hide' }}">
+                            <div class="form-group expiry-date {{ \App\Facades\Member::isCurrentBoardMember() ? 'show' : 'hide' }}">
                                 <label for="board-date" class="control-label col-md-12">Expiry Date</label>
                                 {{ Form::text('BoardRole_Expiry_Date', \App\Helpers\Utility::formatDate('M j, Y', $member->BoardRole_Expiry_Date), ['class' => 'col-md-6 date-pick']) }}
                             </div>
                             @else
-                                <div class="col-md-12{{ (empty($static->coven)) ? 'hide' : 'show' }}">
-                                    <strong>Coven: </strong>{{ $static->coven }}
-                                </div>
-                                <div class="col-md-12 {{ (empty($static->leadership)) ? 'hide' : 'show' }}">
-                                    <strong>Role: </strong>{{ $static->leadership }}
-                                </div>
+                                @include('partials.member_static_sidebar')
                             @endif
                         </aside>
                         {{ Form::close()}}

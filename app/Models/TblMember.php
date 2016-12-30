@@ -84,19 +84,21 @@ class TblMember extends Model
     {
 
         $this->member_id = $member_id;
-        $this->member = $this->firstOrNew(['MemberID' => $member_id]);
+        $this->member = Member::getMemberById($member_id);
 
         $can_create = $this->canCreate();
         $can_edit = (!is_null($this->member)) ? $this->canEdit() : false;
 
         $data = [
-            'can_edit' => $can_create || $can_edit,
+            'can_edit' => ($can_create || $can_edit),
             'is_my_profile' => $this->isCurrentUsersProfile(),
             'is_active' => ($member_id == 0) ? 1 : null, // Default to checked if this is a new record
             'member_id' => $this->member_id,
             'member' => $this->member,
             'selected_coven' => $this->getSelectedCoven($can_create),
-            'static' => (object) Member::getStaticMemberData($member_id)
+            'static' => (object) Member::getStaticMemberData($member_id),
+            'main_col' => ($can_create || $can_edit) ? '9' : '6',
+            'sidebar_col' => ($can_create || $can_edit) ? '3' : '6',
         ];
         if ($data['can_edit']) {
             $data = $data + $this->getDropdowns();

@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Facades\Member;
 use App\Models\TblMember;
 use App\Models\TblLeadershipRole;
 use App\Models\TblCoven;
@@ -61,6 +62,11 @@ class MemberService {
         $name = $member->Title . ' ' . $member->First_Name . ' ' . $middle . $member->Last_Name . ' ' . $member->Suffix;
         $coven = TblCoven::find($member->Coven);
         $leadership = TblLeadershipRole::where('Role', $member->LeadershipRole)->first();
+        $degree = Utility::ordinal($member->Degree);
+        $bonded = ($member->Bonded) ? Utility::yesno($member->Bonded) : '';
+        $solitary = ($member->Solitary) ? Utility::yesno($member->Solitary) : '';
+        $board = (Member::isCurrentBoardMember($member_id)) ? $member->BoardRole : '';
+        $board_expiry = date('M j, Y', strtotime($member->BoardRole_Expiry_Date));
 
         return [
             'name' => trim($name),
@@ -71,8 +77,24 @@ class MemberService {
             'cell_phone' => Utility::formatPhone($member->Cell_Phone),
             'work_phone' => Utility::formatPhone($member->Work_Phone),
             'coven' => (!is_null($coven)) ? $coven->CovenFullName : '',
-            'leadership' => (!is_null($leadership)) ? $leadership->Description : ''
+            'leadership' => (!is_null($leadership)) ? $leadership->Description : '',
+            'degree' => (!is_null($degree)) ? $degree : '',
+            'bonded' => $bonded,
+            'solitary' => $solitary,
+            'board' => $board,
+            'board_expiry' => $board_expiry,
         ];
+    }
+
+    public function isCurrentBoardMember($member_id = null)
+    {
+        if (is_null($this->member->MemberID) && !is_null($member_id)) {
+            $this->member = $this->getMemberById($member_id);
+        }
+        $has_role = (!empty($this->member->BoardRole));
+        $expired = (strtotime($this->member->BoardRole_Expiry_Date) < time());
+
+        return ($has_role && !$expired);
     }
 
     public function isValidEmail($test_email)
