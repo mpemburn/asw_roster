@@ -80,34 +80,34 @@
                                 {{ $member->First_Name . ' ' . $member->Last_Name }}
                             </td>
                             <td class="center shade">
-                                {{ \App\Models\TblMember::hasNo($member->Address1) }}
+                                {{ \App\Facades\Member::hasNo($member->Address1) }}
                             </td>
                             <td class="center">
-                                {{ \App\Models\TblMember::hasNo($member->City) }}
+                                {{ \App\Facades\Member::hasNo($member->City) }}
                             </td>
                             <td class="center shade">
-                                {{ \App\Models\TblMember::hasNo($member->State) }}
+                                {{ \App\Facades\Member::hasNo($member->State) }}
                             </td>
                             <td class="center">
-                                {{ \App\Models\TblMember::nonAlphaOrMissing($member->Zip) }}
+                                {{ \App\Facades\Member::nonAlphaOrMissing($member->Zip) }}
                             </td>
                             <td class="center shade">
-                                {{ \App\Models\TblMember::hasNo($member->Home_Phone) }}
+                                {{ \App\Facades\Member::hasNo($member->Home_Phone) }}
                             </td>
                             <td class="center">
-                                {{ \App\Models\TblMember::hasNo($member->Cell_Phone) }}
+                                {{ \App\Facades\Member::hasNo($member->Cell_Phone) }}
                             </td>
                             <td class="center shade">
-                                {{ \App\Models\TblMember::hasNo($member->Work_Phone) }}
+                                {{ \App\Facades\Member::hasNo($member->Work_Phone) }}
                             </td>
                             <td class="center">
-                                {{ \App\Models\TblMember::hasNo($member->Email_Address) }}
+                                {{ \App\Facades\Member::hasNo($member->Email_Address) }}
                             </td>
                             <td class="center shade">
-                                {{ \App\Models\TblMember::hasAll([$member->Birth_Date, $member->Birth_Time, $member->Birth_Place]) }}
+                                {{ \App\Facades\Member::hasAll([$member->Birth_Date, $member->Birth_Time, $member->Birth_Place]) }}
                             </td>
                             <td class="center">
-                                {{ \App\Models\TblMember::hasNo($member->Magickal_Name) }}
+                                {{ \App\Facades\Member::hasNo($member->Magickal_Name) }}
                             </td>
                             <td class="pad shade">
                                 {{ \App\Helpers\Utility::ordinal($member->Degree) }}

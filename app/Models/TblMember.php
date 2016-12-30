@@ -77,59 +77,43 @@ class TblMember extends Model
 
     protected $guarded = [];
 
-    public static function getActiveMembers($status = 1)
+    protected $member;
+    protected $member_id;
+
+    public function getDetails($member_id = 0)
     {
-        $active_members = self::where('Active', $status)
+
+        $this->member_id = $member_id;
+        $this->member = $this->firstOrNew(['MemberID' => $member_id]);
+
+        $can_create = $this->canCreate();
+        $can_edit = (!is_null($this->member)) ? $this->canEdit() : false;
+
+        $data = [
+            'can_edit' => $can_create || $can_edit,
+            'is_my_profile' => $this->isCurrentUsersProfile(),
+            'is_active' => ($member_id == 0) ? 1 : null, // Default to checked if this is a new record
+            'member_id' => $this->member_id,
+            'member' => $this->member,
+            'selected_coven' => $this->getSelectedCoven($can_create),
+            'static' => (object) Member::getStaticMemberData($member_id)
+        ];
+        if ($data['can_edit']) {
+            $data = $data + $this->getDropdowns();
+        }
+
+        return $data;
+    }
+
+    public function getActiveMembers($status = 1)
+    {
+        $active_members = $this->where('Active', $status)
             ->orderBy('Last_Name', 'asc')
             ->get();
         return array('members' => $active_members);
     }
 
-    public static function getMemberDetails($member_id = 0)
-    {
-        $this_member = Member::getMemberById($member_id);
-        $this_member_id = (!empty($this_member->MemberID)) ? $this_member->MemberID : 0;
-        // Define dropdowns
-        $prefix = TblTitle::lists('Title', 'Title')->prepend('', '');
-        $suffix = TblSuffix::lists('Suffix', 'Suffix')->prepend('', '');
-        $state = TblState::lists('State', 'Abbrev')->prepend('', '');
-        $coven = TblCoven::lists('CovenFullName', 'Coven')->prepend('', '');
-        $degree = TblDegree::lists('Degree_Name', 'Degree');
-        $leadership = TblLeadershipRole::lists('Description', 'Role')->prepend('None');
-        $board = TblBoardRole::lists('BoardRole', 'RoleID')->prepend('None');
-
-
-        echo Member::getMemberIdFromEmail('mark@pemburn.com');
-
-        // See if user is an Admin
-        $is_admin =  RosterAuth::isMemberOf('admin');
-        // See if this is the current member (user may edit their own profile).
-        $is_this_user = RosterAuth::isThisMember($member_id);
-        // See if this user is a leader of this member's coven
-        $is_coven_leader = RosterAuth::isCovenLeader($this_member->Coven);
-        // See if this user is a scribe of this member's coven
-        $is_coven_scribe = RosterAuth::isCovenScribe($this_member->Coven);
-        // Pre-select coven if this is a leader or scribe (but not an Elder) and it's a new record
-        $selected_coven = ($member_id == 0 && RosterAuth::userIsLeaderOrScribe() && !RosterAuth::isElder()) ? RosterAuth::getUserCoven() : null;
-
-        return array(
-            'can_edit' => ($is_this_user || $is_admin || $is_coven_leader || $is_coven_scribe),
-            'is_active' => ($member_id == 0) ? 1 : null, // Default to checked if this is a new record
-            'member_id' => $this_member_id,
-            'member' => $this_member,
-            'prefix' => $prefix,
-            'suffix' => $suffix,
-            'state' => $state,
-            'coven' => $coven,
-            'selected_coven' => $selected_coven,
-            'degree' => $degree,
-            'leadership' => $leadership,
-            'board' => $board,
-            'static' => (object) Member::getStaticMemberData($member_id)
-        );
-    }
-
-    public static function saveMember($data)
+    public function saveMember($data)
     {
         $member_id = $data['MemberID'];
 
@@ -166,26 +150,93 @@ class TblMember extends Model
         return ['success' => $result, 'member_id' => $member_id];
     }
 
-    /* Methods used in "Missing Data" page only */
+    /* Private Methods */
 
-    public static function hasAll($member_fields) {
-        $hasAll = true;
-        foreach ($member_fields as $field) {
-            $hasAll = ($hasAll && !empty($field));
-        }
-        return (!$hasAll) ? 'X' : '';
+    /**
+     * Use RosterAuth (facade to Services\RosterAuthService) to test if user can create a new record
+     *
+     * @return bool
+     */
+    private function canCreate()
+    {
+        // See if user is either a leader or scribe
+        $is_leader_or_scribe = RosterAuth::userIsLeaderOrScribe();
+
+        return (($this->member_id == 0 && $is_leader_or_scribe));
+
     }
 
-    public static function hasNo($member_field) {
-        return (empty($member_field)) ? 'X' : '';
+    /**
+     * Use RosterAuth (facade to Services\RosterAuthService) to test if user can edit this record
+     *
+     * @return bool
+     */
+    private function canEdit()
+    {
+        // See if this is the current member (user may edit their own profile).
+        $is_this_user = RosterAuth::isThisMember($this->member_id);
+        // See if user is an Admin
+        $is_admin =  RosterAuth::isMemberOf('admin');
+        // See if this user is a leader of this member's coven
+        $is_coven_leader = RosterAuth::isCovenLeader($this->member->Coven);
+        // See if this user is a scribe of this member's coven
+        $is_coven_scribe = RosterAuth::isCovenScribe($this->member->Coven);
+
+        return ($this->member_id !=0 && ($is_this_user || $is_admin || $is_coven_leader || $is_coven_scribe));
     }
 
-    public static function nonAlphaOrMissing($member_field) {
-        if (empty($member_field)) {
-            return 'X';
-        } else {
-            $numbers = preg_replace('/[^0-9]/', '', $member_field);
-            return (empty($numbers)) ? 'X' : '';
-        }
+    /**
+     * Test if current user is editing their own profile
+     *
+     * @return bool
+     */
+    private function isCurrentUsersProfile()
+    {
+        // See if this is the current member (user may edit their own profile).
+        $is_this_user = RosterAuth::isThisMember($this->member_id);
+        // See if user is an Admin
+        $is_admin =  RosterAuth::isMemberOf('admin');
+        // See if user is either a leader or scribe
+        $is_leader_or_scribe = RosterAuth::userIsLeaderOrScribe();
+
+        return ($is_this_user && !($is_admin || $is_leader_or_scribe));
+    }
+
+    /**
+     * Use RosterAuth (facade to Services\RosterAuthService) to get coven abbreviation for new record
+     *
+     * @param $can_create
+     * @return string
+     */
+    private function getSelectedCoven($can_create)
+    {
+        // Pre-select coven if this is a leader or scribe (but not an Elder) and it's a new record
+        return ($can_create && !RosterAuth::isElder()) ? RosterAuth::getUserCoven() : null;
+    }
+
+    /**
+     * Get dropdown lists needed for member create/edit
+     *
+     * @return array
+     */
+    private function getDropdowns()
+    {
+        $prefix = TblTitle::lists('Title', 'Title')->prepend('', '');
+        $suffix = TblSuffix::lists('Suffix', 'Suffix')->prepend('', '');
+        $state = TblState::lists('State', 'Abbrev')->prepend('', '');
+        $coven = TblCoven::lists('CovenFullName', 'Coven')->prepend('', '');
+        $degree = TblDegree::lists('Degree_Name', 'Degree');
+        $leadership = TblLeadershipRole::lists('Description', 'Role')->prepend('None');
+        $board = TblBoardRole::lists('BoardRole', 'RoleID')->prepend('None');
+
+        return [
+            'prefix' => $prefix,
+            'suffix' => $suffix,
+            'state' => $state,
+            'coven' => $coven,
+            'degree' => $degree,
+            'leadership' => $leadership,
+            'board' => $board,
+        ];
     }
 }

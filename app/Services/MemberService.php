@@ -82,4 +82,27 @@ class MemberService {
         return ($member_id != 0);
     }
 
+    /* Methods used in "Missing Data" page only */
+
+    public function hasAll($member_fields) {
+        $hasAll = true;
+        foreach ($member_fields as $field) {
+            $hasAll = ($hasAll && !empty($field));
+        }
+        return (!$hasAll) ? 'X' : '';
+    }
+
+    public function hasNo($member_field) {
+        return (empty($member_field)) ? 'X' : '';
+    }
+
+    public function nonAlphaOrMissing($member_field) {
+        if (empty($member_field)) {
+            return 'X';
+        } else {
+            $numbers = preg_replace('/[^0-9]/', '', $member_field);
+            return (empty($numbers)) ? 'X' : '';
+        }
+    }
+
 }

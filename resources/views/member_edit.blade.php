@@ -119,7 +119,7 @@
                             @endif
                         </main>
                         <aside class="sidebar-column col-md-3">
-                            @if ($can_edit)
+                            @if ($can_edit && !$is_my_profile)
                             <div class="form-group">
                                 <label for="coven" class="control-label col-md-12">Coven or Order</label>
                                 {{ Form::select('Coven', $coven, $selected_coven, ['class' => 'col-md-11']) }}

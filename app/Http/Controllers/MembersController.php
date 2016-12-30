@@ -12,6 +12,13 @@ use App\Http\Controllers\UserController;
 
 class MembersController extends Controller
 {
+    protected $member;
+
+    public function __construct(TblMember $member)
+    {
+        $this->member = $member;
+    }
+
     /**
      * Display a listing of Members.
      *
@@ -19,7 +26,7 @@ class MembersController extends Controller
      */
     public function index()
     {
-        $active = TblMember::getActiveMembers();
+        $active = $this->member->getActiveMembers();
         return view('members_list', $active);
     }
 
@@ -43,7 +50,8 @@ class MembersController extends Controller
      */
     public function member_details($member_id = 0)
     {
-        $this_member = TblMember::getMemberDetails($member_id);
+        $this_member = $this->member->getDetails($member_id);
+        //$this_member = TblMember::getMemberDetails($member_id);
         return view('member_edit', $this_member);
     }
 
@@ -141,7 +149,7 @@ class MembersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $success = TblMember::saveMember($request->all());
+        $success = $this->member->saveMember($request->all());
 
         return response()->json(['success' => $success]);
     }
