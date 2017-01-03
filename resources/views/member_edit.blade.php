@@ -92,7 +92,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="col-md-11 col-md-offset-1">
-                                    {{ Form::submit(($member->MemberID == 0) ? 'Submit' : 'Update') }}
+                                    {{ Form::submit(($member->MemberID == 0) ? 'Submit' : 'Update', ['disabled' => 'disabled']) }}
                                 </div>
                             </div>
                             @else
@@ -174,3 +174,7 @@
         </div>
     </div>
 @endsection
+<!-- Push any scripts needed for this page onto the stack -->
+@push('scripts')
+<script src="{{ URL::to('/') }}/js/lib/jquery.dirtyforms.js"></script>
+@endpush

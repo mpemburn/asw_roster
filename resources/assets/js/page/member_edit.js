@@ -56,6 +56,17 @@ $(document).ready(function ($) {
         });
     });
 
+    /* Detect any changes to the form data */
+    $('#member_update').dirtyForms()
+        .on('dirty.dirtyforms clean.dirtyforms', function (ev) {
+            var $form = $(ev.target);
+            var $submitButton = $form.find('[type="submit"]');
+            if (ev.type === 'dirty') {
+                $submitButton.removeAttr('disabled');
+            } else {
+                $submitButton.attr('disabled', 'disabled');
+            }
+    });
     /* Submit form via AJAX */
     $('#member_update').on('submit', function (e) {
         var formAction = this.action;

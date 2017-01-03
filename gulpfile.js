@@ -14,10 +14,13 @@ var elixir = require('laravel-elixir');
  */
 
 elixir(function(mix) {
-    mix.copy(
-        'node_modules/bootstrap-sass/assets/javascripts/**/*.js',
-        'resources/assets/js/bootstrap'
-    );
+    var directories = {
+        'node_modules/bootstrap-sass/assets/javascripts/**/*.js': 'resources/assets/js/bootstrap',
+        'node_modules/jquery.dirtyforms/jquery.dirtyforms.js': 'public/js/lib'
+    };
+    for (directory in directories) {
+        mix.copy(directory, directories[directory]);
+    }
     mix.sass('app.scss', 'public/css/all.css');
     mix.scripts([
         'resources/assets/js/lib/**/*.js',

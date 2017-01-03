@@ -5737,6 +5737,14 @@ body {
 input:read-only {
   border: none; }
 
+input[type="submit"] {
+  border: 1px solid #111;
+  background-color: transparent; }
+  input[type="submit"]:disabled {
+    border: 1px solid #aaa;
+    color: #aaa;
+    background-color: transparent; }
+
 select:disabled {
   border: none; }
 
