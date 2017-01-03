@@ -5920,4 +5920,10 @@ table.dataTable tbody tr:hover {
     margin: 0;
     padding: 0; }
 
+.member-saving {
+  position: relative;
+  top: 5px;
+  font-size: 24px;
+  color: #111; }
+
 /*# sourceMappingURL=all.css.map */

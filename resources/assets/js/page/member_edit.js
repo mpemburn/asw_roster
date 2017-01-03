@@ -61,8 +61,7 @@ $(document).ready(function ($) {
         /* Detect any changes to the form data */
         $('#member_update').dirtyForms()
             .on('dirty.dirtyforms clean.dirtyforms', function (ev) {
-                var $form = $(ev.target);
-                var $submitButton = $form.find('[type="submit"]');
+                var $submitButton = $('#submit_update');
                 if (ev.type === 'dirty') {
                     $submitButton.removeAttr('disabled');
                 } else {
@@ -77,6 +76,8 @@ $(document).ready(function ($) {
             });
             e.preventDefault(e);
 
+            $('#member_saving').removeClass('hidden');
+
             $.ajax({
                 type: "POST",
                 url: formAction,
@@ -84,6 +85,9 @@ $(document).ready(function ($) {
                 dataType: 'json',
                 success: function (data) {
                     console.log(data);
+                    $('#member_update').dirtyForms('setClean');
+                    $('#submit_update').attr('disabled', 'disabled');
+                    $('#member_saving').addClass('hidden');
                 },
                 error: function (data) {
                     console.log(data);
