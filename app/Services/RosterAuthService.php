@@ -2,7 +2,7 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Auth;
-use App\Facades\Member;
+use App\Facades\Membership;
 
 class RosterAuthService {
     protected $user;
@@ -20,7 +20,7 @@ class RosterAuthService {
         $success = false;
         $this->user = Auth::user();
         if (!is_null($this->user)) {
-            $this->member = Member::getMemberById($this->user->member_id);
+            $this->member = Membership::getMemberById($this->user->member_id);
             $success = true;
         }
         return $success;
@@ -64,7 +64,7 @@ class RosterAuthService {
     public function userIsLeaderOrScribe()
     {
         if ($this->init()) {
-            $leadershipRoleService = new LeadershipRoleService();
+            $leadershipRoleService = new RolesService();
             $valid_roles = $leadershipRoleService->getLeadershipRoleArray();
             $valid_roles[] = 'SCR';
 

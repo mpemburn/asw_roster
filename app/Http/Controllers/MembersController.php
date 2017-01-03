@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TblCoven;
+use App\Models\Coven;
 use Illuminate\Http\Request;
 use App\Http\Requests;
-use App\Models\TblMember;
+use App\Models\Member;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Http\Controllers\UserController;
@@ -14,7 +14,7 @@ class MembersController extends Controller
 {
     protected $member;
 
-    public function __construct(TblMember $member)
+    public function __construct(Member $member)
     {
         $this->member = $member;
     }
@@ -37,7 +37,7 @@ class MembersController extends Controller
      */
     public function listCovens()
     {
-        $covens = TblCoven::lists('CovenFullName', 'Coven');
+        $covens = Coven::lists('CovenFullName', 'Coven');
         $covens_array = $covens->toArray();
         ksort($covens_array);
         return $covens_array;
@@ -51,16 +51,15 @@ class MembersController extends Controller
     public function memberDetails($member_id = 0)
     {
         $this_member = $this->member->getDetails($member_id);
-        //$this_member = TblMember::getMemberDetails($member_id);
         return view('member_edit', $this_member);
     }
 
     public function missingDetails($member_id = 0)
     {
-        $covens = TblCoven::all();
+        $covens = Coven::all();
         $members = [];
         foreach ($covens as $coven) {
-            $coveners = TblMember::where('Coven', $coven->Coven)
+            $coveners = Member::where('Coven', $coven->Coven)
                 ->where('Active', 1)
                 ->orderBy('Last_Name', 'asc')
                 ->get();
@@ -80,7 +79,7 @@ class MembersController extends Controller
 
     public function migrate()
     {
-        $active = TblMember::getActiveMembers();
+        $active = Member::getActiveMembers();
         $user = new UsersController;
         foreach ($active['members'] as $member) {
             if (!empty($member->LeadershipRole) && !empty($member->UserPassword)) {

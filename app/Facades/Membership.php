@@ -3,6 +3,6 @@ namespace App\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
-class Member extends Facade {
+class Membership extends Facade {
     protected static function getFacadeAccessor() { return 'MemberService'; }
 }

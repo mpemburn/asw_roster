@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Models\TblMember;
+use App\Models\Member;
 use App\Models\User;
-use App\Facades\Member;
+use App\Facades\Membership;
 use Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
@@ -67,7 +67,7 @@ class AuthController extends Controller
      */
     protected function create(array $data)
     {
-        $member = Member::getMemberFromEmail($data['email']);
+        $member = MemberService::getMemberFromEmail($data['email']);
         $member_id = (!is_null($member)) ? $member->MemberID : null;
         $name = (!is_null($member)) ? $member->First_Name . ' ' . $member->Last_Name : '';
 

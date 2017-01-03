@@ -5,18 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class TblBoardRole
+ * Class TblLeadershipRole
  */
-class TblBoardRole extends Model
+class LeadershipRole extends Model
 {
-    protected $table = 'tblBoardRoles';
+    protected $table = 'tblLeadershipRoles';
 
     protected $primaryKey = 'RoleID';
 
 	public $timestamps = false;
 
     protected $fillable = [
-        'BoardRole'
+        'Role',
+        'Description',
+        'GroupName'
     ];
 
     protected $guarded = [];

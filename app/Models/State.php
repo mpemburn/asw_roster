@@ -5,17 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class TblTitle
+ * Class State
  */
-class TblTitle extends Model
+class State extends Model
 {
-    protected $table = 'tblTitles';
+    protected $table = 'tblStates';
 
     public $timestamps = false;
 
     protected $fillable = [
-        'TitleID',
-        'Title'
+        'StateID',
+        'Abbrev',
+        'State',
+        'Local',
+        'Country'
     ];
 
     protected $guarded = [];

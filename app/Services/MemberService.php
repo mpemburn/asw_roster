@@ -1,11 +1,10 @@
 <?php
 namespace App\Services;
 
-use App\Facades\Member;
 use App\Facades\Rbac;
-use App\Models\TblMember;
-use App\Models\TblLeadershipRole;
-use App\Models\TblCoven;
+use App\Models\Member;
+use App\Models\LeadershipRole;
+use App\Models\Coven;
 use App\Helpers\Utility;
 
 class MemberService
@@ -14,19 +13,31 @@ class MemberService
 
     public function init()
     {
-        $this->member = new TblMember;
+        $this->member = new Member;
     }
 
+    /**
+     * Retrieve existing record or, if none, return an empty Member object for "new".
+     *
+     * @param $member_id
+     * @return mixed
+     */
     public function getMemberById($member_id)
     {
         $this->init();
         return $this->member->firstOrNew(['MemberID' => $member_id]);
     }
 
+    /**
+     * Retrieve a member if email matches (single or in comma-delimited string)
+     *
+     * @param $test_email
+     * @return Member
+     */
     public function getMemberFromEmail($test_email)
     {
         $member = null;
-        $found = TblMember::whereRaw('LOWER(`Email_Address`) LIKE ?', array('%' . strtolower($test_email) . '%'))
+        $found = Member::whereRaw('LOWER(`Email_Address`) LIKE ?', array('%' . strtolower($test_email) . '%'))
             ->select('*')
             ->get();
         if (!$found->isEmpty()) {
@@ -36,12 +47,24 @@ class MemberService
         return $member;
     }
 
+    /**
+     * Retrieve the MemberID if a matching email address is found
+     *
+     * @param $test_email
+     * @return int
+     */
     public function getMemberIdFromEmail($test_email)
     {
         $member = $this->getMemberFromEmail($test_email);
         return (!is_null($member)) ? $member->MemberID : 0;
     }
 
+    /**
+     * Get the phone number listed as "primary" from the member record
+     *
+     * @param $member_id
+     * @return string
+     */
     public function getPrimaryPhone($member_id)
     {
         $member = $this->getMemberById($member_id);
@@ -57,17 +80,23 @@ class MemberService
         return Utility::formatPhone($primary_phone);
     }
 
+    /**
+     * Retrieve data to display in member detail when user does not have edit permission
+     *
+     * @param $member_id
+     * @return array
+     */
     public function getStaticMemberData($member_id)
     {
         $member = $this->getMemberById($member_id);
         $middle = (!empty($member->Middle_Name)) ? $member->Middle_Name . ' ' : '';
         $name = $member->Title . ' ' . $member->First_Name . ' ' . $middle . $member->Last_Name . ' ' . $member->Suffix;
-        $coven = TblCoven::find($member->Coven);
-        $leadership = TblLeadershipRole::where('Role', $member->LeadershipRole)->first();
+        $coven = Coven::find($member->Coven);
+        $leadership = LeadershipRole::where('Role', $member->LeadershipRole)->first();
         $degree = Utility::ordinal($member->Degree);
         $bonded = ($member->Bonded) ? Utility::yesno($member->Bonded) : '';
         $solitary = ($member->Solitary) ? Utility::yesno($member->Solitary) : '';
-        $board = (Member::isCurrentBoardMember($member_id)) ? $member->BoardRole : '';
+        $board = ($this->isCurrentBoardMember($member_id)) ? $member->BoardRole : '';
         $board_expiry = date('M j, Y', strtotime($member->BoardRole_Expiry_Date));
 
         return [
@@ -88,6 +117,12 @@ class MemberService
         ];
     }
 
+    /**
+     * Test if the board member role is current
+     *
+     * @param null $member_id
+     * @return bool
+     */
     public function isCurrentBoardMember($member_id = null)
     {
         if (is_null($this->member->MemberID) && !is_null($member_id)) {
@@ -99,6 +134,12 @@ class MemberService
         return ($has_role && !$expired);
     }
 
+    /**
+     * Test if email exists in members table
+     *
+     * @param $test_email
+     * @return bool
+     */
     public function isValidEmail($test_email)
     {
         $member_id = $this->getMemberIdFromEmail($test_email);
@@ -106,11 +147,18 @@ class MemberService
         return ($member_id != 0);
     }
 
+    /**
+     * Do operations necessary after the member record has been created or saved
+     *
+     * @param $changes
+     * @param $member_id
+     * @return void
+     */
     public function postSaveMemberActions($changes, $member_id)
     {
         // If leadership role has been added or changed, we need to rewrite role permissions
         if (array_key_exists('LeadershipRole', $changes)) {
-            return Rbac::setLeadershipRoles();
+            Rbac::setLeadershipRoles();
         }
 
     }

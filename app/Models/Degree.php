@@ -5,9 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class TblDegree
+ * Class Degree
  */
-class TblDegree extends Model
+class Degree extends Model
 {
     protected $table = 'tblDegrees';
 

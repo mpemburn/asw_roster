@@ -159,7 +159,7 @@
                                 <label for="board" class="control-label col-md-12">Board Role</label>
                                 {{ Form::select('BoardRole', $board, null, ['class' => 'col-md-11', 'id' => 'board-role']) }}
                             </div>
-                            <div class="form-group expiry-date {{ \App\Facades\Member::isCurrentBoardMember() ? 'show' : 'hide' }}">
+                            <div class="form-group expiry-date {{ \App\Facades\Membership::isCurrentBoardMember() ? 'show' : 'hide' }}">
                                 <label for="board-date" class="control-label col-md-12">Expiry Date</label>
                                 {{ Form::text('BoardRole_Expiry_Date', \App\Helpers\Utility::formatDate('M j, Y', $member->BoardRole_Expiry_Date), ['class' => 'col-md-6 date-pick']) }}
                             </div>

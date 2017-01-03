@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TblMember;
+use App\Models\Member;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;

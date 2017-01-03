@@ -5,17 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class TblSuffix
+ * Class Title
  */
-class TblSuffix extends Model
+class Title extends Model
 {
-    protected $table = 'tblSuffixes';
+    protected $table = 'tblTitles';
 
     public $timestamps = false;
 
     protected $fillable = [
-        'SuffixID',
-        'Suffix'
+        'TitleID',
+        'Title'
     ];
 
     protected $guarded = [];

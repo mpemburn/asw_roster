@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Validator;
-use App\Facades\Member;
+use App\Facades\Membership;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,7 +17,7 @@ class AppServiceProvider extends ServiceProvider
     {
         /* Used for registration form.  Must already be a member with an email address that matches $value */
         Validator::extend('member_email', function ($attribute, $value, $parameters) {
-            return Member::isValidEmail($value);
+            return Membership::isValidEmail($value);
         });
         /* Used for registration form.  Password mask validation  */
         Validator::extend('bad_pattern', function ($attribute, $value, $parameters) {

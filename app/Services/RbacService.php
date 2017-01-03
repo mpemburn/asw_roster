@@ -1,8 +1,8 @@
 <?php
 namespace App\Services;
 
-use App\Facades\Member;
-use App\Facades\LeadershipRole;
+use App\Facades\Membership;
+use App\Facades\Roles;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
@@ -24,13 +24,13 @@ class RbacService {
         $coven_scribe = Role::getRoleByName('coven-scribe');
 
         // Get an array of the leadership types that can be assigned these roles
-        $valid_roles = LeadershipRole::getLeadershipRoleArray();
+        $valid_roles = Roles::getLeadershipRoleArray();
 
         // Get list of all users
         $all_users = User::all();
         foreach ($all_users as $user) {
             // Get the Member record associated with this user
-            $member = Member::getMemberById($user->member_id);
+            $member = Membership::getMemberById($user->member_id);
             // ...and the leadership role associated with that member, if any
             $role = $member->LeadershipRole;
             // Detach all roles first; they will be recreated in the next steps

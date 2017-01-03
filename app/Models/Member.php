@@ -2,19 +2,19 @@
 
 namespace App\Models;
 
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Collective\Html\Eloquent\FormAccessible;
 use App\Helpers\Utility;
-use App\Facades\Member;
+use App\Facades\Audit;
+use App\Facades\Membership;
 use App\Facades\RosterAuth;
-use DB;
+use App\Facades\Roles;
 
 /**
- * Class TblMember
+ * Class Member
  */
-class TblMember extends Model
+class Member extends Model
 {
     use FormAccessible;
 
@@ -80,11 +80,16 @@ class TblMember extends Model
     protected $member;
     protected $member_id;
 
+    /**
+     * Get Member details for editing or static details if user lacks edit permission
+     *
+     * @param int $member_id
+     * @return array
+     */
     public function getDetails($member_id = 0)
     {
-
         $this->member_id = $member_id;
-        $this->member = Member::getMemberById($member_id);
+        $this->member = Membership::getMemberById($member_id);
 
         $can_create = $this->canCreate();
         $can_edit = (!is_null($this->member)) ? $this->canEdit() : false;
@@ -97,7 +102,7 @@ class TblMember extends Model
             'user_id' => Auth::user()->id,
             'member' => $this->member,
             'selected_coven' => $this->getSelectedCoven($can_create),
-            'static' => (object) Member::getStaticMemberData($member_id),
+            'static' => (object) Membership::getStaticMemberData($member_id),
             'main_col' => ($can_create || $can_edit) ? '9' : '6',
             'sidebar_col' => ($can_create || $can_edit) ? '3' : '6',
         ];
@@ -108,6 +113,12 @@ class TblMember extends Model
         return $data;
     }
 
+    /**
+     * Get list of active members
+     *
+     * @param int $status
+     * @return array
+     */
     public function getActiveMembers($status = 1)
     {
         $active_members = $this->where('Active', $status)
@@ -116,20 +127,25 @@ class TblMember extends Model
         return array('members' => $active_members);
     }
 
+    /**
+     * Insert or update Member record
+     *
+     * @param $data
+     * @return array
+     */
     public function saveMember($data)
     {
         $member_id = $data['MemberID'];
-        $user_id = $data['user_id'];
         $is_new = false;
 
         if ($member_id == 0) {
-            $member = new TblMember();
+            $member = new Member();
             $is_new = true;
         } else {
             $member = $this->find($member_id);
         }
 
-
+        // All date fields need to be reformatted
         $data = Utility::reformatDates($data, [
             'Member_Since_Date',
             'Member_End_Date',
@@ -150,13 +166,12 @@ class TblMember extends Model
             'Bonded',
             'Solitary',
         ]);
-        $old_data = $member->toArray();
 
         if (!$is_new) {
             // Find fields changed from current record
             $changed = $this->findChanges($member, $data);
             // Log changes
-            $changed = $this->writeAuditLog($changed, $member_id, $user_id);
+            Audit::writeAuditLog($changed, $this->table, $this->primaryKey, $member_id);
         }
 
 
@@ -164,8 +179,8 @@ class TblMember extends Model
         $member_id = $member->MemberID;
 
         // Make any changes necessary after Member record has been saved
-        $count = Member::postSaveMemberActions($changed, $member_id);
-        return ['success' => $result, 'member_id' => $member_id, 'changed' => $changed, 'count' => $count, 'data' => $old_data];
+        $count = Membership::postSaveMemberActions($changed, $member_id);
+        return ['success' => $result, 'member_id' => $member_id, 'changed' => $changed, 'count' => $count, 'data' => $data];
     }
 
     /* Private Methods */
@@ -220,13 +235,20 @@ class TblMember extends Model
         return ($is_this_user && !($is_admin || $is_leader_or_scribe));
     }
 
-    public function findChanges(TblMember $member, $new_data)
+    /**
+     * Find the changes (to and from) in the saved record
+     *
+     * @param Member $member
+     * @param $new_data
+     * @return array
+     */
+    public function findChanges(Member $member, $new_data)
     {
         $changes = [];
-        foreach ($member->getAttributes() as $field => $value) {
+        foreach ($member->getAttributes() as $field => $old_value) {
             $new_value = (isset($new_data[$field])) ? $new_data[$field] : null;
-            if ($new_value != $value && !is_null($new_value) && !is_null($value)) {
-                $changes[$field] = $new_value;
+            if ($new_value != $old_value && !is_null($new_value) && !is_null($old_value)) {
+                $changes[$field] = [ 'from' => $old_value, 'to' => $new_value ];
             }
         }
         return $changes;
@@ -250,13 +272,13 @@ class TblMember extends Model
      */
     private function getDropdowns()
     {
-        $prefix = TblTitle::lists('Title', 'Title')->prepend('', '');
-        $suffix = TblSuffix::lists('Suffix', 'Suffix')->prepend('', '');
-        $state = TblState::lists('State', 'Abbrev')->prepend('', '');
-        $coven = TblCoven::lists('CovenFullName', 'Coven')->prepend('', '');
-        $degree = TblDegree::lists('Degree_Name', 'Degree');
-        $leadership = TblLeadershipRole::lists('Description', 'Role')->prepend('None', '');
-        $board = TblBoardRole::lists('BoardRole', 'BoardRole')->prepend('None', '');
+        $prefix = Title::lists('Title', 'Title')->prepend('', '');
+        $suffix = Suffix::lists('Suffix', 'Suffix')->prepend('', '');
+        $state = State::lists('State', 'Abbrev')->prepend('', '');
+        $coven = Coven::lists('CovenFullName', 'Coven')->prepend('', '');
+        $degree = Degree::lists('Degree_Name', 'Degree');
+        $leadership = Roles::leadershipDropdown();
+        $board = Roles::boardDropdown();
 
         return [
             'prefix' => $prefix,
@@ -269,18 +291,4 @@ class TblMember extends Model
         ];
     }
 
-    /**
-     * Write changes to the audit log
-     *
-     * @param $changes
-     * @param $member_id
-     *
-     * @return void
-     */
-    private function writeAuditLog(&$changes, $member_id, $user_id)
-    {
-        #TODO: Create audit log code
-
-        return $changes;
-    }
 }
