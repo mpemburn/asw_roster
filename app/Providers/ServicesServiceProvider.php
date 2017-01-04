@@ -3,9 +3,9 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
-use App\Services\AuditLogService;
+use App\Services\AuditService;
 use App\Services\RolesService;
-use App\Services\MemberService;
+use App\Services\MembershipService;
 use App\Services\RosterAuthService;
 use App\Services\RbacService;
 
@@ -20,14 +20,14 @@ class ServicesServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        App::bind('AuditLogService', function()
+        App::bind('AuditService', function()
         {
-            return new AuditLogService();
+            return new AuditService();
         });
 
-        App::bind('MemberService', function()
+        App::bind('MembershipService', function()
         {
-            return new MemberService();
+            return new MembershipService();
         });
 
         App::bind('RolesService', function()

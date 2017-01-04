@@ -119,6 +119,19 @@
                                 {{ Form::text('Leadership_Date', \App\Helpers\Utility::formatDate('M j, Y', $member->Leadership_Date), ['class' => 'col-md-6 date-pick']) }}
                             </div>
                             <div class="form-group">
+                                <label for="bonded" class="control-label col-md-12">{{ Form::checkbox('Bonded', $member->Bonded, null, ['id' => 'bonded_check']) }} Bonded</label>
+                            </div>
+                            <div class="form-group bonded-date {{ ($member->Bonded) ? 'show' : 'hide' }}">
+                                <label for="bonded-date" class="control-label col-md-12">Bonded Date</label>
+                                {{ Form::text('Bonded_Date', \App\Helpers\Utility::formatDate('M j, Y', $member->Bonded_Date), ['class' => 'col-md-6 date-pick']) }}
+                            </div>
+                            <div class="form-group">
+                                <label for="Scribe" class="control-label col-md-12">{{ Form::checkbox('Scribe', null, $is_scribe, ['id' => 'scribe_check']) }} Scribe</label>
+                            </div>
+                            <div class="form-group">
+                                <label for="PurseWarden" class="control-label col-md-12">{{ Form::checkbox('PurseWarden', null, $is_pw, ['id' => 'pw_check']) }} Purse Warden</label>
+                            </div>
+                            <div class="form-group">
                                 <label for="degree" class="control-label col-md-12">Degree</label>
                                 {{ Form::select('Degree', $degree, null, ['id' => 'member_degree', 'class' => 'col-md-6']) }}
                             </div>
@@ -141,13 +154,6 @@
                             <div class="form-group degree-date {{ ($member->Degree >= 5) ? 'show' : 'hide' }}" data-degree-date="5">
                                 <label for="fifth_degree" class="control-label col-md-12">5th Degree Date</label>
                                 {{ Form::text('Fifth_Degree_Date', \App\Helpers\Utility::formatDate('M j, Y', $member->Fifth_Degree_Date), ['class' => 'col-md-6 date-pick']) }}
-                            </div>
-                            <div class="form-group">
-                                <label for="bonded" class="control-label col-md-12">{{ Form::checkbox('Bonded', $member->Bonded, null, ['id' => 'bonded_check']) }} Bonded</label>
-                            </div>
-                            <div class="form-group bonded-date {{ ($member->Bonded) ? 'show' : 'hide' }}">
-                                <label for="bonded-date" class="control-label col-md-12">Bonded Date</label>
-                                {{ Form::text('Bonded_Date', \App\Helpers\Utility::formatDate('M j, Y', $member->Bonded_Date), ['class' => 'col-md-6 date-pick']) }}
                             </div>
                             <div class="form-group">
                                 <label for="solitary" class="control-label col-md-12">{{ Form::checkbox('Solitary', $member->Solitary, null, ['id' => 'solitary_check']) }} Solitary</label>

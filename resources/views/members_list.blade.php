@@ -31,7 +31,7 @@
                     <td>{{ $member->Coven }}</td>
                     <td class="show-lg-up">{{ App\Helpers\Utility::ordinal($member->Degree) }}</td>
                     <td class="show-lg-up">{{ App\Helpers\Utility::yesno($member->Bonded) }}</td>
-                    <td class="show-lg-up">{{ $member->LeadershipRole }}</td>
+                    <td class="show-lg-up">{{ \App\Facades\Roles::getAllRoles($member) }}</td>
                     <td class="show-lg-up">{{ $member->BoardRole }}</td>
                 </tr>
             @endforeach

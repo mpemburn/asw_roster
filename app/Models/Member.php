@@ -11,6 +11,9 @@ use App\Facades\Membership;
 use App\Facades\RosterAuth;
 use App\Facades\Roles;
 
+use App\Models\CovenRoles;
+use DB;
+
 /**
  * Class Member
  */
@@ -89,10 +92,13 @@ class Member extends Model
     public function getDetails($member_id = 0)
     {
         $this->member_id = $member_id;
-        $this->member = Membership::getMemberById($member_id);
-
+        $this->member = $this->firstOrNew(['MemberID' => $member_id]);
+        // Retrieve permissions
         $can_create = $this->canCreate();
         $can_edit = (!is_null($this->member)) ? $this->canEdit() : false;
+
+        $isPurseWarden = Roles::isPurseWarden($member_id, $this->member->Coven);
+        $isScribe = Roles::isScribe($member_id, $this->member->Coven);
 
         $data = [
             'can_edit' => ($can_create || $can_edit),
@@ -101,6 +107,8 @@ class Member extends Model
             'member_id' => $this->member_id,
             'user_id' => Auth::user()->id,
             'member' => $this->member,
+            'is_pw' => $isPurseWarden,
+            'is_scribe' => $isScribe,
             'selected_coven' => $this->getSelectedCoven($can_create),
             'static' => (object) Membership::getStaticMemberData($member_id),
             'main_col' => ($can_create || $can_edit) ? '9' : '6',
@@ -121,9 +129,7 @@ class Member extends Model
      */
     public function getActiveMembers($status = 1)
     {
-        $active_members = $this->where('Active', $status)
-            ->orderBy('Last_Name', 'asc')
-            ->get();
+        $active_members = Membership::getActiveMembers($status);
         return array('members' => $active_members);
     }
 
@@ -164,6 +170,8 @@ class Member extends Model
         $data = Utility::reformatCheckboxes($data, [
             'Active',
             'Bonded',
+            'Scribe',
+            'PurseWarden',
             'Solitary',
         ]);
 
@@ -174,12 +182,11 @@ class Member extends Model
             Audit::writeAuditLog($changed, $this->table, $this->primaryKey, $member_id);
         }
 
-
         $result = $member->fill($data)->save();
         $member_id = $member->MemberID;
 
         // Make any changes necessary after Member record has been saved
-        $count = Membership::postSaveMemberActions($changed, $member_id);
+        $count = Membership::postSaveMemberActions($changed, $member);
         return ['success' => $result, 'member_id' => $member_id, 'changed' => $changed, 'count' => $count, 'data' => $data];
     }
 
@@ -244,8 +251,14 @@ class Member extends Model
      */
     public function findChanges(Member $member, $new_data)
     {
+        $member_id = $member->MemberID;
         $changes = [];
-        foreach ($member->getAttributes() as $field => $old_value) {
+        $isPurseWarden = Roles::isPurseWarden($member_id, $member->Coven);
+        $isScribe = Roles::isScribe($member_id, $member->Coven);
+        $attributes = $member->getAttributes();
+        $attributes['Scribe'] = ($isScribe) ? 1 : 0;
+        $attributes['PurseWarden'] = ($isPurseWarden) ? 1 : 0;
+        foreach ($attributes as $field => $old_value) {
             $new_value = (isset($new_data[$field])) ? $new_data[$field] : null;
             if ($new_value != $old_value && !is_null($new_value) && !is_null($old_value)) {
                 $changes[$field] = [ 'from' => $old_value, 'to' => $new_value ];
@@ -291,4 +304,21 @@ class Member extends Model
         ];
     }
 
+    private function createCovenRoles()
+    {
+        $roles = Roles::getCovenRoleArray();
+
+        $members = Membership::getActiveMembers();
+        foreach ($members as $member) {
+            $coven = $member->Coven;
+            $role = $member->LeadershipRole;
+            if (in_array($role, $roles)) {
+                $covenRole = new CovenRoles;
+                $covenRole->Coven = $coven;
+                $covenRole->MemberID = $member->MemberID;
+                $covenRole->Role = $role;
+                $covenRole->save();
+            }
+        }
+    }
 }

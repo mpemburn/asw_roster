@@ -1,19 +1,35 @@
 <?php
 namespace App\Services;
 
-use App\Facades\Rbac;
-use App\Models\Member;
-use App\Models\LeadershipRole;
 use App\Models\Coven;
+use App\Models\LeadershipRole;
+use App\Models\Member;
+use App\Facades\Rbac;
+use App\Facades\Roles;
 use App\Helpers\Utility;
 
-class MemberService
+class MembershipService
 {
     protected $member;
 
     public function init()
     {
         $this->member = new Member;
+    }
+
+    /**
+     * Retrieve all active members.
+     *
+     * @param $member_id
+     * @return array
+     */
+    public function getActiveMembers($status = 1)
+    {
+        $this->init();
+        $active_members = $this->member->where('Active', $status)
+            ->orderBy('Last_Name', 'asc')
+            ->get();
+        return $active_members;
     }
 
     /**
@@ -154,11 +170,24 @@ class MemberService
      * @param $member_id
      * @return void
      */
-    public function postSaveMemberActions($changes, $member_id)
+    public function postSaveMemberActions($changes, $member)
     {
+        $member_id = $member->MemberID;
+        $coven = $member->Coven;
+
         // If leadership role has been added or changed, we need to rewrite role permissions
         if (array_key_exists('LeadershipRole', $changes)) {
             Rbac::setLeadershipRoles();
+        }
+        // If PurseWarden status has changed, insert, update, or delete coven scribe record in CovenRoles
+        if (array_key_exists('PurseWarden', $changes)) {
+            $status = $changes['PurseWarden']['to'];
+            Roles::changePurseWardenRole($coven, $member_id, $status);
+        }
+        // If Scribe status has changed, insert, update, or delete coven scribe record in CovenRoles
+        if (array_key_exists('Scribe', $changes)) {
+            $status = $changes['Scribe']['to'];
+            Roles::changeScribeRole($coven, $member_id, $status);
         }
 
     }

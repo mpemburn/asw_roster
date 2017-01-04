@@ -4,7 +4,7 @@ namespace App\Services;
 use Illuminate\Support\Facades\Auth;
 use App\Models\AuditLog;
 
-class AuditLogService {
+class AuditService {
     protected $user;
 
     /**

@@ -2,9 +2,72 @@
 namespace App\Services;
 
 use App\Models\BoardRole;
+use App\Models\CovenRoles;
 use App\Models\LeadershipRole;
 
 class RolesService {
+
+    public function changeCovenRole($coven, $member_id, $role, $status)
+    {
+        if ($this->doesCovenRoleExist($coven, $role)) {
+            if ($status == 1) {
+                $this->updateCovenRole($coven, $member_id, $role);
+            } else {
+                $this->deleteCovenRole($coven, $role);
+            }
+        } else {
+            $this->createCovenRole($coven, $member_id, $role);
+        }
+    }
+
+    public function changePurseWardenRole($coven, $member_id, $status)
+    {
+        $this->changeCovenRole($coven, $member_id, 'PW', $status);
+    }
+
+    public function changeScribeRole($coven, $member_id, $status)
+    {
+        $this->changeCovenRole($coven, $member_id, 'SCR', $status);
+    }
+
+    public function doesCovenRoleExist($coven, $role)
+    {
+        $covenRole = CovenRoles::where('Coven', $coven)
+            ->where('Role', $role)
+            ->get()
+            ->first();
+
+        return ($covenRole !== null);
+    }
+
+    public function getAllRoles($member)
+    {
+        $member_id = $member->MemberID;
+        $coven = $member->Coven;
+        $leader_roles = $this->getLeadershipRoleArray();
+        $leader = (in_array($member->LeadershipRole, $leader_roles)) ? $member->LeadershipRole : null;
+        $pw = ($this->isPurseWarden($member_id, $coven)) ? 'PW' : null;
+        $scribe = ($this->isScribe($member_id, $coven)) ? 'SCR' : null;
+        $all_roles = [$leader, $pw, $scribe];
+        $all_roles = array_filter($all_roles);
+
+        return implode('/', $all_roles);
+    }
+
+    /**
+     * Retrieve array of leadership roles at the coven level
+     *
+     * @return array
+     */
+    public function getCovenRoleArray()
+    {
+        $roles = [];
+        $leadership = LeadershipRole::where('LeadershipLevel', 'Coven')->get();
+        foreach ($leadership as $leader) {
+            $roles[] = $leader->Role;
+        }
+        return $roles;
+    }
 
     /**
      * Retrieve array of leadership roles of the "Leadership" type (not Scribes or Purse Wardens)
@@ -21,8 +84,25 @@ class RolesService {
         return $roles;
     }
 
-    public function test(){
-        echo "yo";
+    public function hasCovenRole($member_id, $coven, $role)
+    {
+        $covenRole = CovenRoles::where('Coven', $coven)
+            ->where('MemberID', $member_id)
+            ->where('Role', $role)
+            ->get()
+            ->first();
+
+        return ($covenRole !== null);
+    }
+
+    public function isPurseWarden($member_id, $coven)
+    {
+        return $this->hasCovenRole($member_id, $coven, 'PW');
+    }
+
+   public function isScribe($member_id, $coven)
+    {
+        return $this->hasCovenRole($member_id, $coven, 'SCR');
     }
 
     /**
@@ -42,7 +122,38 @@ class RolesService {
      */
     public function leadershipDropdown()
     {
-        return LeadershipRole::lists('Description', 'Role')->prepend('None', '');
+        return LeadershipRole::where('GroupName', 'Leadership')
+            ->where('LeadershipLevel', 'Coven')
+            ->lists('Description', 'Role')
+            ->prepend('None', '');
     }
 
+    /* CovenRole C_UD methods */
+
+    public function createCovenRole($coven, $member_id, $role)
+    {
+        $covenRole = new CovenRoles();
+        $covenRole->Coven = $coven;
+        $covenRole->MemberID = $member_id;
+        $covenRole->Role = $role;
+
+        return $covenRole->save();
+    }
+
+    public function deleteCovenRole($coven, $role)
+    {
+        $covenRole = CovenRoles::where('Coven', $coven)
+            ->where('Role', $role);
+
+        return $covenRole->delete();
+
+    }
+
+    public function updateCovenRole($coven, $member_id, $role)
+    {
+        return CovenRoles::where('Coven', $coven)
+            ->where('Role', $role)
+            ->update(['MemberID' => $member_id]);
+
+    }
 }
