@@ -5,21 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * Class LeadershipRole
+ * Class GuildMember
  */
-class CovenRoles extends Model
+class GuildMember extends Model
 {
-    protected $table = 'tblCovenRoles';
+    protected $table = 'tblGuildMembers';
 
-	public $timestamps = false;
+    public $timestamps = false;
 
     protected $fillable = [
-        'Coven',
+        'GuildID',
         'MemberID',
-        'Role',
     ];
 
     protected $guarded = [];
 
-        
 }

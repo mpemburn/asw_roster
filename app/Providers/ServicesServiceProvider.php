@@ -4,6 +4,7 @@ namespace App\Providers;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
 use App\Services\AuditService;
+use App\Services\GuildService;
 use App\Services\RolesService;
 use App\Services\MembershipService;
 use App\Services\RosterAuthService;
@@ -23,6 +24,11 @@ class ServicesServiceProvider extends ServiceProvider
         App::bind('AuditService', function()
         {
             return new AuditService();
+        });
+
+        App::bind('GuildService', function()
+        {
+            return new GuildService();
         });
 
         App::bind('MembershipService', function()

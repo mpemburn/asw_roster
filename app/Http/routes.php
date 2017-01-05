@@ -18,18 +18,18 @@ Route::get('/', function () {
 Route::get('/home', 'HomeController@index');
 Route::auth();
 
-Route::get('acl', [
-    'middleware' => ['auth'],
-    'uses' => 'AclController@index'
-]);
-Route::get('rbac/set_leaders', [
-    'middleware' => ['auth'],
-    'uses' => 'RbacController@setLeadershipRoles'
-]);
-Route::get('rbac/set_perms', [
-    'middleware' => ['auth'],
-    'uses' => 'RbacController@setRolePermissions'
-]);
+//Route::get('acl', [
+//    'middleware' => ['auth'],
+//    'uses' => 'AclController@index'
+//]);
+//Route::get('rbac/set_leaders', [
+//    'middleware' => ['auth'],
+//    'uses' => 'RbacController@setLeadershipRoles'
+//]);
+//Route::get('rbac/set_perms', [
+//    'middleware' => ['auth'],
+//    'uses' => 'RbacController@setRolePermissions'
+//]);
 Route::get('member', [
     'middleware' => ['auth'],
     'uses' => 'MembersController@index'
@@ -50,12 +50,22 @@ Route::get('/member/missing', [
     'middleware' => ['auth'],
     'uses' => 'MembersController@missingDetails'
 ]);
+Route::get('/member/search', [
+    'middleware' => ['auth'],
+    'uses' => 'MembersController@memberSearch'
+]);
 Route::get('/member/migrate', 'MembersController@migrate');
 Route::post('member/{id}/update', [
     'middleware' => ['auth'],
     'as' => 'member.update',
     'uses' => 'MembersController@update'
 ]);
+
+Route::get('/guild/manage/{guild_id}', [
+    'middleware' => ['auth'],
+    'uses' => 'GuildsController@manage'
+]);
+
 
 /* Roles, Permissions, and Users */
 Route::group(['middleware' => 'web'], function () {

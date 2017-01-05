@@ -29,7 +29,21 @@ class MembershipService
         $active_members = $this->member->where('Active', $status)
             ->orderBy('Last_Name', 'asc')
             ->get();
+
         return $active_members;
+    }
+
+
+    public function getGuildMembers($guild_id)
+    {
+        $this->init();
+        $guild_members = $this->member->where('Active', 1)
+            ->where('tblGuildMembers.GuildID', $guild_id)
+            ->join('tblGuildMembers', 'tblMembers.MemberID', '=', 'tblGuildMembers.MemberID')
+            ->orderBy('Last_Name', 'asc')
+            ->get();
+
+        return $guild_members;
     }
 
     /**

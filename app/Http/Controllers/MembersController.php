@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Facades\GuildMembership;
 use App\Models\Coven;
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -52,6 +53,26 @@ class MembersController extends Controller
     {
         $this_member = $this->member->getDetails($member_id);
         return view('member_edit', $this_member);
+    }
+
+    public function memberSearch(Request $request)
+    {
+        $return = [];
+        $query_string = $request->q;
+        $guild_id = $request->guild;
+
+        $results = Member::where('Active', 1)
+            ->where('First_Name', 'LIKE', $query_string . '%')
+            ->orWhere('Last_Name', 'LIKE', $query_string . '%')
+            ->orderBy('Last_Name', 'asc')
+            ->get();
+        foreach ($results as $member) {
+            if (!GuildMembership::isMember($guild_id, $member->MemberID)) {
+                $return[] = $member->First_Name . ' ' . $member->Last_Name;
+            }
+        }
+
+        return $return;
     }
 
     public function missingDetails($member_id = 0)

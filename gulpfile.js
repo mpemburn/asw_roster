@@ -16,6 +16,7 @@ var elixir = require('laravel-elixir');
 elixir(function(mix) {
     var directories = {
         'node_modules/bootstrap-sass/assets/javascripts/**/*.js': 'resources/assets/js/bootstrap',
+        'bower_components/typeahead.js/dist/typeahead.bundle.min.js': 'public/js/lib',
         'node_modules/jquery.dirtyforms/jquery.dirtyforms.js': 'public/js/lib'
     };
     for (directory in directories) {
