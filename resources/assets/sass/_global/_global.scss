@@ -4,14 +4,18 @@ body {
 }
 
 input {
+  border: 1px solid #111;
+  border-radius: 3px !important;
+
   &:read-only {
     border: none;
   }
 }
 
-input[type="submit"] {
-  border: 1px solid #111;
+input[type="submit"],
+input[type="button"] {
   background-color: transparent;
+  outline: medium none;
 
   &:disabled {
     border: 1px solid #aaa;
@@ -21,6 +25,7 @@ input[type="submit"] {
 }
 
 select {
+  border-radius: 3px !important;
   &:disabled {
     border: none;
   }

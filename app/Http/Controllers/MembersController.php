@@ -10,6 +10,7 @@ use App\Models\Member;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Http\Controllers\UserController;
+use DB;
 
 class MembersController extends Controller
 {
@@ -36,12 +37,24 @@ class MembersController extends Controller
      *
      * @return JSON
      */
-    public function listCovens()
+    public function listCovens(Request $request)
     {
-        $covens = Coven::lists('CovenFullName', 'Coven');
-        $covens_array = $covens->toArray();
-        ksort($covens_array);
-        return $covens_array;
+        $success = false;
+        $covens = null;
+        $covens_array = null;
+        $original_values = (is_array($request->values)) ? $request->values : null;
+
+        if (!is_null($original_values)) {
+            $covens = Coven::whereIn('Coven', $original_values)->lists('CovenFullName', 'Coven');
+        } else {
+            $covens = Coven::lists('CovenFullName', 'Coven');
+        }
+        if (count($covens) > 0) {
+            $covens_array = $covens->toArray();
+            ksort($covens_array);
+            $success = true;
+        }
+        return ['success' => $success, 'data' => $covens_array];
     }
 
     /**
@@ -57,18 +70,26 @@ class MembersController extends Controller
 
     public function memberSearch(Request $request)
     {
+        \DB::listen(function($sql) {
+            //var_dump($sql);
+        });
+
         $return = [];
         $query_string = $request->q;
-        $guild_id = $request->guild;
+        $guild_id = $request->guild_id;
 
-        $results = Member::where('Active', 1)
-            ->where('First_Name', 'LIKE', $query_string . '%')
-            ->orWhere('Last_Name', 'LIKE', $query_string . '%')
-            ->orderBy('Last_Name', 'asc')
-            ->get();
-        foreach ($results as $member) {
-            if (!GuildMembership::isMember($guild_id, $member->MemberID)) {
-                $return[] = $member->First_Name . ' ' . $member->Last_Name;
+        if (strlen($query_string) >= 2) {
+            $results = Member::where('Active', 1)
+                ->where(function  ($query) use ($query_string) {
+                    $query->where('First_Name', 'LIKE', $query_string . '%')
+                        ->orWhere('Last_Name', 'LIKE', $query_string . '%');
+                })
+                ->orderBy('Last_Name', 'asc')
+                ->get();
+            foreach ($results as $member) {
+                if (!GuildMembership::isMember($guild_id, $member->MemberID)) {
+                    $return[] = ['id' => $member->MemberID, 'value' => $member->First_Name . ' ' . $member->Last_Name];
+                }
             }
         }
 

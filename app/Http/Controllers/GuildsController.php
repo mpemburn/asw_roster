@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Utility;
+use App\Models\GuildMember;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -93,4 +95,32 @@ class GuildsController extends Controller
         $active = Membership::getGuildMembers($guild_id);
         return view('guild_manage', ['members' => $active]);
     }
+
+    public function add(Request $request) {
+        $guild_member = new GuildMember();
+        $guild_member->GuildID = $request->guild_id;
+        $guild_member->MemberID = $request->member_id;
+        $guild_member->save();
+
+        $member = Membership::getMemberById($request->member_id);
+        $data = [
+            'member_id' => $member->MemberID,
+            'name' => $member->First_Name . ' ' . $member->Last_Name,
+            'phone' => Membership::getPrimaryPhone($member->MemberID),
+            'email' => $member->Email_Address,
+            'coven' => $member->Coven
+        ];
+
+        return ['success' => true, 'data' => $data];
+    }
+
+    public function remove(Request $request) {
+        $guild_member = GuildMember::where('GuildID', $request->guild_id)
+            ->where('MemberID', $request->member_id);
+
+        $guild_member->delete();
+
+        return ['success' => true];
+    }
+
 }

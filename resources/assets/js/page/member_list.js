@@ -4,56 +4,34 @@ $(document).ready(function ($) {
     if ($('.member-list').is('*')) {
         $('.member-list tbody tr').on('click', function () {
             var id = $(this).attr('data-id');
-            document.location = 'member/details/' + id;
+            document.location = appSpace.baseUrl + '/member/details/' + id;
         });
 
-        $('.member-list').DataTable({
-            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        var mainMemberList = $('#main_member_list').DataTable({
+            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]], // Number of entries to show
             iDisplayLength: -1,
             aaSorting: [],
             initComplete: function () {
-                this.api().columns('.filterable').every(function (index) {
-                    var column = this;
-                    var header = column.header();
-                    var select = $('<select><option value="">' + header.innerHTML + '</option></select>')
-                        .appendTo($(column.header()).empty())
-                        .on('change', function () {
-                            var val = $.fn.dataTable.util.escapeRegex(
-                                $(this).val()
-                            );
-
-                            column
-                                .search(val ? '^' + val + '$' : '', true, false)
-                                .draw();
-                        });
-
-                    column.data().unique().sort().each(function (d, j) {
-                        var label = (d == '') ? 'All' : d;
-                        select.append('<option value="' + d + '">' + label + '</option>')
-                    });
-
-                });
-                // Retrieve coven names into select via AJAX
-                $.ajax({
-                    type: "GET",
-                    url: '/public/member/covens',
-                    dataType: 'json',
-                    success: function (data) {
-                        var covens = $('[aria-label^="Coven"]').find('select');
-                        covens.css({ width: '75px' })
-                            .empty()
-                            .append($('<option>', { value: '', text: 'Coven' }));
-                        for (var key in data) {
-                            if (data.hasOwnProperty(key)) {
-                                var name = data[key];
-                                covens.append($('<option>', { value: key, text: name }));
-                            }
-                        }
-                    },
-                    error: function (data) {
-                        console.log(data);
+                var $search = $($(this).selector + '_filter').find('input[type="search"]');
+                // Add 'clearable' x to search field, and callback to restore table on clear
+                $search.addClass('clearable').clearable({
+                    onClear: function() {
+                        guildMemberList.search( '' ).columns().search( '' ).draw();
                     }
-                })
+                });
+                // Add filter dropdowns to dataTables.js header
+                var addFilters = Object.create(AddColumnFilters);
+                addFilters.init({ dataTables: this });
+                // Retrieve coven names into select via AJAX
+                var reviseSelect = Object.create(ReviseSelect);
+                reviseSelect.init({
+                    ajaxUrl: '/public/member/covens',
+                    selector: '[aria-label^="Coven"]',
+                    width: '75px',
+                    isChild: true,
+                    prepend: {value: '', text: 'Coven'},
+                    useOriginalValues: true
+                });
             }
         });
     }

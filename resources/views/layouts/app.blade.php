@@ -43,13 +43,22 @@
                     @if (Auth::check())
                         <li><a href="{{ url('/home') }}">Home</a></li>
                         <li class="nav-item dropdown {{ Request::is('member') ? 'active' : '' }}">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                               aria-expanded="false">Members <span class="caret"></span></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Members <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li class="dropdown-item"><a href="{{ url('/member') }}"><i class="fa fa-btn fa-users"></i> Members List</a></li>
                                 @if (\App\Facades\RosterAuth::userIsLeaderOrScribe())
                                 <li class="dropdown-item"><a href="{{ url('/member/details') }}"><i class="fa fa-btn fa-user-plus"></i> Add Member</a></li>
                                 <li class="dropdown-item"><a href="{{ url('/member/missing') }}"><i class="fa fa-btn fa-bars"></i> Missing Data</a></li>
+                                @endif
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown {{ Request::is('guild') ? 'active' : '' }}">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Guilds <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                @if (\App\Facades\RosterAuth::userIsLeaderOrScribe())
+                                    @foreach(\App\Facades\GuildMembership::getGuilds() as $guild)
+                                    <li class="dropdown-item"><a href="{{ url('/guild/manage/') }}/{{ $guild->GuildID }}"><i class="fa fa-btn fa-user-plus"></i> {{ $guild->GuildName }}</a></li>
+                                    @endforeach
                                 @endif
                             </ul>
                         </li>
@@ -84,10 +93,15 @@
         @yield('content')
     </div>
 
+    <script>
+        // Create global namespace.  Allows data to be passed to Javascript from back end.
+        var appSpace = {
+            baseUrl: '{!! url('/') !!}' // Base URL used for AJAX calls, etc.
+        };
+    </script>
     <!-- JavaScripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js" integrity="sha384-I6F5OKECLVtK/BL+8iSLDEHowSAfUo76ZL9+kGAgTRdiByINKJaqTPH/QVNS1VDb" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.4/js/bootstrap-datepicker.js"></script>
     <!-- Add any dynamic scripts that were pushed in a template -->
     @stack('scripts')

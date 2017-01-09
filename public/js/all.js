@@ -1,3 +1,155 @@
+/**
+ * jquery.clearable.js
+ *
+ * Adapted from http://stackoverflow.com/questions/6258521/clear-icon-inside-input-text
+ * Requires the following CSS:
+    .clearable {
+        background: #fff url(data:image/gif;base64,R0lGODlhBwAHAIAAAP///5KSkiH5BAAAAAAALAAAAAAHAAcAAAIMTICmsGrIXnLxuDMLADs=) no-repeat right -10px center;
+        border: 1px solid #999;
+        padding: 3px 24px 3px 4px; // Second value must match settings.offset
+        border-radius: 3px;
+    }
+    .clearable.x  { background-position: right 10px center; }
+    .clearable.onX{ cursor: pointer; }
+    .clearable::-ms-clear {display: none; width:0; height:0;}
+
+*/
+
+(function ($) {
+    $.fn.clearable = function (options) {
+        var settings = $.extend({
+            animate: false,
+            offset: 24, // Pixels of offset from right end of input
+            // Optional callbacks
+            onInput: function() {},
+            onClear: function() {}
+        }, options);
+
+        // Add class to target if not present
+        this.addClass('clearable');
+        // Events
+        this.on('input', function (evt) {
+            if (settings.animate) {
+                $(this).css({ transition: 'background 0.4s' })
+            }
+            $(this)[_toggle(this.value)]('x');
+            settings.onInput($(this));
+        }).on('mousemove', function(evt){
+            $(this)[_toggle(_isOnX(evt))]('onX');
+        }).on('touchstart click', function(evt){
+            evt.preventDefault();
+            if (_isOnX(evt)) {
+                settings.onClear($(this));
+                $(this).removeClass('x onX').val('').change();
+            }
+        });
+
+        // Determine whether user's mouse is over the 'X'
+        function _isOnX(evt) {
+            return (evt.target.offsetWidth - settings.offset) < (evt.clientX - evt.target.getBoundingClientRect().left);
+        }
+
+        // Add or remove classes based on value
+        function _toggle(value) {
+            return value ? 'addClass' : 'removeClass';
+        }
+
+        return this;
+    };
+
+
+}(jQuery));
+/**
+ * AddColumnFilters.js
+ *
+ * Adds dropdown filters to a dataTables.js table
+ *
+ * @type {
+        dataTables: Object // the instance of dataTables
+    }
+ */
+var AddColumnFilters = {
+    dataTables: null,
+    init: function(options) {
+        $.extend(this, options);
+        this._doAdd();
+    },
+    _doAdd: function() {
+        this.dataTables.api().columns('.filterable').every(function (index) {
+            var column = this;
+            var header = column.header();
+            var select = $('<select><option value="">' + header.innerHTML + '</option></select>')
+                .appendTo($(column.header()).empty())
+                .on('change', function () {
+                    var val = $.fn.dataTable.util.escapeRegex(
+                        $(this).val()
+                    );
+
+                    column
+                        .search(val ? '^' + val + '$' : '', true, false)
+                        .draw();
+                });
+            // Generate dropdown options from column contents.  Replace the blank value (if present) with "All"
+            column.data().unique().sort().each(function (d, j) {
+                var label = (d == '') ? 'All' : d;
+                select.append('<option value="' + d + '">' + label + '</option>')
+            });
+
+        });
+    }
+}
+/**
+ * AddRemove.js
+ *
+ * AjaxCall.js -- Simple wrapper for jQuery AJAX with callback
+ *
+ * Usage:
+ * var mySelect = Object.create(AddRemove);
+ * mySelect.init([options]);
+ *
+ * options:
+ * @type {
+        ajaxUrl: string,    // Endpoint URL
+        params: string,     // Parameters to pass
+        callback: function  // Function called on success. Passes returned data
+    }
+ */
+
+var AjaxCall = {
+    ajaxUrl: '',
+    params: '',
+    callback: function(){},
+    init: function(options) {
+        $.extend(this, options);
+        this.params = this._serialize(this.params);
+        this._doAjax();
+    },
+    _doAjax: function() {
+        var self = this;
+        $.ajax({
+            type: "GET",
+            url: this.ajaxUrl + '?' + this.params,
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    if (response.data) {
+                        self.callback(response.data);
+                    }
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    },
+    _serialize: function(params) {
+        if (typeof(params) == 'object') {
+            return $.param(params);
+        } else {
+            return params;
+        }
+    }
+};
 /* FieldToggle provides support for toggling visibility of one to several fields
  * Usage: Place in listener for the 'actor' field
  *
@@ -60,33 +212,318 @@ var FieldToggle = {
 }
 
 
-$(document).ready(function ($) {
+/**
+ * ReviseSelect.js
+ *
+ * Retrieves value from endpoint (ajaxUrl) and uses them to refresh dropdown. Useful for dataTable.js filters
+ *
+ * Usage:
+ * var mySelect = Object.create(ReviseSelect);
+ * mySelect.init([options]);
+ *
+ * options:
+ * @type {
+        ajaxUrl: string,    // Endpoint URL
+        selector: string,   // Selector for dropdown
+        isChild: boolean,   // If dropdown is child of selector (above), use .find('select')
+        prepend: Object,    // <option> to prepend to dropdown (e.g., {value: '0', text: 'Select'}
+        useOriginalValues: boolean, // Use only the values that were originally in the dropdown
+        width: string       // Set width of dropdown
+    }
+ */
 
-    if ($('#guild_manage').is('*')) {
-        var query = Object.create(UrlQuery);
-        var guild = query.getUrlPart();
-        // Instantiate the Bloodhound suggestion engine
-        var members = new Bloodhound({
-            datumTokenizer: function(datum) {
+var ReviseSelect = {
+    ajaxUrl: '',
+    selector: null,
+    isChild: false,
+    prepend: null,
+    useOriginalValues: false,
+    width: null,
+    dd: null,
+    originalValues: [],
+    params: null,
+    init: function(options) {
+        $.extend(this, options);
+        this._setDD();
+        if (this.useOriginalValues) {
+            this.params = this._serialize();
+        }
+        this._doAjax();
+    },
+    _doAjax: function() {
+        var self = this;
+        $.ajax({
+            type: "GET",
+            url: this.ajaxUrl + '?' + this.params,
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    self._reloadDD(response.data);
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    },
+    _reloadDD: function(data) {
+        this.dd.empty();
+        if (this.prepend != null) {
+            this.dd.append($('<option>', {value: this.prepend.value, text: this.prepend.text}));
+        }
+        for (var key in data) {
+            if (data.hasOwnProperty(key)) {
+                var text = data[key];
+                this.dd.append($('<option>', {value: key, text: text}));
+            }
+        }
+    },
+    _setDD: function() {
+        var $select = $(this.selector);
+        this.dd = (this.isChild) ? $select.find('select') : $select;
+        if (this.width != null) {
+            this.dd.css({width: this.width})
+        }
+    },
+    _serialize: function() {
+        var self = this;
+        var $options = this.dd.find('option');
+        $options.each(function () {
+            var value = $(this).attr('value');
+            if (value.length > 0) {
+                self.originalValues.push(value);
+            }
+        });
+        return (this.originalValues.length > 0) ? $.param({values: this.originalValues}) : '';
+    }
+};
+/**
+ * UrlQuery.js
+ *
+ * Get URL query variables or URL parts
+ *
+ * Usage:
+ * var query = Object.create(UrlQuery); // Create instance
+ * With no arg, getUrlPart gets part. Negative numbers get parts in reverse order
+ * var last = query.getUrlPart();
+ * Get variable from query string (e.g., ?my_var=foo)
+ * var myVar = query.getVar('my_var');
+ *
+ */
+var UrlQuery = {
+    getVar: function (varName) {
+        var vars = this.getUrlVars();
+        return (vars[varName]);
+    },
+    getUrlVars: function () {
+        var vars = [], hash;
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for (var i = 0; i < hashes.length; i++) {
+            hash = hashes[i].split('=');
+            vars.push(hash[0]);
+            vars[hash[0]] = hash[1];
+        }
+        return vars;
+    },
+    getUrlPart: function(index) {
+        index = index || - 1;
+        var parts = window.location.href.split('/');
+        return (index < 0) ? parts.slice(index)[0] : (parts[index]);
+    }
+}
+
+var TableManager = {
+    typeaheadUrl: '',
+    addUrl: '',
+    removeUrl: '',
+    idName: '',
+    tableSelector: '',
+    searchSelector: '',
+    addSelector: '',
+    removeSelector: '',
+    table: null,
+    search: null,
+    add: null,
+    remove: null,
+    bloodhound: null,
+    onTableComplete: function(){},
+    ajaxCallback: function(){},
+    init: function(options) {
+        $.extend(this, options);
+        this._setTable();
+        this._setBloodhound();
+        this._setTypeahead();
+        this._setListeners();
+    },
+    _doAjax: function(url, idParam, ajaxCallback) {
+        this.ajaxCallback = ajaxCallback;
+        var self = this;
+        $.ajax({
+            type: "GET",
+            url: url + '&' + idParam,
+            dataType: 'json',
+            success: function (response) {
+                if (response.success) {
+                    if (response.data) {
+                        self.ajaxCallback(response.data);
+                    }
+                }
+            },
+            error: function (data) {
+                console.log(data);
+            }
+        });
+    },
+    _onAddComplete: function(data) {
+        var newRow = this.table.row.add([
+                data.name,
+                data.phone,
+                '<a href="mailto:' + data.email + '">' + data.email + '</a>',
+                data.coven,
+                '<i class="fa fa-close guild-remove"></i>'
+            ])
+            .draw()
+            .node();
+        // Add the data-id attribute to the newly created row
+        $(newRow).attr('data-id', data.member_id);
+        // Add the 'remove' icon
+        var $remove = $(newRow).find('i').parent();
+        $remove.addClass('remove');
+        // Refresh remove listener
+        this._setListenerRemove();
+        // Disable add button and clear search field
+        this.search.typeahead('val', '');
+        this.add.attr('disabled', 'disabled');
+    },
+    _onRemoveComplete: function() {
+
+    },
+    _setBloodhound: function() {
+        var self = this;
+        this.bloodhound = new Bloodhound({
+            datumTokenizer: function (datum) {
                 return Bloodhound.tokenizers.whitespace(datum.value);
             },
             queryTokenizer: Bloodhound.tokenizers.whitespace,
             remote: {
                 wildcard: '%QUERY',
-                url: 'http://roster.local/public/member/search?q=%QUERY&guild=' + guild,
-                transform: function(response) {
-                    return $.map(response, function(member) {
+                url: self.typeaheadUrl,
+                transform: function (response) {
+                    // Populate typeahead list with returned data
+                    return $.map(response, function (data) {
                         return {
-                            value: member
+                            id: data.id,
+                            value: data.value
                         };
                     });
                 }
             }
         });
-
-        $('.typeahead').typeahead(null, {
+    },
+    _setListeners: function() {
+        this._setListenerAdd();
+        this._setListenerRemove();
+    },
+    _setListenerAdd: function() {
+        var self = this;
+        this.add = $(this.addSelector);
+        this.add.on('click', function () {
+            var idValue = self.search.data(self.idName);
+            self._doAjax(self.addUrl, self.idName + '=' + idValue, self._onAddComplete);
+        });
+    },
+    _setListenerRemove: function() {
+        var self = this;
+        this.remove = $(this.removeSelector);
+        this.remove.off().on('click', function (evt) {
+            evt.stopPropagation();
+            var $row = $(this).closest('tr');
+            var idValue = $row.attr('data-id');
+            $row.hide();
+            self.table
+                .row( $(this).parents('tr') )
+                .remove()
+                .draw();
+            self._doAjax(self.removeUrl, self.idName + '=' + idValue, self._onRemoveComplete);
+        });
+    },
+    _setTable: function() {
+        var self = this;
+        this.table = $(this.tableSelector).DataTable({
+            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]], // Number of entries to show
+            iDisplayLength: -1,
+            aaSorting: [],
+            columnDefs: [
+                {orderable: false, targets: 4}
+            ],
+            initComplete: function () {
+                var $search = $($(this).selector + '_filter').find('input[type="search"]');
+                // Add 'clearable' x to search field, and callback to restore table on clear
+                $search.clearable({
+                    onClear: function() {
+                        self.table.search( '' ).columns().search( '' ).draw();
+                    }
+                });
+                // Add filter dropdowns to dataTables.js header
+                var addFilters = Object.create(AddColumnFilters);
+                addFilters.init({dataTables: this});
+                // Do callback
+                self.onTableComplete();
+            }
+        });
+    },
+    _setTypeahead: function() {
+        var self = this;
+        this.search = $(this.searchSelector);
+        this.search.typeahead(null, {
+            name: 'id',
             display: 'value',
-            source: members
+            source: this.bloodhound,
+            hint: true,
+            highlight: true,
+            limit: Infinity,
+        }).on('typeahead:selected', function (evt, data) {
+            self.search.data(self.idName, data.id);
+            self.add.removeAttr('disabled');
+        }).on('input', function () {
+            if ($(this).val() == '') {
+                self.add.attr('disabled', 'disabled');
+            }
+        }).clearable({
+            onClear: function(target) {
+                // Clear typeahead and disable the add button
+                target.typeahead('val', '');
+                self.add.attr('disabled', 'disabled');
+            }
+        });
+    }
+};
+
+$(document).ready(function ($) {
+    if ($('#guild_manage').is('*')) {
+        var guild = appSpace.urlQuery.getUrlPart();
+        var guildTable = Object.create(TableManager);
+        guildTable.init({
+            typeaheadUrl: appSpace.baseUrl + '/member/search?q=%QUERY&guild_id=' + guild,
+            addUrl: appSpace.baseUrl + '/guild/add?guild_id=' + guild,
+            removeUrl: appSpace.baseUrl + '/guild/remove?guild_id=' + guild,
+            idName: 'member_id',
+            tableSelector: '#guild_member_list',
+            searchSelector: '#guild_search',
+            addSelector: '#guild_add_member',
+            removeSelector: '.guild-remove',
+            onTableComplete: function() {
+                // Retrieve coven names into select via AJAX
+                var reviseSelect = Object.create(ReviseSelect);
+                reviseSelect.init({
+                    ajaxUrl: '/public/member/covens',
+                    selector: '[aria-label^="Coven"]',
+                    width: '75px',
+                    isChild: true,
+                    prepend: {value: '', text: 'Coven'},
+                    useOriginalValues: true
+                });
+            }
         });
     }
 });
@@ -196,56 +633,34 @@ $(document).ready(function ($) {
     if ($('.member-list').is('*')) {
         $('.member-list tbody tr').on('click', function () {
             var id = $(this).attr('data-id');
-            document.location = 'member/details/' + id;
+            document.location = appSpace.baseUrl + '/member/details/' + id;
         });
 
-        $('.member-list').DataTable({
-            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+        var mainMemberList = $('#main_member_list').DataTable({
+            lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]], // Number of entries to show
             iDisplayLength: -1,
             aaSorting: [],
             initComplete: function () {
-                this.api().columns('.filterable').every(function (index) {
-                    var column = this;
-                    var header = column.header();
-                    var select = $('<select><option value="">' + header.innerHTML + '</option></select>')
-                        .appendTo($(column.header()).empty())
-                        .on('change', function () {
-                            var val = $.fn.dataTable.util.escapeRegex(
-                                $(this).val()
-                            );
-
-                            column
-                                .search(val ? '^' + val + '$' : '', true, false)
-                                .draw();
-                        });
-
-                    column.data().unique().sort().each(function (d, j) {
-                        var label = (d == '') ? 'All' : d;
-                        select.append('<option value="' + d + '">' + label + '</option>')
-                    });
-
-                });
-                // Retrieve coven names into select via AJAX
-                $.ajax({
-                    type: "GET",
-                    url: '/public/member/covens',
-                    dataType: 'json',
-                    success: function (data) {
-                        var covens = $('[aria-label^="Coven"]').find('select');
-                        covens.css({ width: '75px' })
-                            .empty()
-                            .append($('<option>', { value: '', text: 'Coven' }));
-                        for (var key in data) {
-                            if (data.hasOwnProperty(key)) {
-                                var name = data[key];
-                                covens.append($('<option>', { value: key, text: name }));
-                            }
-                        }
-                    },
-                    error: function (data) {
-                        console.log(data);
+                var $search = $($(this).selector + '_filter').find('input[type="search"]');
+                // Add 'clearable' x to search field, and callback to restore table on clear
+                $search.addClass('clearable').clearable({
+                    onClear: function() {
+                        guildMemberList.search( '' ).columns().search( '' ).draw();
                     }
-                })
+                });
+                // Add filter dropdowns to dataTables.js header
+                var addFilters = Object.create(AddColumnFilters);
+                addFilters.init({ dataTables: this });
+                // Retrieve coven names into select via AJAX
+                var reviseSelect = Object.create(ReviseSelect);
+                reviseSelect.init({
+                    ajaxUrl: '/public/member/covens',
+                    selector: '[aria-label^="Coven"]',
+                    width: '75px',
+                    isChild: true,
+                    prepend: {value: '', text: 'Coven'},
+                    useOriginalValues: true
+                });
             }
         });
     }
@@ -254,26 +669,7 @@ $(document).ready(function ($) {
 
 // This is the app global script.
 
-var UrlQuery = {
-    getVar: function (varName) {
-        var vars = this.getUrlVars();
-        return (vars[varName]);
-    },
-    getUrlVars: function () {
-        var vars = [], hash;
-        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-        for (var i = 0; i < hashes.length; i++) {
-            hash = hashes[i].split('=');
-            vars.push(hash[0]);
-            vars[hash[0]] = hash[1];
-        }
-        return vars;
-    },
-    getUrlPart: function(index) {
-        index = index || - 1;
-        var parts = window.location.href.split('/');
-        return (index < 0) ? parts.slice(index)[0] : (parts[index]);
-    }
-}
+// Instantiate UrlQuery and add to global namespace
+appSpace.urlQuery = Object.create(UrlQuery);
 
 //# sourceMappingURL=all.js.map

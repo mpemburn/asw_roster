@@ -24,6 +24,7 @@ elixir(function(mix) {
     }
     mix.sass('app.scss', 'public/css/all.css');
     mix.scripts([
+        'resources/assets/js/jquery/**/*.js',
         'resources/assets/js/lib/**/*.js',
         'resources/assets/js/page/**/*.js',
         'app.js'
