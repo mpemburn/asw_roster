@@ -62,7 +62,6 @@
                                 @endif
                             </ul>
                         </li>
-                        <li><a href="{{ url('/home') }}">FAQ</a></li>
                     @endif
                 </ul>
 

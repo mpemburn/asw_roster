@@ -11,6 +11,11 @@ $(document).ready(function ($) {
             lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]], // Number of entries to show
             iDisplayLength: -1,
             aaSorting: [],
+            fnDrawCallback: function() {
+                // Hide pagination buttons of only one page is showing
+                var $paginates = $('.dataTables_paginate').find('.paginate_button');
+                $('.dataTables_paginate').toggle($paginates.length > 3);
+            },
             initComplete: function () {
                 var $search = $($(this).selector + '_filter').find('input[type="search"]');
                 // Add 'clearable' x to search field, and callback to restore table on clear

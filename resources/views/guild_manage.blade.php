@@ -1,9 +1,9 @@
 @extends('layouts.app')
 @section('content')
-    <div id="guild_manage" class="content">
+    <div id="guild_manage" class="content col-md-10 col-md-offset-1">
         <h1>{{ \App\Facades\GuildMembership::getGuildName() }}</h1>
         <div class="member-search col-md-12">
-            <div class="member-search-field col-md-6">
+            <div class="member-search-field col-md-4">
                 <input class="typeahead" id="guild_search" type="search" data-provide="typeahead"/>
             </div>
             <div class="member-add-button col-md-1">

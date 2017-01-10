@@ -36,7 +36,7 @@
     }
 </style>
 @section('content')
-    <div class="content">
+    <div class="content col-md-10 col-md-offset-1">
         <div class="page-header">
             <h3>Missing or Incorrect Data</h3>
             <strong>NOTES:</strong>
@@ -80,34 +80,34 @@
                                 {{ $member->First_Name . ' ' . $member->Last_Name }}
                             </td>
                             <td class="center shade">
-                                {{ \App\Facades\Member::hasNo($member->Address1) }}
+                                {{ \App\Facades\Membership::hasNo($member->Address1) }}
                             </td>
                             <td class="center">
-                                {{ \App\Facades\Member::hasNo($member->City) }}
+                                {{ \App\Facades\Membership::hasNo($member->City) }}
                             </td>
                             <td class="center shade">
-                                {{ \App\Facades\Member::hasNo($member->State) }}
+                                {{ \App\Facades\Membership::hasNo($member->State) }}
                             </td>
                             <td class="center">
-                                {{ \App\Facades\Member::nonAlphaOrMissing($member->Zip) }}
+                                {{ \App\Facades\Membership::nonAlphaOrMissing($member->Zip) }}
                             </td>
                             <td class="center shade">
-                                {{ \App\Facades\Member::hasNo($member->Home_Phone) }}
+                                {{ \App\Facades\Membership::hasNo($member->Home_Phone) }}
                             </td>
                             <td class="center">
-                                {{ \App\Facades\Member::hasNo($member->Cell_Phone) }}
+                                {{ \App\Facades\Membership::hasNo($member->Cell_Phone) }}
                             </td>
                             <td class="center shade">
-                                {{ \App\Facades\Member::hasNo($member->Work_Phone) }}
+                                {{ \App\Facades\Membership::hasNo($member->Work_Phone) }}
                             </td>
                             <td class="center">
-                                {{ \App\Facades\Member::hasNo($member->Email_Address) }}
+                                {{ \App\Facades\Membership::hasNo($member->Email_Address) }}
                             </td>
                             <td class="center shade">
-                                {{ \App\Facades\Member::hasAll([$member->Birth_Date, $member->Birth_Time, $member->Birth_Place]) }}
+                                {{ \App\Facades\Membership::hasAll([$member->Birth_Date, $member->Birth_Time, $member->Birth_Place]) }}
                             </td>
                             <td class="center">
-                                {{ \App\Facades\Member::hasNo($member->Magickal_Name) }}
+                                {{ \App\Facades\Membership::hasNo($member->Magickal_Name) }}
                             </td>
                             <td class="pad shade">
                                 {{ \App\Helpers\Utility::ordinal($member->Degree) }}
@@ -119,7 +119,7 @@
                                 {{ $member->LeadershipRole }}
                             </td>
                             <td class="center">
-                                {{ \App\Facades\Member::boardExpired($member->MemberID) }}
+                                {{ \App\Facades\Membership::boardExpired($member->MemberID) }}
                             </td>
                         </tr>
                     @endforeach
