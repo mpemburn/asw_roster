@@ -15,5 +15,6 @@ return [
 
     'failed' => 'These credentials do not match our records.',
     'throttle' => 'Too many login attempts. Please try again in :seconds seconds.',
+    'timeout' => 'Your session has been logged out due to inactivity.\nYou will need to log in again.',
 
 ];

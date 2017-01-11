@@ -32,36 +32,6 @@ class PasswordController extends Controller
         $this->middleware('guest');
     }
 
-    protected function getSendResetLinkEmailInvalid($response, $email)
-    {
-        $heading = trans($response . '-heading');
-        $message = trans($response, [
-            'email' => $email,
-            'link' => url('/password/reset')
-        ]);
-        return view('user_message', ['heading' => $heading, 'message' => $message]);
-    }
-
-    protected function getSendResetLinkEmailFailureResponse()
-    {
-        $heading = trans('passwords-failure-heading');
-        $message = trans('passwords-failure', [
-            'link' => url('/password/reset'),
-            'support' => config('app.support')
-        ]);
-
-        return view('user_message', ['heading' => $heading, 'message' => $message]);
-    }
-
-    protected function getSendResetLinkEmailSuccessResponse($response, $email)
-    {
-        $heading = trans($response . '-heading');
-        $message = trans($response, [
-            'email' => $email
-        ]);
-        return view('user_message', ['heading' => $heading, 'message' => $message]);
-    }
-
     public function sendResetLinkEmail(Request $request)
     {
         $this->validateSendResetLinkEmail($request);
@@ -82,4 +52,39 @@ class PasswordController extends Controller
                 return $this->getSendResetLinkEmailFailureResponse();
         }
     }
+
+    // Methods to override defaults in ResetsPasswords trait
+
+    protected function getSendResetLinkEmailFailureResponse()
+    {
+        $heading = trans('passwords-failure-heading');
+        $message = trans('passwords-failure', [
+            'link' => url('/password/reset'),
+            'support' => config('app.support')
+        ]);
+
+        return view('user_message', ['heading' => $heading, 'message' => $message]);
+    }
+
+    protected function getSendResetLinkEmailInvalid($response, $email)
+    {
+        $heading = trans($response . '-heading');
+        $message = trans($response, [
+            'email' => $email,
+            'link' => url('/password/reset')
+        ]);
+
+        return view('user_message', ['heading' => $heading, 'message' => $message]);
+    }
+
+    protected function getSendResetLinkEmailSuccessResponse($response, $email)
+    {
+        $heading = trans($response . '-heading');
+        $message = trans($response, [
+            'email' => $email
+        ]);
+
+        return view('user_message', ['heading' => $heading, 'message' => $message]);
+    }
+
 }

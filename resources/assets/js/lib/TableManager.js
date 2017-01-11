@@ -13,6 +13,7 @@
         searchSelector: string, // Selector of the search input field
         addSelector: string, // Selector of the Add button
         removeSelector: string // Select of the Remove icons
+        timeoutMessage: string // Alert message sent to user if session has timed out.
     }
  */
 var TableManager = {
@@ -24,6 +25,7 @@ var TableManager = {
     searchSelector: '',
     addSelector: '',
     removeSelector: '',
+    timeoutMessage: 'Your session has expired and you have been logged out',
     table: null,
     search: null,
     add: null,
@@ -54,8 +56,12 @@ var TableManager = {
                     }
                 }
             },
-            error: function (data) {
-                console.log(data);
+            error: function (response) {
+                console.log(response);
+                if (response.status == '401') {
+                    alert(self.timeoutMessage)
+                    location.reload();
+                }
             }
         });
     },
@@ -108,6 +114,7 @@ var TableManager = {
     _setListeners: function () {
         this._setListenerAdd();
         this._setListenerRemove();
+        this._timeoutListener();
     },
     _setListenerAdd: function () {
         var self = this;
@@ -185,6 +192,23 @@ var TableManager = {
                 target.typeahead('val', '');
                 self.add.attr('disabled', 'disabled');
             }
+        });
+    },
+    _timeoutListener: function(){
+        /* This is a workaround for Bloodhound's lack of error handling.
+           It attempts to send a call to the 'typeaheadUrl'.
+           If the session has timed out, it will return a 401 'Unauthorized' error.
+           This will alert the user, then return them to the login page.
+        */
+        var self = this;
+        this.search.on('keyup', function() {
+            var test = $.get(self.typeaheadUrl);
+            test.error(function(response) {
+                if (response.status == '401') {
+                    alert(self.timeoutMessage)
+                    location.reload();
+                }
+            });
         });
     }
 };

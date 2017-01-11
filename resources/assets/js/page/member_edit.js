@@ -83,14 +83,21 @@ $(document).ready(function ($) {
                 url: formAction,
                 data: $(this).serialize(),
                 dataType: 'json',
-                success: function (data) {
-                    console.log(data);
+                success: function (response) {
+                    var success = response.success;
                     $('#member_update').dirtyForms('setClean');
-                    $('#submit_update').attr('disabled', 'disabled');
-                    $('#member_saving').addClass('hidden');
+                    if (success.status) {
+                        $('#submit_update').attr('disabled', 'disabled');
+                        $('#member_saving').addClass('hidden');
+                    }
                 },
-                error: function (data) {
-                    console.log(data);
+                error: function (response) {
+                    console.log(response);
+                    $('#member_update').dirtyForms('setClean');
+                    if (response.status == '401') {
+                        alert(appSpace.authTimeout)
+                        location.reload();
+                    }
                 }
             })
         });

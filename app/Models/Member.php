@@ -141,6 +141,9 @@ class Member extends Model
      */
     public function saveMember($data)
     {
+        if (true) {
+            return ['status' => false, 'timeout' => true];
+        }
         $member_id = $data['MemberID'];
         $is_new = false;
 
@@ -187,7 +190,7 @@ class Member extends Model
 
         // Make any changes necessary after Member record has been saved
         $count = Membership::postSaveMemberActions($changed, $member);
-        return ['success' => $result, 'member_id' => $member_id, 'changed' => $changed, 'count' => $count, 'data' => $data];
+        return ['status' => $result, 'member_id' => $member_id, 'changed' => $changed, 'count' => $count, 'data' => $data];
     }
 
     /* Private Methods */
