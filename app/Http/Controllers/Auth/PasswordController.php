@@ -32,19 +32,34 @@ class PasswordController extends Controller
         $this->middleware('guest');
     }
 
-    protected function getSendResetLinkEmailSuccessInvalid($email)
+    protected function getSendResetLinkEmailInvalid($response, $email)
     {
-        return view('user_message', ['template' => 'partials.invalid_reset_email', 'email' => $email]);
+        $heading = trans($response . '-heading');
+        $message = trans($response, [
+            'email' => $email,
+            'link' => url('/password/reset')
+        ]);
+        return view('user_message', ['heading' => $heading, 'message' => $message]);
     }
 
-    protected function getSendResetLinkEmailFailureResponse($email)
+    protected function getSendResetLinkEmailFailureResponse()
     {
-        return view('user_message', ['template' => 'partials.failure_reset_email', 'email' => $email]);
+        $heading = trans('passwords-failure-heading');
+        $message = trans('passwords-failure', [
+            'link' => url('/password/reset'),
+            'support' => config('app.support')
+        ]);
+
+        return view('user_message', ['heading' => $heading, 'message' => $message]);
     }
 
-    protected function getSendResetLinkEmailSuccessResponse($email)
+    protected function getSendResetLinkEmailSuccessResponse($response, $email)
     {
-        return view('user_message', ['template' => 'partials.success_reset_email', 'email' => $email]);
+        $heading = trans($response . '-heading');
+        $message = trans($response, [
+            'email' => $email
+        ]);
+        return view('user_message', ['heading' => $heading, 'message' => $message]);
     }
 
     public function sendResetLinkEmail(Request $request)
@@ -60,11 +75,11 @@ class PasswordController extends Controller
 
         switch ($response) {
             case Password::RESET_LINK_SENT:
-                return $this->getSendResetLinkEmailSuccessResponse($request->email);
+                return $this->getSendResetLinkEmailSuccessResponse($response, $request->email);
             case Password::INVALID_USER:
-                return $this->getSendResetLinkEmailSuccessInvalid($request->email);
+                return $this->getSendResetLinkEmailInvalid($response, $request->email);
             default:
-                return $this->getSendResetLinkEmailFailureResponse($response);
+                return $this->getSendResetLinkEmailFailureResponse();
         }
     }
 }
