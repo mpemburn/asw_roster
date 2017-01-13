@@ -63,6 +63,7 @@ class RosterAuthService {
 
     public function isGuildLeader()
     {
+        return ($this->init()) ? $this->user->hasRole('guild-leader') : false;
     }
 
     public function isMemberOf($role_name)

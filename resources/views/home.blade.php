@@ -25,6 +25,15 @@
                                 <li><strong>Elders:</strong> Administrator-level access: May edit any member's record.</li>
                                 <li><strong>Guild Leaders:</strong> May add or remove guild members to their guild</li>
                             </ul>
+                            <h4>What is the Missing Data List?</h4>
+                            The <a href="/member/missing">Missing Data</a> list is a breakdown by coven of several categories of information
+                            that may be missing or incorrect.  If you are a coven leader or scribe, please check this list and correct all
+                            relavant information. You should also be alert for the presence of people who are no longer coven members, or
+                            those who are missing from the Roster.
+                            <br/><br/>
+                            <strong>NOTE:</strong> If a member has moved to a different coven, only a leader or scribe of the original coven
+                            can change the member to the new coven.  After that point, only the leader or scribe of the new coven can make
+                            changes to that member's record.
                         </div>
                     </div>
                 @else
