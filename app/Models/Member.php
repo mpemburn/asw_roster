@@ -142,9 +142,6 @@ class Member extends Model
      */
     public function saveMember($data)
     {
-        if (true) {
-            return ['status' => false, 'timeout' => true];
-        }
         $member_id = $data['MemberID'];
         $is_new = false;
 

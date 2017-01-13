@@ -183,6 +183,6 @@
 @endsection
 <!-- Push any scripts needed for this page onto the stack -->
 @push('scripts')
-    <script src="{{ URL::to('/') }}/js/lib/jquery.dirtyforms.js"></script>
+    <script src="{{ URL::to('/js/lib') }}/jquery.dirtyforms.js"></script>
     <script>appSpace.authTimeout = '{!! trans('auth.timeout') !!}';</script>
 @endpush

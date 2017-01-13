@@ -5,7 +5,7 @@
         @if ($can_edit)
         <div class="member-search col-md-12">
             <div class="member-search-field col-md-4">
-                <input class="typeahead" id="guild_search" type="search" data-provide="typeahead"/>
+                <input class="typeahead" id="guild_search" type="search" data-provide="typeahead" placeholder="Search for Members"/>
             </div>
             <div class="member-add-button col-md-1">
                 <input id="guild_add_member" type="button" class="btn btn-primary short" value="Add" disabled/>
