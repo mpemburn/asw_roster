@@ -12,10 +12,6 @@
                         <h3 class="text-center">Assembly of the Sacred Wheel Membership Roster</h3>
 
                         <div class="col-md-10 col-lg-offset-1">
-                            <strong>NOTE:</strong> This resource is available to all members of the ASW. If your coveners wish to have
-                            access, they will need to register using the email address that is associated with their
-                            profile in this system.  If they attempt to register and are told that their email is invalid,
-                            please check to see that the email listed in the system is correct, and change if necessary.
                             <h4>Who Can Use This System?</h4>
                             All active members of the ASW are eligible to use this Membership Roster program as a resource to contact
                             other members in their coven and throughout the organization.  In addition, the ASW leadership and coven scribes
@@ -25,6 +21,12 @@
                                 <li><strong>Elders:</strong> Administrator-level access: May edit any member's record.</li>
                                 <li><strong>Guild Leaders:</strong> May add or remove guild members to their guild</li>
                             </ul>
+                            
+                            <strong>NOTE:</strong> This resource is available to all members of the ASW. If your coveners wish to have
+                            access, they will need to register using the email address that is associated with their
+                            profile in this system.  If they attempt to register and are told that their email is invalid,
+                            please check to see that the email listed in the system is correct, and change if necessary.
+
                             <h4>What is the Missing Data List?</h4>
                             The <a href="/member/missing">Missing Data</a> list is a breakdown by coven of several categories of information
                             that may be missing or incorrect.  If you are a coven leader or scribe, please check this list and correct all
