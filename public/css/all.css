@@ -5740,15 +5740,9 @@ input {
   input:read-only {
     border: none; }
 
-input[type="submit"],
-input[type="button"] {
-  background-color: transparent;
-  outline: medium none; }
-  input[type="submit"]:disabled,
-  input[type="button"]:disabled {
-    border: 1px solid #aaa;
-    color: #aaa;
-    background-color: transparent; }
+input[type="submit"].short,
+input[type="button"].short {
+  padding: 4px 8px; }
 
 select {
   border-radius: 3px !important; }
@@ -5833,6 +5827,10 @@ table.dataTable tbody tr:hover {
 .dataTables_filter input {
   padding: 0 5px;
   border: 1pt solid #111; }
+
+.panel-default > .panel-heading {
+  color: #ffffff;
+  background-color: #337ab7 !important; }
 
 /* Override Bootstrap navbar defaults */
 /* navbar */

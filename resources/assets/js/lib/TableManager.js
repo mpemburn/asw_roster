@@ -14,6 +14,7 @@
         addSelector: string, // Selector of the Add button
         removeSelector: string // Select of the Remove icons
         timeoutMessage: string // Alert message sent to user if session has timed out.
+        canEdit: boolean // Enables editing features if true
     }
  */
 var TableManager = {
@@ -26,6 +27,7 @@ var TableManager = {
     addSelector: '',
     removeSelector: '',
     timeoutMessage: 'Your session has expired and you have been logged out',
+    canEdit: false,
     table: null,
     search: null,
     add: null,
@@ -38,9 +40,11 @@ var TableManager = {
     init: function (options) {
         $.extend(this, options);
         this._setTable();
-        this._setBloodhound();
-        this._setTypeahead();
-        this._setListeners();
+        if (this.canEdit) {
+            this._setBloodhound();
+            this._setTypeahead();
+            this._setListeners();
+        }
     },
     _doAjax: function (url, idParam, ajaxCallback) {
         this.ajaxCallback = ajaxCallback;
@@ -146,7 +150,7 @@ var TableManager = {
             iDisplayLength: -1,
             aaSorting: [],
             columnDefs: [
-                {orderable: false, targets: 4}
+                {orderable: false, targets: (self.canEdit) ? 4 : 3}
             ],
             fnDrawCallback: function () {
                 // Hide pagination buttons of only one page is showing

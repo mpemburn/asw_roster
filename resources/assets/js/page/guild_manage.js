@@ -13,6 +13,7 @@ $(document).ready(function ($) {
             searchSelector: '#guild_search',
             addSelector: '#guild_add_member',
             removeSelector: '.guild-remove',
+            canEdit: appSpace.canEdit,
             timeoutMessage: appSpace.authTimeout,
             onTableComplete: function() {
                 // Retrieve coven names into select via AJAX

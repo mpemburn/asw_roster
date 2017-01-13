@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Facades\GuildMembership;
+use App\Facades\RosterAuth;
 use App\Helpers\Utility;
 use App\Models\GuildMember;
 use Illuminate\Http\Request;
@@ -93,7 +95,13 @@ class GuildsController extends Controller
     public function manage($guild_id)
     {
         $active = Membership::getGuildMembers($guild_id);
-        return view('guild_manage', ['members' => $active]);
+        $has_leader_role = RosterAuth::isGuildLeader();
+        $member_id = RosterAuth::getMemberId();
+        $is_admin = RosterAuth::isAdmin();
+        $is_leader = GuildMembership::isLeader($guild_id, $member_id);
+        $can_edit = ($is_admin || ($has_leader_role && $is_leader));
+
+        return view('guild_manage', ['members' => $active, 'can_edit' => !$can_edit]);
     }
 
     public function add(Request $request) {

@@ -26,6 +26,11 @@ class RosterAuthService {
         return $success;
     }
 
+    public function getMemberId()
+    {
+        return ($this->init()) ? $this->member->MemberID : null;
+    }
+
     public function getMemberName()
     {
         return ($this->init()) ? $this->member->First_Name . ' ' . $this->member->Last_Name : null;
@@ -34,6 +39,11 @@ class RosterAuthService {
     public function getUserCoven()
     {
         return ($this->init()) ? $this->member->Coven : null;
+    }
+
+    public function isAdmin()
+    {
+        return ($this->init()) ? $this->user->hasRole('admin') : false;
     }
 
     public function isCovenLeader($coven)
@@ -49,6 +59,10 @@ class RosterAuthService {
     public function isElder()
     {
         return ($this->init()) ? (in_array($this->member->LeadershipRole, ['ELDER', 'CRF', 'CRM'])) : false;
+    }
+
+    public function isGuildLeader()
+    {
     }
 
     public function isMemberOf($role_name)

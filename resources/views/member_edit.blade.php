@@ -92,7 +92,7 @@
                             </div>
                             <div class="form-group">
                                 <div class="col-md-11 col-md-offset-1">
-                                    {{ Form::submit(($member->MemberID == 0) ? 'Submit' : 'Update', ['id' => 'submit_update', 'disabled' => 'disabled']) }}
+                                    {{ Form::submit(($member->MemberID == 0) ? 'Submit' : 'Update', ['id' => 'submit_update', 'class' => 'btn btn-primary', 'disabled' => 'disabled']) }}
                                     <i id="member_saving" class="member-saving fa fa-spinner fa-spin hidden"></i>
                                 </div>
                             </div>

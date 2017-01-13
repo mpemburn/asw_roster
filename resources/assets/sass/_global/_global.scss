@@ -14,13 +14,8 @@ input {
 
 input[type="submit"],
 input[type="button"] {
-  background-color: transparent;
-  outline: medium none;
-
-  &:disabled {
-    border: 1px solid #aaa;
-    color: #aaa;
-    background-color: transparent;
+  &.short {
+    padding: 4px 8px;
   }
 }
 
@@ -151,4 +146,9 @@ table.dataTable {
     padding: 0 5px;
     border: 1pt solid #111;
   }
+}
+
+.panel-default >.panel-heading {
+  color: #ffffff;
+  background-color: #337ab7 !important;
 }

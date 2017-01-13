@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Facades\RosterAuth;
 
 /**
  * Class Guild
@@ -25,5 +26,4 @@ class Guild extends Model
 
     protected $guarded = [];
 
-        
 }

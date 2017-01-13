@@ -97,6 +97,7 @@ class Member extends Model
         $can_create = $this->canCreate();
         $can_edit = (!is_null($this->member)) ? $this->canEdit() : false;
 
+        // Uses the RolesService (via Roles Facade) to determine whether user can edit
         $isPurseWarden = Roles::isPurseWarden($member_id, $this->member->Coven);
         $isScribe = Roles::isScribe($member_id, $this->member->Coven);
 

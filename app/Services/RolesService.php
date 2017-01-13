@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Models\BoardRole;
 use App\Models\CovenRoles;
 use App\Models\LeadershipRole;
+use App\Models\Guild;
 
 class RolesService {
 
@@ -100,7 +101,7 @@ class RolesService {
         return $this->hasCovenRole($member_id, $coven, 'PW');
     }
 
-   public function isScribe($member_id, $coven)
+    public function isScribe($member_id, $coven)
     {
         return $this->hasCovenRole($member_id, $coven, 'SCR');
     }

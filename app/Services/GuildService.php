@@ -21,6 +21,16 @@ class GuildService {
         return ($guild_member !== null);
     }
 
+    public function isLeader($guild_id, $member_id)
+    {
+        $guild_leader = Guild::where('GuildID', $guild_id)
+            ->where('LeaderMemberID', $member_id)
+            ->get()
+            ->first();
+
+        return ($guild_leader !== null);
+    }
+
     public function getGuilds()
     {
         $guilds = Guild::all();
@@ -39,7 +49,7 @@ class GuildService {
 
         }
 
-        //return 'Order';
+        return null;
     }
 }
 
