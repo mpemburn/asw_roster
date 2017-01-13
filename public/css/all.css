@@ -5975,6 +5975,18 @@ table.dataTable tbody tr:hover {
   width: 100%;
   margin: 0 auto; }
 
+.missing-list {
+  width: 100%;
+  margin: 0 auto; }
+  .missing-list tbody.coven tr {
+    background-color: #fff; }
+    .missing-list tbody.coven tr:hover {
+      background-color: #ddd !important;
+      color: #111 !important;
+      cursor: pointer !important; }
+      .missing-list tbody.coven tr:hover a {
+        color: #111 !important; }
+
 .main-column {
   padding: 0; }
   .main-column .form-group {

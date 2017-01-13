@@ -75,6 +75,7 @@
                     </tr>
                     </tr>
                     @foreach($members[$coven->Coven] as $member)
+                        <tbody class="coven">
                         <tr data-id="{{ $member->MemberID }}">
                             <td>
                                 {{ $member->First_Name . ' ' . $member->Last_Name }}
@@ -122,6 +123,7 @@
                                 {{ \App\Facades\Membership::boardExpired($member->MemberID) }}
                             </td>
                         </tr>
+                        </tbody>
                     @endforeach
                 @endif
             @endforeach
