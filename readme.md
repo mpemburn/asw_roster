@@ -3,7 +3,7 @@ by Mark Pemburn
 mark@pemburn.com
 
 
-## Version Alpha; December, 2016
+## Version Beta 1.0; January, 2017
 
 The ASW Membership Roster was originally written using Fusebox PHP framework around 2007.  Fusebox PHP has long since disappeared, making the job of maintaining the software more difficult with each passing year.  The new version is based on Laravel 5.2, though it continues to use the same database schema as the original.  This allows users to continue updating while the new software is under development.
 
