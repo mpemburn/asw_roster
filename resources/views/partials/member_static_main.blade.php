@@ -10,6 +10,9 @@
 <div class="col-md-12">
     {{ $static->csz }}
 </div>
+<div class="col-md-12">
+    <a href="mailto:{{ $static->email }}">{{ $static->email }}</a>
+</div>
 <div class="col-md-12 {{ (!empty($static->home_phone)) ? 'show' : 'hide' }}">
     <strong>Home:</strong> {{ $static->home_phone }}
 </div>

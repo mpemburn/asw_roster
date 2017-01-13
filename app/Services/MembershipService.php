@@ -133,6 +133,7 @@ class MembershipService
             'name' => trim($name),
             'address1' => $member->Address1,
             'address2' => $member->Address2,
+            'email' => $member->Email_Address,
             'csz' => $member->City . ', ' . $member->State . ' ' . $member->Zip,
             'home_phone' => Utility::formatPhone($member->Home_Phone),
             'cell_phone' => Utility::formatPhone($member->Cell_Phone),

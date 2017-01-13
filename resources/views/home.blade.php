@@ -21,7 +21,7 @@
                                 <li><strong>Elders:</strong> Administrator-level access: May edit any member's record.</li>
                                 <li><strong>Guild Leaders:</strong> May add or remove guild members to their guild</li>
                             </ul>
-                            
+
                             <strong>NOTE:</strong> This resource is available to all members of the ASW. If your coveners wish to have
                             access, they will need to register using the email address that is associated with their
                             profile in this system.  If they attempt to register and are told that their email is invalid,
