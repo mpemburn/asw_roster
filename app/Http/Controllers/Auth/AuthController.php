@@ -67,7 +67,7 @@ class AuthController extends Controller
      */
     protected function create(array $data)
     {
-        $member = MemberService::getMemberFromEmail($data['email']);
+        $member = Membership::getMemberFromEmail($data['email']);
         $member_id = (!is_null($member)) ? $member->MemberID : null;
         $name = (!is_null($member)) ? $member->First_Name . ' ' . $member->Last_Name : '';
 

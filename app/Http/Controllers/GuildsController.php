@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Facades\GuildMembership;
-use App\Facades\RosterAuth;
 use App\Models\GuildMember;
 use Illuminate\Http\Request;
-
 use App\Http\Requests;
-use App\Facades\Membership;
+// Facades
+use GuildMembership;
+use Membership;
+use RosterAuth;
 
 class GuildsController extends Controller
 {

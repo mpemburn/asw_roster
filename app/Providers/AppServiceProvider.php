@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Validator;
-use App\Facades\Membership;
+use Membership;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,14 +21,14 @@ class AppServiceProvider extends ServiceProvider
         });
         /* Used for registration form.  Password mask validation  */
         Validator::extend('bad_pattern', function ($attribute, $value, $parameters) {
-            $has_spaces = (!preg_match('/\s/',$value));
+            $has_spaces = (preg_match('/\s/',$value) > 0);
             $has_lowercase = ($value != strtoupper($value));
             $has_uppercase = ($value != strtolower($value));
             $has_nonalpha = (!ctype_alpha($value));
-            return ($has_spaces && $has_lowercase && $has_uppercase && $has_nonalpha);
+            return (!$has_spaces && $has_lowercase && $has_uppercase && $has_nonalpha);
         });
     }
-//theN1ceguy
+
     /**
      * Register any application services.
      *

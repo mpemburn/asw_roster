@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Facades\GuildMembership;
 use App\Models\Coven;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Models\Member;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
 use App\Http\Controllers\UserController;
 use DB;
+use GuildMembership;
 
 class MembersController extends Controller
 {

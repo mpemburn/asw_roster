@@ -2,14 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Member;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
 use App\Models\Role;
 use App\Models\Permission;
 use App\Models\User;
-use App\Facades\Rbac;
+use Rbac;
 
 class RbacController extends Controller
 {

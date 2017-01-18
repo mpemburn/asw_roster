@@ -11,30 +11,21 @@
 |
 */
 
+Route::get('/', function () {
+    return view('home');
+});
 
+Route::get('/home', 'HomeController@index');
+Route::auth();
 
+// Password Reset Routes...
+Route::post('password/email', [
+    'as' => 'auth.password.email',
+    'uses' => 'Auth\PasswordController@sendResetLinkEmail'
+]);
+
+// All Auth protected routes
 Route::group(['middleware' => 'web'], function () {
-    Route::get('/', function () {
-        return view('home');
-    });
-
-    Route::get('/home', 'HomeController@index');
-    Route::auth();
-
-    /* TODO: Create RBAC admin interface
-    Route::get('acl', [
-        'middleware' => ['auth'],
-        'uses' => 'RbacController@index'
-    ]);
-    Route::get('rbac/set_leaders', [
-        'middleware' => ['auth'],
-        'uses' => 'RbacController@setLeadershipRoles'
-    ]);
-    Route::get('rbac/set_perms', [
-        'middleware' => ['auth'],
-        'uses' => 'RbacController@setRolePermissions'
-    ]);
-    */
 
     Route::get('member', [
         'middleware' => ['auth'],
@@ -87,11 +78,19 @@ Route::group(['middleware' => 'web'], function () {
         Route::controller('users', 'UsersController');
     });
 
-    // Password Reset Routes...
-    //Route::get('password/reset/{token?}', ['as' => 'auth.password.reset', 'uses' => 'Auth\PasswordController@showResetForm']);
-    Route::post('password/email', [
-        'as' => 'auth.password.email',
-        'uses' => 'Auth\PasswordController@sendResetLinkEmail'
+    /* TODO: Create RBAC admin interface
+    Route::get('acl', [
+        'middleware' => ['auth'],
+        'uses' => 'RbacController@index'
     ]);
-    //Route::post('password/reset', ['as' => 'auth.password.reset', 'uses' => 'Auth\PasswordController@reset']);
+    Route::get('rbac/set_leaders', [
+        'middleware' => ['auth'],
+        'uses' => 'RbacController@setLeadershipRoles'
+    ]);
+    Route::get('rbac/set_perms', [
+        'middleware' => ['auth'],
+        'uses' => 'RbacController@setRolePermissions'
+    ]);
+    */
+
 });

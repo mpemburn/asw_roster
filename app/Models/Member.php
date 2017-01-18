@@ -5,11 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Collective\Html\Eloquent\FormAccessible;
-use App\Helpers\Utility;
-use App\Facades\Audit;
-use App\Facades\Membership;
-use App\Facades\RosterAuth;
-use App\Facades\Roles;
+// Helpers and Facades
+use Utility;
+use Audit;
+use Membership;
+use RosterAuth;
+use Roles;
 
 use App\Models\CovenRoles;
 use DB;
