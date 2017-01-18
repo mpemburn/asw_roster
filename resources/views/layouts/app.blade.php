@@ -46,7 +46,7 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Members <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li class="dropdown-item"><a href="{{ url('/member') }}"><i class="fa fa-btn fa-users"></i> Members List</a></li>
-                                @if (\App\Facades\RosterAuth::userIsLeaderOrScribe())
+                                @if (RosterAuth::userIsLeaderOrScribe())
                                 <li class="dropdown-item"><a href="{{ url('/member/details') }}"><i class="fa fa-btn fa-user-plus"></i> Add Member</a></li>
                                 <li class="dropdown-item"><a href="{{ url('/member/missing') }}"><i class="fa fa-btn fa-bars"></i> Missing Data</a></li>
                                 @endif
@@ -55,8 +55,8 @@
                         <li class="nav-item dropdown {{ Request::is('guild') ? 'active' : '' }}">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Guilds <span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                @if (\App\Facades\RosterAuth::userIsLeaderOrScribe())
-                                    @foreach(\App\Facades\GuildMembership::getGuilds() as $guild)
+                                @if (RosterAuth::userIsLeaderOrScribe())
+                                    @foreach(GuildMembership::getGuilds() as $guild)
                                     <li class="dropdown-item"><a href="{{ url('/guild/manage/') }}/{{ $guild->GuildID }}"><i class="fa fa-btn fa-user-plus"></i> {{ $guild->GuildName }}</a></li>
                                     @endforeach
                                 @endif
@@ -74,7 +74,7 @@
                     @else
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                                {{ \App\Facades\RosterAuth::getMemberName() }} <span class="caret"></span>
+                                {{ RosterAuth::getMemberName() }} <span class="caret"></span>
                             </a>
 
                             <ul class="dropdown-menu" role="menu">

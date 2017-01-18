@@ -237,7 +237,17 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
+        // Zizaco Entrust Facade
         'Entrust' => Zizaco\Entrust\EntrustFacade::class,
+        // Custom Helper Classes
+        'Utility' => App\Helpers\Utility::class,
+        // Custom Facades
+        'Audit' => \App\Facades\Audit::class,
+        'Membership' => \App\Facades\Membership::class,
+        'GuildMembership' => \App\Facades\GuildMembership::class,
+        'Rbac' => \App\Facades\Rbac::class,
+        'Roles' => \App\Facades\Roles::class,
+        'RosterAuth' => \App\Facades\RosterAuth::class,
     ],
 
 ];

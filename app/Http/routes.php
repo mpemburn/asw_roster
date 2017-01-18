@@ -21,18 +21,20 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('/home', 'HomeController@index');
     Route::auth();
 
-//Route::get('acl', [
-//    'middleware' => ['auth'],
-//    'uses' => 'AclController@index'
-//]);
-//Route::get('rbac/set_leaders', [
-//    'middleware' => ['auth'],
-//    'uses' => 'RbacController@setLeadershipRoles'
-//]);
-//Route::get('rbac/set_perms', [
-//    'middleware' => ['auth'],
-//    'uses' => 'RbacController@setRolePermissions'
-//]);
+    /* TODO: Create RBAC admin interface
+    Route::get('acl', [
+        'middleware' => ['auth'],
+        'uses' => 'RbacController@index'
+    ]);
+    Route::get('rbac/set_leaders', [
+        'middleware' => ['auth'],
+        'uses' => 'RbacController@setLeadershipRoles'
+    ]);
+    Route::get('rbac/set_perms', [
+        'middleware' => ['auth'],
+        'uses' => 'RbacController@setRolePermissions'
+    ]);
+    */
 
     Route::get('member', [
         'middleware' => ['auth'],

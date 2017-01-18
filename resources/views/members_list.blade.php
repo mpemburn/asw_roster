@@ -26,12 +26,12 @@
                     <td>{{ $member->City }}</td>
                     <td>{{ $member->State }}</td>
                     <td class="show-sm-up">{{ $member->Zip }}</td>
-                    <td class="nobr">{{ \App\Facades\Membership::getPrimaryPhone($member->MemberID) }}</td>
-                    <td class="show-sm-up">{!! App\Helpers\Utility::mailto($member->Email_Address) !!}</td>
+                    <td class="nobr">{{ Membership::getPrimaryPhone($member->MemberID) }}</td>
+                    <td class="show-sm-up">{!! Utility::mailto($member->Email_Address) !!}</td>
                     <td>{{ $member->Coven }}</td>
-                    <td class="show-lg-up">{{ App\Helpers\Utility::ordinal($member->Degree) }}</td>
-                    <td class="show-lg-up">{{ App\Helpers\Utility::yesno($member->Bonded) }}</td>
-                    <td class="show-lg-up">{{ \App\Facades\Roles::getAllRoles($member) }}</td>
+                    <td class="show-lg-up">{{ Utility::ordinal($member->Degree) }}</td>
+                    <td class="show-lg-up">{{ Utility::yesno($member->Bonded) }}</td>
+                    <td class="show-lg-up">{{ Roles::getAllRoles($member) }}</td>
                     <td class="show-lg-up">{{ $member->BoardRole }}</td>
                 </tr>
             @endforeach

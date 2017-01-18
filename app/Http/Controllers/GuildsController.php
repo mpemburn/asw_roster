@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Facades\GuildMembership;
 use App\Facades\RosterAuth;
-use App\Helpers\Utility;
 use App\Models\GuildMember;
 use Illuminate\Http\Request;
 

@@ -8,6 +8,10 @@ class Utility {
 		return (empty($date)) ? $date : date($mask, strtotime($date));
 	}
 
+	public static function formatMjY($date) {
+		return self::formatDate('M j, Y', $date);
+	}
+
 	public static function formatPhone($phone_number) {
 		$phone = preg_replace('/[^0-9]/', '', $phone_number);
 		if(strlen($phone) == 7) {

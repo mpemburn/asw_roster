@@ -81,37 +81,37 @@
                                 {{ $member->First_Name . ' ' . $member->Last_Name }}
                             </td>
                             <td class="center shade">
-                                {{ \App\Facades\Membership::hasNo($member->Address1) }}
+                                {{ Membership::hasNo($member->Address1) }}
                             </td>
                             <td class="center">
-                                {{ \App\Facades\Membership::hasNo($member->City) }}
+                                {{ Membership::hasNo($member->City) }}
                             </td>
                             <td class="center shade">
-                                {{ \App\Facades\Membership::hasNo($member->State) }}
+                                {{ Membership::hasNo($member->State) }}
                             </td>
                             <td class="center">
-                                {{ \App\Facades\Membership::nonAlphaOrMissing($member->Zip) }}
+                                {{ Membership::nonAlphaOrMissing($member->Zip) }}
                             </td>
                             <td class="center shade">
-                                {{ \App\Facades\Membership::hasNo($member->Home_Phone) }}
+                                {{ Membership::hasNo($member->Home_Phone) }}
                             </td>
                             <td class="center">
-                                {{ \App\Facades\Membership::hasNo($member->Cell_Phone) }}
+                                {{ Membership::hasNo($member->Cell_Phone) }}
                             </td>
                             <td class="center shade">
-                                {{ \App\Facades\Membership::hasNo($member->Work_Phone) }}
+                                {{ Membership::hasNo($member->Work_Phone) }}
                             </td>
                             <td class="center">
-                                {{ \App\Facades\Membership::hasNo($member->Email_Address) }}
+                                {{ Membership::hasNo($member->Email_Address) }}
                             </td>
                             <td class="center shade">
-                                {{ \App\Facades\Membership::hasAll([$member->Birth_Date, $member->Birth_Time, $member->Birth_Place]) }}
+                                {{ Membership::hasAll([$member->Birth_Date, $member->Birth_Time, $member->Birth_Place]) }}
                             </td>
                             <td class="center">
-                                {{ \App\Facades\Membership::hasNo($member->Magickal_Name) }}
+                                {{ Membership::hasNo($member->Magickal_Name) }}
                             </td>
                             <td class="pad shade">
-                                {{ \App\Helpers\Utility::ordinal($member->Degree) }}
+                                {{ Utility::ordinal($member->Degree) }}
                             </td>
                             <td class="center">
                                 {{ (!empty($member->Bonded)) ? 'Yes' : '' }}
@@ -120,7 +120,7 @@
                                 {{ $member->LeadershipRole }}
                             </td>
                             <td class="center">
-                                {{ \App\Facades\Membership::boardExpired($member->MemberID) }}
+                                {{ Membership::boardExpired($member->MemberID) }}
                             </td>
                         </tr>
                         </tbody>

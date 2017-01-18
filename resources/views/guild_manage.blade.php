@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
     <div id="guild_manage" class="content col-md-10 col-md-offset-1">
-        <h1>{{ \App\Facades\GuildMembership::getGuildName() }}</h1>
+        <h1>{{ GuildMembership::getGuildName() }}</h1>
         @if ($can_edit)
         <div class="member-search col-md-12">
             <div class="member-search-field col-md-4">
@@ -29,8 +29,8 @@
                 @foreach ($members as $member)
                     <tr data-id="{{ $member->MemberID }}">
                         <td class="nobr">{{ $member->First_Name }} {{ $member->Last_Name }}</td>
-                        <td class="nobr">{{ \App\Facades\Membership::getPrimaryPhone($member->MemberID) }}</td>
-                        <td class="show-sm-up">{!! App\Helpers\Utility::mailto($member->Email_Address) !!}</td>
+                        <td class="nobr">{{ Membership::getPrimaryPhone($member->MemberID) }}</td>
+                        <td class="show-sm-up">{!! Utility::mailto($member->Email_Address) !!}</td>
                         <td>{{ $member->Coven }}</td>
                         @if ($can_edit)
                         <td class="center remove"><i class="fa fa-close guild-remove"></i></td>
