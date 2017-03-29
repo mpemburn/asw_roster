@@ -189,9 +189,9 @@ class MembersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $success = $this->member->saveMember($request->all());
+        $response = $this->member->saveMember($request->all());
 
-        return response()->json(['success' => $success]);
+        return response()->json(['response' => $response]);
     }
 
     /**

@@ -99,15 +99,17 @@ class MembershipService
     {
         $member = $this->getMemberById($member_id);
         $primary_id = $member->Primary_Phone;
-        $phone_types = array('Home_Phone', 'Work_Phone', 'Cell_Phone');
-        $chosen = $phone_types[$primary_id - 1];
-        $phones = $member->where('MemberID', $member_id)
-            ->select($phone_types)
-            ->get();
-        $phone = $phones->first();
-        $primary_phone = (isset($phone[$chosen])) ? $phone[$chosen] : '';
-
-        return Utility::formatPhone($primary_phone);
+        if ($primary_id > 0) {
+            $phone_types = array('Home_Phone', 'Work_Phone', 'Cell_Phone');
+            $chosen = $phone_types[$primary_id - 1];
+            $phones = $member->where('MemberID', $member_id)
+                ->select($phone_types)
+                ->get();
+            $phone = $phones->first();
+            $primary_phone = (isset($phone[$chosen])) ? $phone[$chosen] : '';
+            return Utility::formatPhone($primary_phone);
+        }
+        return '';
     }
 
     /**

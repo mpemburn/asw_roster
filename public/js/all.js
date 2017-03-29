@@ -669,10 +669,13 @@ $(document).ready(function ($) {
                 url: formAction,
                 data: $(this).serialize(),
                 dataType: 'json',
-                success: function (response) {
-                    var success = response.success;
+                success: function (data) {
+                    var response = data.response;
                     $('#member_update').dirtyForms('setClean');
-                    if (success.status) {
+                    if (response.is_new) {
+                        document.location = appSpace.baseUrl + '/member/details/' + response.member_id;
+                    }
+                    if (response.status) {
                         $('#submit_update').attr('disabled', 'disabled');
                         $('#member_saving').addClass('hidden');
                     }

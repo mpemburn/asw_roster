@@ -145,6 +145,8 @@ class Member extends Model
     {
         $member_id = $data['MemberID'];
         $is_new = false;
+        $changed = null;
+        $count = 0;
 
         if ($member_id == 0) {
             $member = new Member();
@@ -187,9 +189,20 @@ class Member extends Model
         $result = $member->fill($data)->save();
         $member_id = $member->MemberID;
 
-        // Make any changes necessary after Member record has been saved
-        $count = Membership::postSaveMemberActions($changed, $member);
-        return ['status' => $result, 'member_id' => $member_id, 'changed' => $changed, 'count' => $count, 'data' => $data];
+
+        if (!$is_new) {
+            // Make any changes necessary after Member record has been saved
+            $count = Membership::postSaveMemberActions($changed, $member);
+        }
+
+        return [
+            'status' => $result,
+            'member_id' => $member_id,
+            'is_new' => $is_new,
+            'changed' => $changed,
+            'count' => $count,
+            'data' => $data
+        ];
     }
 
     /* Private Methods */

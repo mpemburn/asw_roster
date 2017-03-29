@@ -41,7 +41,7 @@
                                 <div class="col-md-11 col-md-offset-1">
                                     {{ Form::text('City', $member->City, ['class' => 'col-md-4', 'placeholder' => 'City']) }}
                                     {{ Form::select('State', $state, null, ['class' => 'col-md-3']) }}
-                                    {{ Form::text('Zip', $member->Zip, ['class' => 'col-md-2', 'placeholder' => 'State']) }}
+                                    {{ Form::text('Zip', $member->Zip, ['class' => 'col-md-2', 'placeholder' => 'Zip']) }}
                                 </div>
                             </div>
                             <div class="form-group">
