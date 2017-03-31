@@ -25,7 +25,17 @@ Route::post('password/email', [
 ]);
 
 // All Auth protected routes
-Route::group(['middleware' => 'web'], function () {
+Route::group(['middlewareGroups' => 'web'], function () {
+
+    Route::get('profile/password', [
+        'middleware' => ['auth'],
+        'uses' => 'MembersController@resetProfilePassword'
+    ]);
+
+    Route::post('profile/reset', [
+        'middleware' => ['auth'],
+        'uses' => 'MembersController@setNewPassword'
+    ]);
 
     Route::get('member', [
         'middleware' => ['auth'],

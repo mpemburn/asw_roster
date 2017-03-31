@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Models\Coven;
 use App\Models\LeadershipRole;
 use App\Models\Member;
+use App\Models\User;
 use App\Facades\Rbac;
 use App\Facades\Roles;
 use App\Helpers\Utility;
@@ -87,6 +88,18 @@ class MembershipService
     {
         $member = $this->getMemberFromEmail($test_email);
         return (!is_null($member)) ? $member->MemberID : 0;
+    }
+
+    /**
+     * Retrieve the MemberID if a matching email address is found
+     *
+     * @param $test_email
+     * @return int
+     */
+    public function getMemberIdFromUserId($user_id)
+    {
+        $user = User::find($user_id);
+        return (!is_null($user)) ? $user->member_id : 0;
     }
 
     /**

@@ -6,10 +6,13 @@ use App\Models\Coven;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Models\Member;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Validator;
 use App\Http\Controllers\UserController;
 use DB;
 use GuildMembership;
+use Auth;
 
 class MembersController extends Controller
 {
@@ -63,6 +66,15 @@ class MembersController extends Controller
      */
     public function memberDetails($member_id = 0)
     {
+        //$2y$10$R.hORrYKr6IfE0XR05eeeu2tfAkfUyCOosEVZL75qXpuTauqwVGBO
+        //$2y$10$UcsuqEQGFcGt04kJrXA25e./xqdFDbFvlkBwj2kMFA9GJB0l0mVz.
+
+//        $password = Hash::make('Art3mis!');
+//        if (Hash::check('Art3mis!', '$2y$10$mpy8SaawolbGF3adqe8OXegVqy8Mm0dSls2KMGA3lD6BTqFVPLyJi'))
+//        {
+//            echo 'The passwords match...';
+//        }
+//        echo $password;
         $this_member = $this->member->getDetails($member_id);
         return view('member_edit', $this_member);
     }
@@ -116,6 +128,39 @@ class MembersController extends Controller
             'members' => $members
         ];
         return view('members_missing_details', $missing_data);
+    }
+
+    public function resetProfilePassword()
+    {
+        return view('auth/passwords/profile_reset', ['token' => csrf_token()]);
+    }
+
+    public function setNewPassword(Request $request)
+    {
+        // Set up validator rule to match existing password
+        Validator::extend('match_old', function ($attribute, $value, $parameters) {
+            $user_password = \Auth::user()->password;
+            return (Hash::check($value, $user_password));
+        });
+
+        // Validate user input.  Send them errors and let them try again if they fail
+        $validator = Validator::make($request->all(), [
+            'old_password' => 'required|match_old',
+            'password' => 'required|min:6|bad_pattern|confirmed',
+        ]);
+        if ($validator->fails()) {
+            return redirect('profile/password')
+                ->withErrors($validator)
+                ->withInput($request->all());
+        }
+
+        // Reset password
+        $user = User::find(Auth::user()->id);
+        $user->setPassword($request->password);
+
+        // Redirect to login page after logging out
+        Auth::logout();
+        return redirect('login');
     }
 
     public function migrate()

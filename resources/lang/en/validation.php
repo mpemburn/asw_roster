@@ -100,7 +100,12 @@ return [
             'member_email' => 'Your email address is not in our database',
         ],
         'password' => [
+            'required' => 'The "Password" field is required',
             'bad_pattern' => 'The password does not use the required pattern',
+        ],
+        'old_password' => [
+            'required' => 'The "Old Password" field is required',
+            'match_old' => 'Does not match your current password'
         ],
     ],
 

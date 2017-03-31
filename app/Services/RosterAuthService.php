@@ -79,13 +79,26 @@ class RosterAuthService {
     public function userIsLeaderOrScribe()
     {
         if ($this->init()) {
-            $leadershipRoleService = new RolesService();
-            $valid_roles = $leadershipRoleService->getLeadershipRoleArray();
-            $valid_roles[] = 'SCR';
+            $is_leader = $this->isMemberOf('coven-leader');
+            $is_scribe = $this->isMemberOf('coven-scribe');
 
-            return (in_array($this->member->LeadershipRole, $valid_roles));
+            return $is_leader || $is_scribe;
+
+//            $leadershipRoleService = new RolesService();
+//            $valid_roles = $leadershipRoleService->getLeadershipRoleArray();
+//            $valid_roles[] = 'SCR';
+//
+//            $has_role = false;
+//            foreach ($valid_roles as $role) {
+//                if ($this->isMemberOf($role)) {
+//                    $has_role = true;
+//                    break;
+//                }
+//            }
+//
+//            return $has_role; //(in_array($this->member->LeadershipRole, $valid_roles));
         }
-        return null;
+        return false;
     }
 
 }

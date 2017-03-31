@@ -95,7 +95,8 @@ class Member extends Model
         $this->member_id = $member_id;
         $this->member = $this->firstOrNew(['MemberID' => $member_id]);
         // Retrieve permissions
-        $can_create = $this->canCreate();
+        $current_user_id = Auth::user()->id;
+        $can_create = $this->canCreate($current_user_id, $this->member->Coven);
         $can_edit = (!is_null($this->member)) ? $this->canEdit() : false;
 
         // Uses the RolesService (via Roles Facade) to determine whether user can edit
@@ -145,7 +146,7 @@ class Member extends Model
     {
         $member_id = $data['MemberID'];
         $is_new = false;
-        $changed = null;
+        $changed = [];
         $count = 0;
 
         if ($member_id == 0) {
@@ -190,10 +191,8 @@ class Member extends Model
         $member_id = $member->MemberID;
 
 
-        if (!$is_new) {
-            // Make any changes necessary after Member record has been saved
-            $count = Membership::postSaveMemberActions($changed, $member);
-        }
+        // Make any changes necessary after Member record has been saved
+        $count = Membership::postSaveMemberActions($changed, $member);
 
         return [
             'status' => $result,
@@ -212,12 +211,12 @@ class Member extends Model
      *
      * @return bool
      */
-    private function canCreate()
+    private function canCreate($user_id, $coven)
     {
         // See if user is either a leader or scribe
-        $is_leader_or_scribe = RosterAuth::userIsLeaderOrScribe();
+        $is_leader_or_scribe = Roles::userIsLeaderOrScribe($user_id, $coven);
 
-        return (($this->member_id == 0 && $is_leader_or_scribe));
+        return $is_leader_or_scribe;
 
     }
 
@@ -228,14 +227,16 @@ class Member extends Model
      */
     private function canEdit()
     {
+        // Get the member id of the currently logged-in user
+        $current_user_member_id = Membership::getMemberIdFromUserId(Auth::user()->id);
         // See if this is the current member (user may edit their own profile).
         $is_this_user = RosterAuth::isThisMember($this->member_id);
         // See if user is an Admin
         $is_admin =  RosterAuth::isMemberOf('admin');
         // See if this user is a leader of this member's coven
-        $is_coven_leader = RosterAuth::isCovenLeader($this->member->Coven);
+        $is_coven_leader = Roles::isLeader($current_user_member_id, $this->member->Coven);
         // See if this user is a scribe of this member's coven
-        $is_coven_scribe = RosterAuth::isCovenScribe($this->member->Coven);
+        $is_coven_scribe = Roles::isScribe($current_user_member_id, $this->member->Coven);
 
         return ($this->member_id !=0 && ($is_this_user || $is_admin || $is_coven_leader || $is_coven_scribe));
     }

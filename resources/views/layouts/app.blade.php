@@ -46,6 +46,7 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Members <span class="caret"></span></a>
                             <ul class="dropdown-menu">
                                 <li class="dropdown-item"><a href="{{ url('/member') }}"><i class="fa fa-btn fa-users"></i> Members List</a></li>
+                                {{-- TODO: Move this to RolesService --}}
                                 @if (RosterAuth::userIsLeaderOrScribe())
                                 <li class="dropdown-item"><a href="{{ url('/member/details') }}"><i class="fa fa-btn fa-user-plus"></i> Add Member</a></li>
                                 <li class="dropdown-item"><a href="{{ url('/member/missing') }}"><i class="fa fa-btn fa-bars"></i> Missing Data</a></li>
@@ -79,6 +80,7 @@
 
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href="{{ url('/member/details') }}/{{ Auth::user()->member_id }}"><i class="fa fa-btn fa-user-circle"></i> My Profile</a></li>
+                                <li><a href="{{ url('/profile/password') }}"><i class="fa fa-btn fa-user-circle"></i> Reset Password</a></li>
                                 <li><a href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i> Logout</a></li>
                             </ul>
                         </li>

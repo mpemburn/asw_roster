@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Facades\Membership;
 use App\Models\BoardRole;
 use App\Models\CovenRoles;
 use App\Models\LeadershipRole;
@@ -96,6 +97,21 @@ class RolesService {
         return ($covenRole !== null);
     }
 
+    public function isLeader($member_id, $coven)
+    {
+        $valid_roles = $this->getLeadershipRoleArray();
+
+        $is_leader = false;
+        foreach ($valid_roles as $role) {
+            if ($this->hasCovenRole($member_id, $coven, $role)) {
+                $is_leader = true;
+                break;
+            }
+        }
+
+        return $is_leader;
+    }
+
     public function isPurseWarden($member_id, $coven)
     {
         return $this->hasCovenRole($member_id, $coven, 'PW');
@@ -156,5 +172,14 @@ class RolesService {
             ->where('Role', $role)
             ->update(['MemberID' => $member_id]);
 
+    }
+
+    public function userIsLeaderOrScribe($user_id, $coven)
+    {
+        $member_id = Membership::getMemberIdFromUserId($user_id);
+        $is_leader = $this->isLeader($member_id, $coven);
+        $is_scribe = $this->isScribe($member_id, $coven);
+
+        return $is_leader || $is_scribe;
     }
 }
