@@ -99,10 +99,13 @@ class Member extends Model
         $can_create = $this->canCreate($current_user_id, $this->member->Coven);
         $can_edit = (!is_null($this->member)) ? $this->canEdit() : false;
 
+        $isAdmin = RosterAuth::isAdmin();
         // Uses the RolesService (via Roles Facade) to determine whether user can edit
         $isPurseWarden = Roles::isPurseWarden($member_id, $this->member->Coven);
         $isScribe = Roles::isScribe($member_id, $this->member->Coven);
 
+        $selected_coven = $this->getSelectedCoven($can_create);
+        $coven_name = (!is_null($selected_coven)) ? Coven::where('Coven', $selected_coven)->first()->CovenFullName : null;
         $data = [
             'can_edit' => ($can_create || $can_edit),
             'is_my_profile' => $this->isCurrentUsersProfile(),
@@ -110,9 +113,11 @@ class Member extends Model
             'member_id' => $this->member_id,
             'user_id' => Auth::user()->id,
             'member' => $this->member,
+            'is_admin' => $isAdmin,
             'is_pw' => $isPurseWarden,
             'is_scribe' => $isScribe,
-            'selected_coven' => $this->getSelectedCoven($can_create),
+            'selected_coven' => $selected_coven,
+            'coven_name' => $coven_name,
             'static' => (object) Membership::getStaticMemberData($member_id),
             'main_col' => ($can_create || $can_edit) ? '9' : '6',
             'sidebar_col' => ($can_create || $can_edit) ? '3' : '6',
@@ -214,7 +219,7 @@ class Member extends Model
     private function canCreate($user_id, $coven)
     {
         // See if user is either a leader or scribe
-        $is_leader_or_scribe = Roles::userIsLeaderOrScribe($user_id, $coven);
+        $is_leader_or_scribe = RosterAuth::userIsLeaderOrScribe($user_id, $coven);
 
         return $is_leader_or_scribe;
 

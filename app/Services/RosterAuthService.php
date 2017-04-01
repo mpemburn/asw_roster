@@ -3,6 +3,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Auth;
 use App\Facades\Membership;
+use App\Models\Role;
 
 class RosterAuthService {
     protected $user;
@@ -39,6 +40,22 @@ class RosterAuthService {
     public function getUserCoven()
     {
         return ($this->init()) ? $this->member->Coven : null;
+    }
+
+    public function grantRoleToUser($user, $role_name)
+    {
+        if ($this->init()) {
+            $role = Role::getRoleByName($role_name);
+            $user->attachRole($role);
+        }
+    }
+
+    public function revokeRoleFromUser($user, $role_name)
+    {
+        if ($this->init()) {
+            $role = Role::getRoleByName($role_name);
+            $user->detachRole($role);
+        }
     }
 
     public function isAdmin()

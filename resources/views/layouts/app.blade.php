@@ -53,16 +53,16 @@
                                 @endif
                             </ul>
                         </li>
+                        @if (RosterAuth::userIsLeaderOrScribe())
                         <li class="nav-item dropdown {{ Request::is('guild') ? 'active' : '' }}">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Guilds <span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                @if (RosterAuth::userIsLeaderOrScribe())
                                     @foreach(GuildMembership::getGuilds() as $guild)
                                     <li class="dropdown-item"><a href="{{ url('/guild/manage/') }}/{{ $guild->GuildID }}"><i class="fa fa-btn fa-user-plus"></i> {{ $guild->GuildName }}</a></li>
                                     @endforeach
-                                @endif
                             </ul>
                         </li>
+                        @endif
                     @endif
                 </ul>
 
@@ -80,7 +80,7 @@
 
                             <ul class="dropdown-menu" role="menu">
                                 <li><a href="{{ url('/member/details') }}/{{ Auth::user()->member_id }}"><i class="fa fa-btn fa-user-circle"></i> My Profile</a></li>
-                                <li><a href="{{ url('/profile/password') }}"><i class="fa fa-btn fa-user-circle"></i> Reset Password</a></li>
+                                <li><a href="{{ url('/profile/password') }}"><i class="fa fa-btn fa-user-secret"></i> Reset Password</a></li>
                                 <li><a href="{{ url('/logout') }}"><i class="fa fa-btn fa-sign-out"></i> Logout</a></li>
                             </ul>
                         </li>

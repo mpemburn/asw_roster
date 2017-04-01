@@ -104,7 +104,11 @@
                             @if ($can_edit || $is_my_profile)
                             <div class="form-group">
                                 <label for="coven" class="control-label col-md-12">Coven or Order</label>
+                                @if ($is_admin)
                                 {{ Form::select('Coven', $coven, $selected_coven, ['class' => 'col-md-11']) }}
+                                @else
+                                    {{ $coven_name }}
+                                @endif
                             </div>
                             <div class="form-group">
                                 <label for="member_since" class="control-label col-md-12">Member Since</label>

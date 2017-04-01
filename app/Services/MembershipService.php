@@ -1,6 +1,7 @@
 <?php
 namespace App\Services;
 
+use App\Facades\RosterAuth;
 use App\Models\Coven;
 use App\Models\LeadershipRole;
 use App\Models\Member;
@@ -163,6 +164,11 @@ class MembershipService
         ];
     }
 
+    public function getUserFromMemberId($member_id) {
+        $user = User::where('member_id', 185)->first();
+        return $user;
+    }
+
     /**
      * Test if the board member role is current
      *
@@ -204,6 +210,7 @@ class MembershipService
     {
         $member_id = $member->MemberID;
         $coven = $member->Coven;
+        $user = $this->getUserFromMemberId($member_id);
 
         // If leadership role has been added or changed, we need to rewrite role permissions
         if (array_key_exists('LeadershipRole', $changes)) {
@@ -218,6 +225,11 @@ class MembershipService
         if (array_key_exists('Scribe', $changes)) {
             $status = $changes['Scribe']['to'];
             Roles::changeScribeRole($coven, $member_id, $status);
+            if ($changes['Scribe']['to'] == 1) {
+                RosterAuth::grantRoleToUser($user, 'coven-scribe');
+            } else {
+                RosterAuth::revokeRoleFromUser($user, 'coven-scribe');
+            }
         }
 
     }

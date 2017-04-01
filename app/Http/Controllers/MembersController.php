@@ -66,15 +66,6 @@ class MembersController extends Controller
      */
     public function memberDetails($member_id = 0)
     {
-        //$2y$10$R.hORrYKr6IfE0XR05eeeu2tfAkfUyCOosEVZL75qXpuTauqwVGBO
-        //$2y$10$UcsuqEQGFcGt04kJrXA25e./xqdFDbFvlkBwj2kMFA9GJB0l0mVz.
-
-//        $password = Hash::make('Art3mis!');
-//        if (Hash::check('Art3mis!', '$2y$10$mpy8SaawolbGF3adqe8OXegVqy8Mm0dSls2KMGA3lD6BTqFVPLyJi'))
-//        {
-//            echo 'The passwords match...';
-//        }
-//        echo $password;
         $this_member = $this->member->getDetails($member_id);
         return view('member_edit', $this_member);
     }
