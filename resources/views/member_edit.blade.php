@@ -19,6 +19,7 @@
                             @if ($can_edit)
                             <div class="form-group">
                                 <label for="active" class="control-label">{{ Form::checkbox('Active', $member->Active, $is_active) }} Active</label>
+                                <span class="saved hidden">SAVED</span>
                             </div>
                             <div class="form-group">
                                 <label for="name" class="col-md-1 control-label">Name</label>
@@ -94,6 +95,7 @@
                                 <div class="col-md-11 col-md-offset-1">
                                     {{ Form::submit(($member->MemberID == 0) ? 'Submit' : 'Update', ['id' => 'submit_update', 'class' => 'btn btn-primary', 'disabled' => 'disabled']) }}
                                     <i id="member_saving" class="member-saving fa fa-spinner fa-spin hidden"></i>
+                                    <span class="saved hidden">SAVED</span>
                                 </div>
                             </div>
                             @else
@@ -108,6 +110,7 @@
                                 {{ Form::select('Coven', $coven, $selected_coven, ['class' => 'col-md-11']) }}
                                 @else
                                     {{ $coven_name }}
+                                    {{ Form::hidden('Coven', $selected_coven) }}
                                 @endif
                             </div>
                             <div class="form-group">
@@ -184,6 +187,23 @@
             </div>
         </div>
     </div>
+    <div id="error_dialog" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h4 class="modal-title">Validation Error</h4>
+                </div>
+                <div class="modal-body">
+                    <p>One or more fields report errors:</p>
+                    <ul id="error_messages"></ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">OK</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
 @endsection
 <!-- Push any scripts needed for this page onto the stack -->
 @push('scripts')

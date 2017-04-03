@@ -7,6 +7,10 @@ input {
   border: 1px solid #111;
   border-radius: 3px !important;
 
+  &.error {
+    border: 2px solid red;
+  }
+
   &:read-only {
     border: none;
   }
@@ -21,8 +25,19 @@ input[type="button"] {
 
 select {
   border-radius: 3px !important;
+
+  &.error {
+    border: 2px solid red;
+  }
+
   &:disabled {
     border: none;
+  }
+}
+
+textarea {
+  &.error {
+    border: 2px solid red;
   }
 }
 
@@ -148,7 +163,16 @@ table.dataTable {
   }
 }
 
+.modal-backdrop {
+  background-color: #ffffff;
+}
+
 .panel-default >.panel-heading {
   color: #ffffff;
   background-color: #337ab7 !important;
+}
+
+.saved {
+  color: red;
+  font-weight: bold;
 }

@@ -5737,6 +5737,8 @@ body {
 input {
   border: 1px solid #111;
   border-radius: 3px !important; }
+  input.error {
+    border: 2px solid red; }
   input:read-only {
     border: none; }
 
@@ -5746,8 +5748,13 @@ input[type="button"].short {
 
 select {
   border-radius: 3px !important; }
+  select.error {
+    border: 2px solid red; }
   select:disabled {
     border: none; }
+
+textarea.error {
+  border: 2px solid red; }
 
 table {
   border-collapse: collapse; }
@@ -5828,9 +5835,16 @@ table.dataTable tbody tr:hover {
   padding: 0 5px;
   border: 1pt solid #111; }
 
+.modal-backdrop {
+  background-color: #ffffff; }
+
 .panel-default > .panel-heading {
   color: #ffffff;
   background-color: #337ab7 !important; }
+
+.saved {
+  color: red;
+  font-weight: bold; }
 
 /* Override Bootstrap navbar defaults */
 /* navbar */

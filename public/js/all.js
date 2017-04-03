@@ -212,6 +212,30 @@ var FieldToggle = {
 }
 
 
+var FormErrors = {
+    dialog: null,
+    messages: null,
+    errors: null,
+    show: function(options) {
+        $.extend(this, options);
+        this._clear();
+        this._listMessages();
+        $(this.dialog).modal();
+    },
+    _clear: function() {
+        $('input, select, textarea').removeClass('error');
+        $(this.messages).empty();
+    },
+    _listMessages: function() {
+        for (var field in this.errors) {
+            if (this.errors.hasOwnProperty(field)) {
+                $('input[name=' + field + ']').addClass('error');
+                $(this.messages).append('<li class="dialog-error">' + this.errors[field] + '</li>');
+            }
+        }
+    }
+};
+
 /**
  * ReviseSelect.js
  *
@@ -601,7 +625,7 @@ $(document).ready(function ($) {
 
         /* Use FieldToggle to toggle visibility of date fields */
         var toggler = Object.create(FieldToggle);
-        $('#member_degree').on('change', function () {
+        $('#member_degree').on('change, if_yes', function () {
             toggler.doToggle({
                 toggleType: 'select_multi',
                 actorSelector: '#member_degree',
@@ -610,7 +634,7 @@ $(document).ready(function ($) {
             });
         })
 
-        $('#bonded_check').on('click', function () {
+        $('#bonded_check').on('click if_yes', function () {
             toggler.doToggle({
                 toggleType: 'checkbox',
                 actorSelector: '#' + $(this).attr('id'),
@@ -618,7 +642,7 @@ $(document).ready(function ($) {
             });
         });
 
-        $('#solitary_check').on('click', function () {
+        $('#solitary_check').on('click if_yes', function () {
             toggler.doToggle({
                 toggleType: 'checkbox',
                 actorSelector: '#' + $(this).attr('id'),
@@ -626,7 +650,7 @@ $(document).ready(function ($) {
             });
         });
 
-        $('#leadership-role').on('change', function () {
+        $('#leadership-role').on('change if_yes', function () {
             toggler.doToggle({
                 toggleType: 'select',
                 actorSelector: '#' + $(this).attr('id'),
@@ -635,7 +659,7 @@ $(document).ready(function ($) {
             });
         });
 
-        $('#board-role').on('change', function () {
+        $('#board-role').on('change if_yes', function () {
             toggler.doToggle({
                 toggleType: 'select',
                 actorSelector: '#' + $(this).attr('id'),
@@ -643,6 +667,8 @@ $(document).ready(function ($) {
                 emptyValue: ''
             });
         });
+
+        $('#leadership-role, #board-role').trigger('if_yes');
 
         /* Detect any changes to the form data */
         $('#member_update').dirtyForms()
@@ -663,6 +689,7 @@ $(document).ready(function ($) {
             e.preventDefault(e);
 
             $('#member_saving').removeClass('hidden');
+            $('.saved').addClass('hidden');
 
             $.ajax({
                 type: "POST",
@@ -672,17 +699,31 @@ $(document).ready(function ($) {
                 success: function (data) {
                     var response = data.response;
                     $('#member_update').dirtyForms('setClean');
+                    $('#submit_update').attr('disabled', 'disabled');
+                    $('#member_saving').addClass('hidden');
+                    $('input, select, textarea').removeClass('error');
+                    if (response.errors) {
+                        var formErrors = Object.create(FormErrors);
+                        formErrors.show({
+                            dialog: '#error_dialog',
+                            messages: '#error_messages',
+                            errors: response.errors
+                        });
+                        return;
+                    }
                     if (response.is_new) {
                         document.location = appSpace.baseUrl + '/member/details/' + response.member_id;
                     }
                     if (response.status) {
-                        $('#submit_update').attr('disabled', 'disabled');
-                        $('#member_saving').addClass('hidden');
+                        $('.saved').removeClass('hidden')
+                            .show()
+                            .fadeOut(3000);
                     }
                 },
                 error: function (response) {
                     console.log(response);
                     $('#member_update').dirtyForms('setClean');
+                    // Warn user that the session has timed out, then reload to go to login page
                     if (response.status == '401') {
                         alert(appSpace.authTimeout)
                         location.reload();

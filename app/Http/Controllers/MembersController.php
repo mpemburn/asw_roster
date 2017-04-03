@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BoardRole;
 use App\Models\Coven;
 use Illuminate\Http\Request;
 use App\Http\Requests;
@@ -225,7 +226,26 @@ class MembersController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $response = $this->member->saveMember($request->all());
+        // Get array of Board Roles to use for validation
+        $board_roles = BoardRole::pluck('BoardRole')->toArray();
+
+        $rules = [
+            'First_Name' => 'required',
+            'Last_Name' => 'required',
+            'Address1' => 'required',
+            'City' => 'required',
+            'State' => 'required',
+            'Zip' => 'required',
+            'Email_Address' => 'required',
+            'BoardRole_Expiry_Date' => "required_if:BoardRole," . implode(',', $board_roles),
+        ];
+        // Validate user input.  Send them errors and let them try again if they fail
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            $response = ['errors' => $validator->errors()];
+        } else {
+            $response = $this->member->saveMember($request->all());
+        }
 
         return response()->json(['response' => $response]);
     }
