@@ -74,7 +74,7 @@
                                         {{ Form::text('Home_Phone', Utility::formatPhone($member->Home_Phone), ['placeholder' => 'Home Phone']) }}
                                     </label>
                                     <label class="" for="cell_phone">
-                                        {{ Form::radio('phone_button', 3, $member->Primary_Phone == 3, ['id' => 'cell_phone']) }}
+                                        {{ Form::radio('phone_button', 3, ($member->Primary_Phone == 0 || $member->Primary_Phone == 3), ['id' => 'cell_phone']) }}
                                         <div class="phone-label"> Cell:</div>
                                         {{ Form::text('Cell_Phone', Utility::formatPhone($member->Cell_Phone), ['placeholder' => 'Cell Phone']) }}
                                     </label>
