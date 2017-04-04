@@ -5739,6 +5739,20 @@ input {
   border-radius: 3px !important; }
   input.error {
     border: 2px solid red; }
+  input.required::-webkit-input-placeholder {
+    /* WebKit, Blink, Edge */
+    color: #f00; }
+  input.required:-moz-placeholder {
+    /* Mozilla Firefox 4 to 18 */
+    color: #f00;
+    opacity: 1; }
+  input.required::-moz-placeholder {
+    /* Mozilla Firefox 19+ */
+    color: #f00;
+    opacity: 1; }
+  input.required:-ms-input-placeholder {
+    /* Internet Explorer 10-11 */
+    color: #f00; }
   input:read-only {
     border: none; }
 
@@ -5752,6 +5766,9 @@ select {
     border: 2px solid red; }
   select:disabled {
     border: none; }
+
+select option:first-child {
+  color: #f00; }
 
 textarea.error {
   border: 2px solid red; }

@@ -308,7 +308,7 @@ class Member extends Model
     {
         $prefix = Title::lists('Title', 'Title')->prepend('', '');
         $suffix = Suffix::lists('Suffix', 'Suffix')->prepend('', '');
-        $state = State::lists('State', 'Abbrev')->prepend('', '');
+        $state = State::lists('State', 'Abbrev')->prepend('State *', '');
         $coven = Coven::lists('CovenFullName', 'Coven')->prepend('', '');
         $degree = Degree::lists('Degree_Name', 'Degree');
         $leadership = Roles::leadershipDropdown();

@@ -11,6 +11,23 @@ input {
     border: 2px solid red;
   }
 
+  &.required {
+    &::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+      color:    #f00;
+    }
+    &:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+      color:    #f00;
+      opacity:  1;
+    }
+    &::-moz-placeholder { /* Mozilla Firefox 19+ */
+      color:    #f00;
+      opacity:  1;
+    }
+    &:-ms-input-placeholder { /* Internet Explorer 10-11 */
+      color:    #f00;
+    }
+  }
+
   &:read-only {
     border: none;
   }
@@ -33,6 +50,10 @@ select {
   &:disabled {
     border: none;
   }
+}
+
+select option:first-child{
+  color: #f00;
 }
 
 textarea {

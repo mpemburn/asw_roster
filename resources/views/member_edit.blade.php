@@ -25,24 +25,24 @@
                                 <label for="name" class="col-md-1 control-label">Name</label>
                                 <div class="col-md-11">
                                     {{ Form::select('Title', $prefix, null, ['class' => 'col-md-1'])}}
-                                    {{ Form::text('First_Name', $member->First_Name, ['class' => 'col-md-3', 'placeholder' => 'First Name']) }}
+                                    {{ Form::text('First_Name', $member->First_Name, ['class' => 'col-md-3 required', 'placeholder' => 'First Name *']) }}
                                     {{ Form::text('Middle_Name', $member->Middle_Name, ['class' => 'col-md-2', 'placeholder' => 'Middle Name']) }}
-                                    {{ Form::text('Last_Name', $member->Last_Name, ['class' => 'col-md-3', 'placeholder' => 'Last Name']) }}
+                                    {{ Form::text('Last_Name', $member->Last_Name, ['class' => 'col-md-3 required', 'placeholder' => 'Last Name *']) }}
                                     {{ Form::select('Suffix', $suffix, null, ['class' => 'col-md-2']) }}
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="address" class="col-md-1 control-label">Address</label>
                                 <div class="col-md-11">
-                                    {{ Form::text('Address1', $member->Address1, ['class' => 'col-md-10', 'placeholder' => 'Address 1']) }}
+                                    {{ Form::text('Address1', $member->Address1, ['class' => 'col-md-10 required', 'placeholder' => 'Address 1 *']) }}
                                 </div>
                                 <div class="col-md-11 col-md-offset-1">
                                     {{ Form::text('Address2', $member->Address2, ['class' => 'col-md-10', 'placeholder' => 'Address 2']) }}
                                 </div>
                                 <div class="col-md-11 col-md-offset-1">
-                                    {{ Form::text('City', $member->City, ['class' => 'col-md-4', 'placeholder' => 'City']) }}
-                                    {{ Form::select('State', $state, null, ['class' => 'col-md-3']) }}
-                                    {{ Form::text('Zip', $member->Zip, ['class' => 'col-md-2', 'placeholder' => 'Zip']) }}
+                                    {{ Form::text('City', $member->City, ['class' => 'col-md-4 required', 'placeholder' => 'City *']) }}
+                                    {{ Form::select('State', $state, null, ['class' => 'col-md-3 required']) }}
+                                    {{ Form::text('Zip', $member->Zip, ['class' => 'col-md-2 required', 'placeholder' => 'Zip *']) }}
                                 </div>
                             </div>
                             <div class="form-group">
@@ -175,7 +175,7 @@
                             </div>
                             <div class="form-group expiry-date {{ Membership::isCurrentBoardMember() ? 'show' : 'hide' }}">
                                 <label for="board-date" class="control-label col-md-12">Expiry Date</label>
-                                {{ Form::text('BoardRole_Expiry_Date', Utility::formatMjY($member->BoardRole_Expiry_Date), ['class' => 'col-md-6 date-pick']) }}
+                                {{ Form::text('BoardRole_Expiry_Date', Utility::formatMjY($member->BoardRole_Expiry_Date), ['class' => 'col-md-6 date-pick required', 'placeholder' => 'Expiry Date *']) }}
                             </div>
                             @else
                                 @include('partials.member_static_sidebar')
