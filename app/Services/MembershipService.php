@@ -181,7 +181,11 @@ class MembershipService
             $this->member = $this->getMemberById($member_id);
         }
         $has_role = (!empty($this->member->BoardRole));
-        $expired = (strtotime($this->member->BoardRole_Expiry_Date) < time());
+        $expiry = $this->member->BoardRole_Expiry_Date;
+        if (!Utility::isDate($expiry)) {
+            return false;
+        }
+        $expired = (strtotime($expiry) < time());
 
         return ($has_role && !$expired);
     }
@@ -239,9 +243,22 @@ class MembershipService
     public function boardExpired($member_id)
     {
         $member = $this->getMemberById($member_id);
-        $active = (empty($member->BoardRole)) ? '' : 'Expired';
 
-        return ($this->isCurrentBoardMember($member_id)) ? 'Yes' : $active;
+        if ($this->isCurrentBoardMember($member_id)) {
+            return 'Active';
+        } else {
+            $has_role = (!empty($member->BoardRole));
+            $has_date = (Utility::isDate($member->BoardRole_Expiry_Date));
+            $status = '';
+            if ($has_role && $has_date) {
+                $status = 'Expired';
+            }
+            if ($has_role && !$has_date) {
+                $status = 'No Date';
+            }
+            return $status;
+        }
+
     }
 
     public function hasAll($member_fields)
