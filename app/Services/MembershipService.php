@@ -97,6 +97,18 @@ class MembershipService
      * @param $test_email
      * @return int
      */
+    public function getMemberFromUserId($user_id)
+    {
+        $member_id = $this->getMemberIdFromUserId($user_id);
+        return ($member_id !== 0) ? $this->getMemberById($member_id) : null;
+    }
+
+    /**
+     * Retrieve the MemberID if a matching email address is found
+     *
+     * @param $test_email
+     * @return int
+     */
     public function getMemberIdFromUserId($user_id)
     {
         $user = User::find($user_id);

@@ -96,6 +96,7 @@ class Member extends Model
         $this->member = $this->firstOrNew(['MemberID' => $member_id]);
         // Retrieve permissions
         $current_user_id = Auth::user()->id;
+        $user_member = Membership::getMemberFromUserId($current_user_id);
         $can_create = $this->canCreate($current_user_id, $this->member->Coven);
         $can_edit = (!is_null($this->member)) ? $this->canEdit() : false;
 
@@ -104,7 +105,7 @@ class Member extends Model
         $isPurseWarden = Roles::isPurseWarden($member_id, $this->member->Coven);
         $isScribe = Roles::isScribe($member_id, $this->member->Coven);
 
-        $selected_coven = $this->getSelectedCoven($can_create);
+        $selected_coven = ($user_member->Coven == $this->member->Coven) ? $this->getSelectedCoven($can_create) : $this->member->Coven;
         $coven_name = (!is_null($selected_coven)) ? Coven::where('Coven', $selected_coven)->first()->CovenFullName : null;
         $data = [
             'can_edit' => ($can_create || $can_edit),
