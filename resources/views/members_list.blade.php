@@ -35,6 +35,7 @@
                     <td class="show-lg-up">{{ $member->BoardRole }}</td>
                 </tr>
             @endforeach
+            </tbody>
             <tfoot>
             <tr>
                 <td></td>
@@ -51,7 +52,6 @@
                 <td></td>
             </tr>
             </tfoot>
-            </tbody>
         </table>
     </div>
 @endsection
