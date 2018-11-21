@@ -88,6 +88,13 @@ Route::group(['middlewareGroups' => 'web'], function () {
         Route::controller('users', 'UsersController');
     });
 
+
+    Route::get('/debug', function () {
+      $mem = new \App\Services\MembershipService();
+
+      $mem->setPrimaryPhone(6);
+    });
+
     /* TODO: Create RBAC admin interface
     Route::get('acl', [
         'middleware' => ['auth'],

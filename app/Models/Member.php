@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Collective\Html\Eloquent\FormAccessible;
 // Helpers and Facades
-use Utility;
-use Audit;
-use Membership;
-use RosterAuth;
-use Roles;
+use App\Helpers\Utility;
+use App\Facades\Audit;
+use App\Facades\Membership;
+use App\Facades\RosterAuth;
+use App\Facades\Roles;
 
 use App\Models\CovenRoles;
 use DB;
@@ -97,16 +97,23 @@ class Member extends Model
         // Retrieve permissions
         $current_user_id = Auth::user()->id;
         $user_member = Membership::getMemberFromUserId($current_user_id);
-        $can_create = $this->canCreate($current_user_id, $this->member->Coven);
+        $can_create = $this->canCreate($current_user_id, $user_member->Coven);
         $can_edit = (!is_null($this->member)) ? $this->canEdit() : false;
 
         $isAdmin = RosterAuth::isAdmin();
         // Uses the RolesService (via Roles Facade) to determine whether user can edit
         $isPurseWarden = Roles::isPurseWarden($member_id, $this->member->Coven);
         $isScribe = Roles::isScribe($member_id, $this->member->Coven);
+        $isCovenLeader = Roles::isLeader($current_user_id, $user_member->Coven);
 
-        $selected_coven = ($user_member->Coven == $this->member->Coven) ? $this->getSelectedCoven($can_create) : $this->member->Coven;
+        if ($member_id == 0) {
+            $selected_coven = $user_member->Coven;
+        } else {
+            $selected_coven = ($user_member->Coven == $this->member->Coven) ? $this->getSelectedCoven($can_create) : $this->member->Coven;
+        }
+
         $coven_name = (!is_null($selected_coven)) ? Coven::where('Coven', $selected_coven)->first()->CovenFullName : null;
+        //var_dump($user_member->Coven);
         $data = [
             'can_edit' => ($can_create || $can_edit),
             'is_my_profile' => $this->isCurrentUsersProfile(),

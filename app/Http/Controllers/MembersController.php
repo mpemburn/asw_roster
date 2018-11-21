@@ -10,9 +10,9 @@ use App\Models\Member;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Validator;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\UsersController;
 use DB;
-use GuildMembership;
+use App\Facades\GuildMembership;
 use Auth;
 
 class MembersController extends Controller
@@ -38,7 +38,8 @@ class MembersController extends Controller
     /**
      * List of covens
      *
-     * @return JSON
+     * @param Request $request
+     * @return array
      */
     public function listCovens(Request $request)
     {
@@ -67,8 +68,8 @@ class MembersController extends Controller
      */
     public function memberDetails($member_id = 0)
     {
-        $this_member = $this->member->getDetails($member_id);
-        return view('member_edit', $this_member);
+        $thisMember = $this->member->getDetails($member_id);
+        return view('member_edit', $thisMember);
     }
 
     public function memberSearch(Request $request)

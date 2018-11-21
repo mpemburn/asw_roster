@@ -139,6 +139,37 @@ class MembershipService
     }
 
     /**
+     * Set the phone number to be listed as "primary" from the member record
+     *
+     * @param $member_id
+     * @return string
+     */
+    public function setPrimaryPhone($member_id)
+    {
+        $member = $this->getMemberById($member_id);
+        // The array key is in order of preference.
+        $phone_types = array(
+            3 => 'Cell_Phone',
+            1 => 'Home_Phone',
+            2 => 'Work_Phone',
+        );
+        $phones = $member->where('MemberID', $member_id)
+            ->select(array_values($phone_types))
+            ->get();
+
+        $allPhones = $phones->first();
+        foreach ($phone_types as $index => $phone) {
+            if (!empty($allPhones[$phone])) {
+                break;
+            }
+        }
+
+        $member->Primary_Phone = $index;
+
+        $member->save();
+    }
+
+    /**
      * Retrieve data to display in member detail when user does not have edit permission
      *
      * @param $member_id
@@ -247,7 +278,10 @@ class MembershipService
                 RosterAuth::revokeRoleFromUser($user, 'coven-scribe');
             }
         }
-
+        // If user hasn't selected the Primary_Phone radio, choose whatever's available
+        if (empty($member->Primary_Phone)) {
+            $this->setPrimaryPhone($member_id);
+        }
     }
 
     /* Methods used in "Missing Data" page only */
