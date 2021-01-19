@@ -17,7 +17,8 @@
         "phpunit/phpunit": "~4.0",
         "symfony/css-selector": "2.8.*|3.0.*",
         "symfony/dom-crawler": "2.8.*|3.0.*",
-        "ignasbernotas/laravel-model-generator": "^1.1"
+        "ignasbernotas/laravel-model-generator": "^1.1",
+        "kint-php/kint": "^3.3"
     },
     "autoload": {
         "classmap": [
