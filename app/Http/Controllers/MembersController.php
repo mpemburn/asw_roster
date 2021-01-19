@@ -51,7 +51,7 @@ class MembersController extends Controller
         if (!is_null($original_values)) {
             $covens = Coven::whereIn('Coven', $original_values)->lists('CovenFullName', 'Coven');
         } else {
-            $covens = Coven::lists('CovenFullName', 'Coven');
+            $covens = Coven::pluck('CovenFullName', 'Coven');
         }
         if (count($covens) > 0) {
             $covens_array = $covens->toArray();

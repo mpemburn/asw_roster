@@ -111,8 +111,8 @@ class Member extends Model
         } else {
             $selected_coven = ($user_member->Coven == $this->member->Coven) ? $this->getSelectedCoven($can_create) : $this->member->Coven;
         }
+        $coven_name = ($selected_coven) ? Coven::where('Coven', $selected_coven)->first() : null;
 
-        $coven_name = (!is_null($selected_coven)) ? Coven::where('Coven', $selected_coven)->first()->CovenFullName : null;
         //var_dump($user_member->Coven);
         $data = [
             'can_edit' => ($can_create || $can_edit),
@@ -125,7 +125,7 @@ class Member extends Model
             'is_pw' => $isPurseWarden,
             'is_scribe' => $isScribe,
             'selected_coven' => $selected_coven,
-            'coven_name' => $coven_name,
+            'coven_name' => $coven_name ? $coven_name->CovenFullName : null,
             'static' => (object) Membership::getStaticMemberData($member_id),
             'main_col' => ($can_create || $can_edit) ? '9' : '6',
             'sidebar_col' => ($can_create || $can_edit) ? '3' : '6',
