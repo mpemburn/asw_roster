@@ -7,3 +7,4 @@ Homestead.json
 .htaccess
 /bower_components
 /.idea
+/production.env

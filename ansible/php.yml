@@ -1,0 +1,46 @@
+- hosts: "{{ env }}"
+  become: yes
+  become_user: root
+  gather_facts: false
+  vars:
+    ansible_user: ubuntu
+
+  tasks:
+    - name: Install Software Properties Common
+      apt:
+        name: "{{ packages }}"
+      vars:
+        packages:
+          - software-properties-common
+
+    - name: Add OndreJ PHP PPA Repo
+      become: true
+      apt_repository:
+        repo: 'ppa:ondrej/php'
+
+    - name: Update and upgrade apt packages
+      apt:
+        upgrade: yes
+        update_cache: yes
+        cache_valid_time: 86400
+
+    - name: Install PHP 5.6  Packages
+      apt:
+        name: "{{ packages }}"
+      vars:
+        packages:
+          - php5.6
+          - php5.6-cli
+          - php5.6-fpm
+          - php5.6-curl
+          - php5.6-gd
+          - php5.6-intl
+          - php5.6-mysql
+          - php5.6-xml
+          - php5.6-xmlrpc
+          - php5.6-ldap
+          - php5.6-zip
+          - php5.6-soap
+          - php5.6-mbstring
+          - php5.6-pspell
+          - php5.6-cli
